@@ -6,21 +6,31 @@
   <servlet>
     <servlet-name>IndexServlet</servlet-name>
     <display-name>IndexServlet</display-name>
-    <description></description>  	
+    <description></description>
   	<servlet-class>com.web01.animatch.IndexServlet</servlet-class>
   </servlet>
-  <servlet>  
+  <servlet>
   	<servlet-name>LoginServlet</servlet-name>
   	<display-name>LoginServlet</display-name>
   	<description></description>
   	<servlet-class>com.web01.animatch.LoginServlet</servlet-class>
   </servlet>
+  <servlet>
+  	<servlet-name>RegistServlet</servlet-name>
+  	<display-name>RegistServlet</display-name>
+  	<description></description>
+  	<servlet-class>com.web01.animatch.RegistServlet</servlet-class>
+  </servlet>
   <servlet-mapping>
   	<servlet-name>IndexServlet</servlet-name>
-  	<url-pattern>/Index</url-pattern>
+  	<url-pattern>/index</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
   	<servlet-name>LoginServlet</servlet-name>
-  	<url-pattern>/Login</url-pattern>
+  	<url-pattern>/login</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>RegistServlet</servlet-name>
+  	<url-pattern>/regist</url-pattern>
   </servlet-mapping>
 </web-app>
