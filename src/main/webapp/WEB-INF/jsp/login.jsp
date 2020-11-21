@@ -7,7 +7,7 @@
 	<head>
 		<title>login</title>
 
-		<%@ include file="head1.jsp" %>
+		<%@ include file="head.jsp" %>
 
 		<link rel="stylesheet" type="text/css" href="/animatch/styles/login.css" />
     </head>
@@ -15,7 +15,7 @@
 	<body class="text-center d-flex flex-column justify-content-center py-5">
 		<div class="mx-auto">
 
-			<img class="mb-5" src="/animatch/images/animatch-icon.png" alt="Animatchロゴ">
+			<img class="mb-5" src="/animatch/images/icon_animatch.png" alt="Animatchロゴ">
 
 			<form class="py-5">
 
@@ -33,7 +33,7 @@
 
     	</div>
 
-    	<%@ include file="footer2.jsp" %>
+    	<%@ include file="footer02.jsp" %>
 	</body>
 
 </html>

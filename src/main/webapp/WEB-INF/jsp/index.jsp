@@ -7,7 +7,7 @@
 	<head>
 		<title>AniMatch</title>
 
-		<%@ include file="head1.jsp" %>
+		<%@ include file="head.jsp" %>
 
 		<link rel="stylesheet" type="text/css" href="/animatch/styles/index.css" />
     </head>
@@ -33,7 +33,7 @@
 
 	                    <div class="row pt-4 pb-2">
 	                        <div class="col-md text-center">
-	                            <img src="/animatch/images/beauty-salon-icon.png" alt="お店アイコン">
+	                            <img src="/animatch/images/icon_beauty_salon.png" alt="お店アイコン">
 	                            <h2>お店専用</h2>
 	                        </div>
 	                    </div>
@@ -60,7 +60,7 @@
 	                            <div class="row">
 	                                <div class="col-md text-center">
 	                                    <figure>
-	                                        <a class="btn btn-primary btn-sm" href="/animatch/search" role="button">飼い主を探す<img src="/animatch/images/search-icon.png" alt="検索アイコン"></a>
+	                                        <a class="btn btn-primary btn-sm" href="/animatch/search" role="button">飼い主を探す<img src="/animatch/images/icon_search.png" alt="検索アイコン"></a>
 	                                    </figure>
 	                                </div>
 	                            </div>
@@ -89,7 +89,7 @@
 	                            <div class="row">
 	                                <div class="col-md text-center">
 	                                    <figure>
-	                                        <a class="btn btn-primary btn-sm" href="/animatch/dmessage/contact-inf" role="button">ダイレクトメッセージ<img src="/animatch/images/direct-message-icon.png" alt="ダイレクトメッセージアイコン"></a>
+	                                        <a class="btn btn-primary btn-sm" href="/animatch/dmessage/contact-inf" role="button">ダイレクトメッセージ<img src="/animatch/images/icon_direct_message.png" alt="ダイレクトメッセージアイコン"></a>
 	                                    </figure>
 	                                </div>
 	                            </div>
@@ -102,7 +102,7 @@
 
 	                    <div class="row pt-4 pb-2">
 	                        <div class="col-md text-center">
-	                            <img src="/animatch/images/pad-icon.png" alt="犬アイコン">
+	                            <img src="/animatch/images/icon_pad.png" alt="犬アイコン">
 	                            <h2>飼い主専用</h2>
 	                        </div>
 	                    </div>
@@ -119,7 +119,7 @@
 	                            <div class="row">
 	                                <div class="col-md p-0">
 	                                    <figure class="col-lg p-0 text-center">
-	                                        <img class="main-center-explation-img-content" src="/animatch/images/trimmer1.png" alt="お店検索補足画像">
+	                                        <img class="main-center-explation-img-content" src="/animatch/images/trimmer01.png" alt="お店検索補足画像">
 	                                    </figure>
 	                                </div>
 	                                <div class="col-lg p-0">
@@ -129,7 +129,7 @@
 	                            <div class="row">
 	                                <div class="col-md text-center">
 	                                    <figure>
-	                                        <a class="btn btn-primary btn-sm" href="/animatch/search" role="button">お店を探す<img src="/animatch/images/search-icon.png" alt="検索アイコン"></a>
+	                                        <a class="btn btn-primary btn-sm" href="/animatch/search" role="button">お店を探す<img src="/animatch/images/icon_search.png" alt="検索アイコン"></a>
 	                                    </figure>
 	                                </div>
 	                            </div>
@@ -148,7 +148,7 @@
 	                            <div class="row">
 	                                <div class="col-md p-0">
 	                                    <figure class="col-lg p-0 text-center">
-	                                        <img class="main-center-explation-img-content" src="/animatch/images/trimmer2.png" alt="お店へダイレクトメッセージ補足画像">
+	                                        <img class="main-center-explation-img-content" src="/animatch/images/trimmer02.png" alt="お店へダイレクトメッセージ補足画像">
 	                                    </figure>
 	                                </div>
 	                                <div class="col-lg p-0">
@@ -158,7 +158,7 @@
 	                            <div class="row">
 	                                <div class="col-md text-center">
 	                                    <figure>
-	                                        <a class="btn btn-primary btn-sm" href="/animatch/dmessage/contact-inf" role="button">ダイレクトメッセージ<img src="/animatch/images/direct-message-icon.png" alt="ダイレクトメッセージアイコン"></a>
+	                                        <a class="btn btn-primary btn-sm" href="/animatch/dmessage/contact-inf" role="button">ダイレクトメッセージ<img src="/animatch/images/icon_direct_message.png" alt="ダイレクトメッセージアイコン"></a>
 	                                    </figure>
 	                                </div>
 	                            </div>
@@ -175,13 +175,13 @@
 	    <footer>
 	    	<div class="d-flex justify-content-end pr-3 footer-top">
 			    <a class="move-page-top" href="#">
-			        <img src="/animatch/images/upmove-icon.png" alt="トップへ戻るアイコン"> <strong>AniMatchの上部へ戻る</strong>
+			        <img src="/animatch/images/icon_upmove.png" alt="トップへ戻るアイコン"> <strong>AniMatchの上部へ戻る</strong>
 			    </a>
 			</div>
 
-	    	<%@ include file="footer1.jsp" %>
+	    	<%@ include file="footer01.jsp" %>
 
-	    	<%@ include file="footer2.jsp" %>
+	    	<%@ include file="footer02.jsp" %>
 	    </footer>
 
 		<script src="/animatch/scripts/index.js"></script>

@@ -21,6 +21,12 @@
   	<description></description>
   	<servlet-class>com.web01.animatch.RegistServlet</servlet-class>
   </servlet>
+  <servlet>
+  	<servlet-name>SearchServlet</servlet-name>
+  	<display-name>SearchServlet</display-name>
+  	<description></description>
+  	<servlet-class>com.web01.animatch.SearchServlet</servlet-class>
+  </servlet>
   <servlet-mapping>
   	<servlet-name>IndexServlet</servlet-name>
   	<url-pattern>/index</url-pattern>
@@ -32,5 +38,13 @@
   <servlet-mapping>
   	<servlet-name>RegistServlet</servlet-name>
   	<url-pattern>/regist</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>SearchServlet</servlet-name>
+  	<url-pattern>/search/owner</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>SearchServlet</servlet-name>
+  	<url-pattern>/search/trimmer</url-pattern>
   </servlet-mapping>
 </web-app>

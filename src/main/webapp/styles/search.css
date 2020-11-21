@@ -1,0 +1,76 @@
+/* 全体 */
+html {
+    overflow-y:scroll;
+}
+
+body {
+    font-family:fantasy;
+    font-size:80%;
+    color:rgb(0, 0, 0);
+}
+
+.row {
+    margin-right:0;
+    margin-left:0;
+}
+
+a {
+    color:rgb(0, 0, 0);
+    text-decoration:none;
+}
+
+
+/* メイン */
+main {
+    background-color:rgb(233, 233, 66);
+}
+
+.main-search-left,.main-search-right,.main-search-right-form, .main-search-right-list {
+    border:solid 1px rgb(163, 161, 161);
+    background-color:rgb(255, 255, 255);
+    font-size:85%;
+}
+
+.main-search-header-img {
+    height:100px;
+    width:100px;
+}
+
+.plugin-multipicker li {
+    color:rgb(0, 0, 0);
+}
+
+.page-link {
+    color:rgb(0, 0, 0);
+}
+
+.main-search-left-clear {
+    font-size:150%;
+}
+
+.main-search-left-clear ,.is-show-details-owner, .is-show-details-trimmer:hover {
+    cursor:pointer;
+}
+
+.main-search-left-select-btn {
+    color:rgb(0, 0, 0);
+}
+
+/* フッター */
+footer {
+    background-color:rgb(255, 255, 200);
+}
+
+.footer-top {
+    min-height:30px;
+}
+
+/*　画面サイズが1023pxまではここを読み込む　*/
+@media screen and (max-width:1023px) {
+    /* ヘッダー */
+    .main-search-header-img {
+        height:50px;
+        width:50px;
+    }
+
+}

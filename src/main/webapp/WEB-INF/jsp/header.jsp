@@ -8,7 +8,7 @@
 		<!--ナビゲーショントグル-->
 		<nav class="navbar navbar-expand-md navbar-light bg-white">
 	         <a class="navbar-brand" href="#">
-	             <img src="/animatch/images/animatch-icon.png" alt="Animatchロゴ">
+	             <img src="/animatch/images/icon_animatch.png" alt="Animatchロゴ">
 	         </a>
 	         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-supported-content" aria-controls="navbar-supported-content" aria-expanded="false" aria-label="Toggle navigation">
 	             <span class="navbar-toggler-icon"></span>

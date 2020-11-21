@@ -10,7 +10,7 @@
 		<!-- plugin dropify -->
 		<link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
 
-		<%@ include file="head1.jsp" %>
+		<%@ include file="head.jsp" %>
 
 		<!-- plugin dropify -->
 		<link rel="stylesheet" type="text/css" href="/animatch/styles/plugin/dropify.css" />
@@ -30,7 +30,7 @@
         <div class="text-center">
 
             <div>
-                <img src="/animatch/images/animatch-icon.png" alt="Animatchロゴ">
+                <img src="/animatch/images/icon_animatch.png" alt="Animatchロゴ">
             </div>
 
             <h2>
@@ -459,11 +459,11 @@
     <footer>
         <div class="d-flex justify-content-end pr-3 footer-top">
             <a class="footer-top-content move-page-top" href="#">
-                <img src="/animatch/images/upmove-icon.png" alt="トップへ戻るアイコン"> <strong>新規会員登録の上部へ戻る</strong>
+                <img src="/animatch/images/icon_upmove.png" alt="トップへ戻るアイコン"> <strong>新規会員登録の上部へ戻る</strong>
             </a>
         </div>
 
-        <%@ include file="footer2.jsp" %>
+        <%@ include file="footer02.jsp" %>
     </footer>
     <!-- plugin dropify -->
     <script src="/animatch/scripts/plugin/dropify.js"></script>
