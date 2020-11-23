@@ -8,15 +8,18 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class IndexServlet extends HttpServlet {
+public class SearchOwnerServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-    public IndexServlet() {
+    public SearchOwnerServlet() {
         super();
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String path = "/WEB-INF/jsp/index.jsp";
+		 String path = "/WEB-INF/jsp/search/search_owner.jsp";
+		if(path.isEmpty()) {
+			return;
+		}
 		RequestDispatcher dispatcher = request.getRequestDispatcher(path);
 		dispatcher.forward(request, response);
 	}
@@ -24,5 +27,4 @@ public class IndexServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doGet(request, response);
 	}
-
 }

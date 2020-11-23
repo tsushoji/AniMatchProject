@@ -1,0 +1,38 @@
+/* 全体 */
+html {
+    overflow-y:scroll;
+}
+
+body {
+    font-family:fantasy;
+    font-size:80%;
+    color:rgb(0, 0, 0);
+}
+
+.row {
+    margin-right:0;
+    margin-left:0;
+}
+
+a {
+    color:rgb(0, 0, 0);
+    text-decoration:none;
+}
+
+/* メイン */
+.main-search-right-underline {
+    border-bottom:1px dotted rgb(0, 0, 0);
+}
+
+main {
+    background-color:rgb(252, 247, 247);
+}
+
+/* フッター */
+footer {
+    background-color:rgb(255, 255, 200);
+}
+
+.footer-top {
+    min-height:30px;
+}

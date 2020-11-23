@@ -16,7 +16,7 @@ public class LoginServlet extends HttpServlet {
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String path = "/WEB-INF/views/login.jsp";
+		String path = "/WEB-INF/jsp/login/login.jsp";
 		RequestDispatcher dispatcher = request.getRequestDispatcher(path);
 		dispatcher.forward(request, response);
 	}

@@ -8,15 +8,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class IndexServlet extends HttpServlet {
+public class LogoutServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-    public IndexServlet() {
+    public LogoutServlet() {
         super();
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String path = "/WEB-INF/jsp/index.jsp";
+		String path = "/WEB-INF/jsp/login/logout.jsp";
 		RequestDispatcher dispatcher = request.getRequestDispatcher(path);
 		dispatcher.forward(request, response);
 	}

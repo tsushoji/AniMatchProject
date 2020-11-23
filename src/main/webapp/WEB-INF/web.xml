@@ -6,21 +6,111 @@
   <servlet>
     <servlet-name>IndexServlet</servlet-name>
     <display-name>IndexServlet</display-name>
-    <description></description>  	
+    <description></description>
   	<servlet-class>com.web01.animatch.IndexServlet</servlet-class>
   </servlet>
-  <servlet>  
+  <servlet>
   	<servlet-name>LoginServlet</servlet-name>
   	<display-name>LoginServlet</display-name>
   	<description></description>
   	<servlet-class>com.web01.animatch.LoginServlet</servlet-class>
   </servlet>
+  <servlet>
+  	<servlet-name>LogoutServlet</servlet-name>
+  	<display-name>LogoutServlet</display-name>
+  	<description></description>
+  	<servlet-class>com.web01.animatch.LogoutServlet</servlet-class>
+  </servlet>
+  <servlet>
+  	<servlet-name>RegistServlet</servlet-name>
+  	<display-name>RegistServlet</display-name>
+  	<description></description>
+  	<servlet-class>com.web01.animatch.RegistServlet</servlet-class>
+  </servlet>
+  <servlet>
+  	<servlet-name>SearchOwnerServlet</servlet-name>
+  	<display-name>SearchOwnerServlet</display-name>
+  	<description></description>
+  	<servlet-class>com.web01.animatch.SearchOwnerServlet</servlet-class>
+  </servlet>
+  <servlet>
+  	<servlet-name>SearchTrimmerServlet</servlet-name>
+  	<display-name>SearchTrimmerServlet</display-name>
+  	<description></description>
+  	<servlet-class>com.web01.animatch.SearchTrimmerServlet</servlet-class>
+  </servlet>
+  <servlet>
+  	<servlet-name>DetailOwnerServlet</servlet-name>
+  	<display-name>DetailOwnerServlet</display-name>
+  	<description></description>
+  	<servlet-class>com.web01.animatch.DetailOwnerServlet</servlet-class>
+  </servlet>
+  <servlet>
+  	<servlet-name>DetailTrimmerServlet</servlet-name>
+  	<display-name>DetailTrimmerServlet</display-name>
+  	<description></description>
+  	<servlet-class>com.web01.animatch.DetailTrimmerServlet</servlet-class>
+  </servlet>
+  <servlet>
+  	<servlet-name>ContactInfServlet</servlet-name>
+  	<display-name>ContactInfServlet</display-name>
+  	<description></description>
+  	<servlet-class>com.web01.animatch.ContactInfServlet</servlet-class>
+  </servlet>
+  <servlet>
+  	<servlet-name>MessageServlet</servlet-name>
+  	<display-name>MessageServlet</display-name>
+  	<description></description>
+  	<servlet-class>com.web01.animatch.MessageServlet</servlet-class>
+  </servlet>
+  <servlet>
+  	<servlet-name>ContactServlet</servlet-name>
+  	<display-name>ContactServlet</display-name>
+  	<description></description>
+  	<servlet-class>com.web01.animatch.ContactServlet</servlet-class>
+  </servlet>
   <servlet-mapping>
   	<servlet-name>IndexServlet</servlet-name>
-  	<url-pattern>/Index</url-pattern>
+  	<url-pattern>/index</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
   	<servlet-name>LoginServlet</servlet-name>
-  	<url-pattern>/Login</url-pattern>
+  	<url-pattern>/login</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>LogoutServlet</servlet-name>
+  	<url-pattern>/logout</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>RegistServlet</servlet-name>
+  	<url-pattern>/regist</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>SearchOwnerServlet</servlet-name>
+  	<url-pattern>/search/owner</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>SearchTrimmerServlet</servlet-name>
+  	<url-pattern>/search/trimmer</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>DetailOwnerServlet</servlet-name>
+  	<url-pattern>/detail/owner</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>DetailTrimmerServlet</servlet-name>
+  	<url-pattern>/detail/trimmer</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>ContactInfServlet</servlet-name>
+  	<url-pattern>/dmessage/contact</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>MessageServlet</servlet-name>
+  	<url-pattern>/dmessage/message</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>ContactServlet</servlet-name>
+  	<url-pattern>/contact</url-pattern>
   </servlet-mapping>
 </web-app>

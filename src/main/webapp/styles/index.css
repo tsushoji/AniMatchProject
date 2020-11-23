@@ -35,7 +35,7 @@ main {
 
 .jumbotron {
     height: 650px;
-    background-image:url("../images/banner.jpg");
+    background-image:url("/animatch/images/banner.jpg");
     background-size:cover;
     background-position:center 50%;
     margin-bottom:0;
