@@ -8,7 +8,7 @@
 	<head>
 		<title>search</title>
 
-		<%@ include file="../head.jsp" %>
+		<%@ include file="/WEB-INF/jsp/head.jsp" %>
 
 		<!-- plugin multipicker -->
     	<link rel="stylesheet" type="text/css" href="/animatch/styles/plugin/multipicker.min.css">
@@ -19,7 +19,7 @@
 	<body>
 		<!--ヘッダー-->
     	<header>
-			<jsp:include page="../header.jsp"/>
+			<jsp:include page="/WEB-INF/jsp/header.jsp"/>
 		</header>
 
 		<!--メイン-->
@@ -355,9 +355,9 @@
 	            </a>
 	        </div>
 
-	        <%@ include file="../footer01.jsp" %>
+	        <%@ include file="/WEB-INF/jsp/footer01.jsp" %>
 
-	        <%@ include file="../footer02.jsp" %>
+	        <%@ include file="/WEB-INF/jsp/footer02.jsp" %>
 	    </footer>
 
 		<!-- plugin multipicker -->

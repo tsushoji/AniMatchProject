@@ -10,7 +10,7 @@
 		<!-- plugin dropify -->
 		<link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
 
-		<%@ include file="head.jsp" %>
+		<%@ include file="/WEB-INF/jsp/head.jsp" %>
 
 		<!-- plugin dropify -->
 		<link rel="stylesheet" type="text/css" href="/animatch/styles/plugin/dropify.css" />
@@ -463,13 +463,13 @@
             </a>
         </div>
 
-        <%@ include file="footer02.jsp" %>
+        <%@ include file="/WEB-INF/jsp/footer02.jsp" %>
     </footer>
     <!-- plugin dropify -->
     <script src="/animatch/scripts/plugin/dropify.js"></script>
 
     <!-- bootstrap datepicker -->
-    <script type="text/javascript" src="webjars/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src="webjars/bootstrap/3.4.1/js/bootstrap.bundle.min.js"></script>
     <script type="text/javascript" src="webjars/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
     <script type="text/javascript" src="webjars/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.ja.min.js"></script>
     <!-- plugin multipicker -->

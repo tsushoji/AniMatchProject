@@ -7,7 +7,7 @@
 	<head>
 		<title>login</title>
 
-		<%@ include file="head.jsp" %>
+		<%@ include file="/WEB-INF/jsp/head.jsp" %>
 
 		<link rel="stylesheet" type="text/css" href="/animatch/styles/login.css" />
     </head>
@@ -33,7 +33,7 @@
 
     	</div>
 
-    	<%@ include file="footer02.jsp" %>
+    	<%@ include file="/WEB-INF/jsp/footer02.jsp" %>
 	</body>
 
 </html>

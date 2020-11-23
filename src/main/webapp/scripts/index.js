@@ -15,7 +15,7 @@ $(document).ready(function(){
     //アクション:「main-center-block」のダイレクトメッセージブロックをクリック
     $('.is-show-dmessage').click(function () {
         // 同じタグで表示
-        location.href = '/animatch/dmessage/contact-inf';
+        location.href = '/animatch/dmessage/contact';
     });
 
 
