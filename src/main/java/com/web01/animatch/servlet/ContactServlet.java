@@ -1,4 +1,4 @@
-package com.web01.animatch;
+package com.web01.animatch.servlet;
 
 import java.io.IOException;
 
@@ -8,15 +8,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class DetailOwnerServlet extends HttpServlet {
+public class ContactServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-    public DetailOwnerServlet() {
+    public ContactServlet() {
         super();
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String path = "/WEB-INF/jsp/detail/detail_owner.jsp";
+		String path = "/WEB-INF/jsp/contact.jsp";
 		if(path.isEmpty()) {
 			return;
 		}

@@ -1,4 +1,4 @@
-package com.web01.animatch;
+package com.web01.animatch.servlet;
 
 import java.io.IOException;
 
@@ -8,15 +8,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class SearchTrimmerServlet extends HttpServlet {
+public class DetailOwnerServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-    public SearchTrimmerServlet() {
+    public DetailOwnerServlet() {
         super();
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String path = "/WEB-INF/jsp/search/search_trimmer.jsp";
+		String path = "/WEB-INF/jsp/detail/detail_owner.jsp";
 		if(path.isEmpty()) {
 			return;
 		}
