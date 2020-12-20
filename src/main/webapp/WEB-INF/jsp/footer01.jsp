@@ -14,7 +14,7 @@
 		                <h5 class="text-uppercase">メインメニュー</h5>
 		                <ul class="list-unstyled">
 		                    <li><a href="/animatch/index">トップページ</a></li>
-		                    <li><a href="/animatch/regist">新規会員登録</a></li>
+		                    <li><a href="/animatch/regist/regist">新規会員登録</a></li>
 		                    <li><a href="/animatch/login" target="_blank">ログイン</a></li>
 		                </ul>
 		            </div>

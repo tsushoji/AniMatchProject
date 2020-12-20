@@ -5,9 +5,9 @@ $(document).ready(function(){
     //アクション:「登録区分」の値が変更される
     $('#regist-type').change(function() {
         //飼い主区分
-        const ownerType = '1';
+        const ownerType = '001';
         //トリマー区分
-        const trimmerType = '2';
+        const trimmerType = '002';
 
         //登録区分の値を取得
         let registType = $(this).val();
@@ -47,7 +47,8 @@ $(document).ready(function(){
             }
             //処理が成功したとき
             //「都道府県」を表示
-            $('#prefectures').val(res.results[0].prefcode);
+            $('#prefectures').val(('000' + res.results[0].prefcode).slice(-3));
+            console.log(('000' + res.results[0].prefcode).slice(-3));
             console.log(res.results);
 
             //「市区町村」を表示

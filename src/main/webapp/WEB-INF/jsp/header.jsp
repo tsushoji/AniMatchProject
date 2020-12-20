@@ -21,7 +21,7 @@
 	             </ul>
 
 	             <ul class="navbar-nav">
-	                 <li class="nav-item ml-auto mr-md-3 collapse-item-btn-search"><a class="nav-link btn btn-outline-info" type="submit" href="/animatch/regist">新規会員登録</a></li>
+	                 <li class="nav-item ml-auto mr-md-3 collapse-item-btn-search"><a class="nav-link btn btn-outline-info" type="submit" href="/animatch/regist/regist">新規会員登録</a></li>
 	                 <li class="nav-item ml-auto mr-md-2 collapse-item-btn-login"><a class="nav-link btn btn-outline-success" type="submit" target="_blank" href="/animatch/login">ログイン</a></li>
 	             </ul>
 	         </div>
