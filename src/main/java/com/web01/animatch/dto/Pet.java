@@ -1,6 +1,6 @@
 package com.web01.animatch.dto;
 
-import org.joda.time.DateTime;
+import java.time.LocalDateTime;
 
 public class Pet {
 	private int petId;
@@ -11,8 +11,8 @@ public class Pet {
 	private float weight;
 	private String remarks;
 	private int delFlg;
-	private DateTime insertedTime;
-	private DateTime updatedTime;
+	private LocalDateTime insertedTime;
+	private LocalDateTime updatedTime;
 
 	public int getPetId() {
 		return petId;
@@ -78,19 +78,19 @@ public class Pet {
 		this.delFlg = delFlg;
 	}
 
-	public DateTime getInsertedTime() {
+	public LocalDateTime getInsertedTime() {
 		return insertedTime;
 	}
 
-	public void setInsertedTime(DateTime insertedTime) {
+	public void setInsertedTime(LocalDateTime insertedTime) {
 		this.insertedTime = insertedTime;
 	}
 
-	public DateTime getUpdatedTime() {
+	public LocalDateTime getUpdatedTime() {
 		return updatedTime;
 	}
 
-	public void setUpdatedTime(DateTime updatedTime) {
+	public void setUpdatedTime(LocalDateTime updatedTime) {
 		this.updatedTime = updatedTime;
 	}
 }

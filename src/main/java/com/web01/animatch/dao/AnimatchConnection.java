@@ -12,8 +12,9 @@ public class AnimatchConnection {
 
 	public Connection getConnection(){
 		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
 			con = DriverManager.getConnection(URL, USER, PASS);
-		} catch (SQLException e) {
+		} catch (SQLException | ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 		return con;

@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Time;
+import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.List;
 
@@ -22,6 +23,7 @@ public class RegistDao {
 	private static final int PET_COL_COUNT = 10;
 	private static final int STORE_COL_COUNT = 9;
 	private static final int BUSINESS_HOURS_COL_COUNT = 8;
+	private static final int INSERT_INIT_ID = 1000000000;
 
 	public RegistDao(Connection con) {
 		this.con = con;
@@ -98,10 +100,10 @@ public class RegistDao {
 		setSQLVarcharParameter(pstmt, 8, user.getEmailAddress());
 		setSQLVarcharParameter(pstmt, 9, user.getTelephoneNumber());
 		setSQLIntegerParameter(pstmt, 10, pet.getPetId());
-		pstmt.setNull(11, Types.INTEGER);
+		pstmt.setInt(11, INSERT_INIT_ID);
 		pstmt.setInt(12, user.getDelFlg());
-		pstmt.setDate(13, Date.valueOf(user.getInsertedTime().toString()));
-		pstmt.setDate(14, Date.valueOf(user.getUpdatedTime().toString()));
+		pstmt.setTimestamp(13, Timestamp.valueOf(user.getInsertedTime()));
+		pstmt.setTimestamp(14, Timestamp.valueOf(user.getUpdatedTime()));
 
 		pstmt.executeUpdate();
 
@@ -120,8 +122,8 @@ public class RegistDao {
 		setSQLFloatParameter(pstmt, 6, pet.getWeight());
 		setSQLVarcharParameter(pstmt, 7, pet.getRemarks());
 		pstmt.setInt(8, pet.getDelFlg());
-		pstmt.setDate(9, Date.valueOf(pet.getInsertedTime().toString()));
-		pstmt.setDate(10, Date.valueOf(pet.getUpdatedTime().toString()));
+		pstmt.setTimestamp(9, Timestamp.valueOf(pet.getInsertedTime()));
+		pstmt.setTimestamp(10, Timestamp.valueOf(pet.getUpdatedTime()));
 
 		pstmt.executeUpdate();
 
@@ -151,11 +153,11 @@ public class RegistDao {
 		setSQLVarcharParameter(pstmt, 7, user.getStreetAddress());
 		setSQLVarcharParameter(pstmt, 8, user.getEmailAddress());
 		setSQLVarcharParameter(pstmt, 9, user.getTelephoneNumber());
-		pstmt.setNull(10, Types.INTEGER);
+		pstmt.setInt(10, INSERT_INIT_ID);
 		setSQLIntegerParameter(pstmt, 11, store.getStoreId());
 		pstmt.setInt(12, user.getDelFlg());
-		pstmt.setDate(13, Date.valueOf(user.getInsertedTime().toString()));
-		pstmt.setDate(14, Date.valueOf(user.getUpdatedTime().toString()));
+		pstmt.setTimestamp(13, Timestamp.valueOf(user.getInsertedTime()));
+		pstmt.setTimestamp(14, Timestamp.valueOf(user.getUpdatedTime()));
 
 		pstmt.executeUpdate();
 
@@ -174,8 +176,8 @@ public class RegistDao {
 		setSQLVarcharParameter(pstmt, 5, store.getCourseInfo());
 		setSQLVarcharParameter(pstmt, 6, store.getCommitment());
 		pstmt.setInt(7, store.getDelFlg());
-		pstmt.setDate(8, Date.valueOf(store.getInsertedTime().toString()));
-		pstmt.setDate(9, Date.valueOf(store.getUpdatedTime().toString()));
+		pstmt.setTimestamp(8, Timestamp.valueOf(store.getInsertedTime()));
+		pstmt.setTimestamp(9, Timestamp.valueOf(store.getUpdatedTime()));
 
 		pstmt.executeUpdate();
 
@@ -194,8 +196,8 @@ public class RegistDao {
 				setSQLTimeParameter(pstmt, 4, new Time(businessHoursList.get(i).getEndBusinessTime().getTime()));
 				setSQLVarcharParameter(pstmt, 5, businessHoursList.get(i).getComplement());
 				pstmt.setInt(6, businessHoursList.get(i).getDelFlg());
-				pstmt.setDate(7, Date.valueOf(businessHoursList.get(i).getInsertedTime().toString()));
-				pstmt.setDate(8, Date.valueOf(businessHoursList.get(i).getUpdatedTime().toString()));
+				pstmt.setTimestamp(7, Timestamp.valueOf(businessHoursList.get(i).getInsertedTime()));
+				pstmt.setTimestamp(8, Timestamp.valueOf(businessHoursList.get(i).getUpdatedTime()));
 
 				pstmt.executeUpdate();
 			}

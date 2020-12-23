@@ -1,8 +1,7 @@
 package com.web01.animatch.dto;
 
+import java.time.LocalDateTime;
 import java.util.List;
-
-import org.joda.time.DateTime;
 
 public class Store {
 	private int storeId;
@@ -13,8 +12,8 @@ public class Store {
 	private String courseInfo;
 	private String commitment;
 	private int delFlg;
-	private DateTime insertedTime;
-	private DateTime updatedTime;
+	private LocalDateTime insertedTime;
+	private LocalDateTime updatedTime;
 
 	public int getStoreId() {
 		return storeId;
@@ -72,19 +71,19 @@ public class Store {
 		this.delFlg = delFlg;
 	}
 
-	public DateTime getInsertedTime() {
+	public LocalDateTime getInsertedTime() {
 		return insertedTime;
 	}
 
-	public void setInsertedTime(DateTime insertedTime) {
+	public void setInsertedTime(LocalDateTime insertedTime) {
 		this.insertedTime = insertedTime;
 	}
 
-	public DateTime getUpdatedTime() {
+	public LocalDateTime getUpdatedTime() {
 		return updatedTime;
 	}
 
-	public void setUpdatedTime(DateTime updatedTime) {
+	public void setUpdatedTime(LocalDateTime updatedTime) {
 		this.updatedTime = updatedTime;
 	}
 
