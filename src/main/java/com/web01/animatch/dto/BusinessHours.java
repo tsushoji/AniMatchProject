@@ -1,12 +1,12 @@
 package com.web01.animatch.dto;
 
 import java.time.LocalDateTime;
-import java.util.Date;
+import java.time.LocalTime;
 
 public class BusinessHours {
 	private String businessDay;
-	private Date startBusinessTime;
-	private Date endBusinessTime;
+	private LocalTime startBusinessTime;
+	private LocalTime endBusinessTime;
 	private String complement;
 	private int delFlg;
 	private LocalDateTime insertedTime;
@@ -20,19 +20,19 @@ public class BusinessHours {
 		this.businessDay = businessDay;
 	}
 
-	public Date getStartBusinessTime() {
+	public LocalTime getStartBusinessTime() {
 		return startBusinessTime;
 	}
 
-	public void setStartBusinessTime(Date startBusinessTime) {
+	public void setStartBusinessTime(LocalTime startBusinessTime) {
 		this.startBusinessTime = startBusinessTime;
 	}
 
-	public Date getEndBusinessTime() {
+	public LocalTime getEndBusinessTime() {
 		return endBusinessTime;
 	}
 
-	public void setEndBusinessTime(Date endBusinessTime) {
+	public void setEndBusinessTime(LocalTime endBusinessTime) {
 		this.endBusinessTime = endBusinessTime;
 	}
 

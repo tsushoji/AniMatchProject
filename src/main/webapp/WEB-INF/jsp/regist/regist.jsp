@@ -269,12 +269,12 @@
 
                 <h3 class="pt-3">日曜日</h3>
 
-                <div class="form-group col-lg-1">
+                <div class="form-group col-lg-2">
                     <label class="control-label">開始時間</label>
                     <input type="time" name="business-hours-start-time-0" class="form-control col-lg col-md-2 col-sm-3">
                 </div>
 
-                <div class="form-group col-lg-1">
+                <div class="form-group col-lg-2">
                     <label class="control-label">終了時間</label>
                     <input type="time" name="business-hours-end-time-0" class="form-control col-lg col-md-2 col-sm-3">
                 </div>
@@ -290,12 +290,12 @@
 
                 <h3 class="pt-3">月曜日</h3>
 
-                <div class="form-group col-lg-1">
+                <div class="form-group col-lg-2">
                     <label class="control-label">開始時間</label>
                     <input type="time" name="business-hours-start-time-1" class="form-control col-lg col-md-2 col-sm-3">
                 </div>
 
-                <div class="form-group col-lg-1">
+                <div class="form-group col-lg-2">
                     <label class="control-label">終了時間</label>
                     <input type="time" name="business-hours-end-time-1" class="form-control col-lg col-md-2 col-sm-3">
                 </div>
@@ -311,12 +311,12 @@
 
                 <h3 class="pt-3">火曜日</h3>
 
-                <div class="form-group col-lg-1">
+                <div class="form-group col-lg-2">
                     <label class="control-label">開始時間</label>
                     <input type="time" name="business-hours-start-time-2" class="form-control col-lg col-md-2 col-sm-3">
                 </div>
 
-                <div class="form-group col-lg-1">
+                <div class="form-group col-lg-2">
                     <label class="control-label">終了時間</label>
                     <input type="time" name="business-hours-end-time-2" class="form-control col-lg col-md-2 col-sm-3">
                 </div>
@@ -332,12 +332,12 @@
 
                 <h3 class="pt-3">水曜日</h3>
 
-                <div class="form-group col-lg-1">
+                <div class="form-group col-lg-2">
                     <label class="control-label">開始時間</label>
                     <input type="time" name="business-hours-start-time-3" class="form-control col-lg col-md-2 col-sm-3">
                 </div>
 
-                <div class="form-group col-lg-1">
+                <div class="form-group col-lg-2">
                     <label class="control-label">終了時間</label>
                     <input type="time" name="business-hours-end-time-3" class="form-control col-lg col-md-2 col-sm-3">
                 </div>
@@ -353,12 +353,12 @@
 
                 <h3 class="pt-3">木曜日</h3>
 
-                <div class="form-group col-lg-1">
+                <div class="form-group col-lg-2">
                     <label class="control-label">開始時間</label>
                     <input type="time" name="business-hours-start-time-4" class="form-control col-lg col-md-2 col-sm-3">
                 </div>
 
-                <div class="form-group col-lg-1">
+                <div class="form-group col-lg-2">
                     <label class="control-label">終了時間</label>
                     <input type="time" name="business-hours-end-time-4" class="form-control col-lg col-md-2 col-sm-3">
                 </div>
@@ -374,12 +374,12 @@
 
                 <h3 class="pt-3">金曜日</h3>
 
-                <div class="form-group col-lg-1">
+                <div class="form-group col-lg-2">
                     <label class="control-label">開始時間</label>
                     <input type="time" name="business-hours-start-time-5" class="form-control col-lg col-md-2 col-sm-3">
                 </div>
 
-                <div class="form-group col-lg-1">
+                <div class="form-group col-lg-2">
                     <label class="control-label">終了時間</label>
                     <input type="time" name="business-hours-end-time-5" class="form-control col-lg col-md-2 col-sm-3">
                 </div>
@@ -395,12 +395,12 @@
 
                 <h3 class="pt-3">土曜日</h3>
 
-                <div class="form-group col-lg-1">
+                <div class="form-group col-lg-2">
                     <label class="control-label">開始時間</label>
                     <input type="time" name="business-hours-start-time-6" class="form-control col-lg col-md-2 col-sm-3">
                 </div>
 
-                <div class="form-group col-lg-1">
+                <div class="form-group col-lg-2">
                     <label class="control-label">終了時間</label>
                     <input type="time" name="business-hours-end-time-6" class="form-control col-lg col-md-2 col-sm-3">
                 </div>

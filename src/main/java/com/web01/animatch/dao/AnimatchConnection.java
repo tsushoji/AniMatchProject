@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public class AnimatchConnection {
 	private Connection con = null;
-	private static final String URL = "jdbc:mysql://localhost:3306/animatch";
+	private static final String URL = "jdbc:mysql://localhost:3306/animatch?useUnicode=true&characterEncoding=utf8";
 	private static final String USER = "root";
 	private static final String PASS = "";
 

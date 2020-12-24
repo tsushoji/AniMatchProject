@@ -192,8 +192,8 @@ public class RegistDao {
 				pstmt = con.prepareStatement(sql);
 				setSQLIntegerParameter(pstmt, 1, storeId);
 				setSQLVarcharParameter(pstmt, 2, businessHoursList.get(i).getBusinessDay());
-				setSQLTimeParameter(pstmt, 3, new Time(businessHoursList.get(i).getStartBusinessTime().getTime()));
-				setSQLTimeParameter(pstmt, 4, new Time(businessHoursList.get(i).getEndBusinessTime().getTime()));
+				setSQLTimeParameter(pstmt, 3, Time.valueOf(businessHoursList.get(i).getStartBusinessTime()));
+				setSQLTimeParameter(pstmt, 4, Time.valueOf(businessHoursList.get(i).getEndBusinessTime()));
 				setSQLVarcharParameter(pstmt, 5, businessHoursList.get(i).getComplement());
 				pstmt.setInt(6, businessHoursList.get(i).getDelFlg());
 				pstmt.setTimestamp(7, Timestamp.valueOf(businessHoursList.get(i).getInsertedTime()));
