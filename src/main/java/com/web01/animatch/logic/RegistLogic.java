@@ -27,7 +27,6 @@ public class RegistLogic {
 	private boolean canRegistFlg = true;
 	private static final int BYTE_ARY_SIZE = 16777215;
 	private static final String DATE_FORMAT = "yyyy/MM/dd";
-	private static final String BUSINESS_HOURS_TIME_FORMAT = "H:m";
 
 	public RegistLogic(String registType) {
 		this.registType = registType;
@@ -144,12 +143,11 @@ public class RegistLogic {
 	private List<BusinessHours> getParameterBusinessHoursDto(HttpServletRequest request) throws IOException, ServletException, ParseException {
 		List<BusinessHours> businessHoursList = new ArrayList<>();
 		String businessHoursWeekAry[] = request.getParameter("business-hours").split(",");
-		SimpleDateFormat sdf = new SimpleDateFormat(BUSINESS_HOURS_TIME_FORMAT);
 		for(int i = 0; i < businessHoursWeekAry.length; i++) {
 			BusinessHours businessHours = new BusinessHours();
 			businessHours.setBusinessDay("00" + businessHoursWeekAry[i]);
-			String[] startBusinessTimeAry = sdf.format(request.getParameter("business-hours-start-time-" + businessHoursWeekAry[i])).split(":");
-			String[] endBusinessTimeAry = sdf.format(request.getParameter("business-hours-end-time-" + businessHoursWeekAry[i])).split(":");
+			String[] startBusinessTimeAry = request.getParameter("business-hours-start-time-" + businessHoursWeekAry[i]).split(":");
+			String[] endBusinessTimeAry = request.getParameter("business-hours-end-time-" + businessHoursWeekAry[i]).split(":");
 			businessHours.setStartBusinessTime(LocalTime.of(Integer.parseInt(startBusinessTimeAry[0]), Integer.parseInt(startBusinessTimeAry[1])));
 			businessHours.setEndBusinessTime(LocalTime.of(Integer.parseInt(endBusinessTimeAry[0]), Integer.parseInt(endBusinessTimeAry[1])));
 			businessHours.setComplement(request.getParameter("business-hours-remarks-" + businessHoursWeekAry[i]));

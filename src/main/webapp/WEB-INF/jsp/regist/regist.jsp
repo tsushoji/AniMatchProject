@@ -67,16 +67,16 @@
 
                 <div class="form-group col-md-4 col-sm-5">
                     <label class="control-label required-item">ユーザー名</label>
-                    <input type="text" name="user-name" class="form-control">
+                    <input type="text" name="user-name" class="form-control" required>
                 </div>
 
                 <div class="form-group col-md-4">
 
                     <label class="control-label required-item">パスワード</label>
-                    <input type="password" name="password" class="form-control col-md col-sm-5">
+                    <input type="password" name="password" class="form-control col-md col-sm-5" required>
 
                     <label class="control-label mt-2 required-item">再入力</label>
-                    <input type="password" name="re-password" class="form-control col-md col-sm-5">
+                    <input type="password" name="re-password" class="form-control col-md col-sm-5" required>
 
                 </div>
 
@@ -97,7 +97,7 @@
             <div class="form-row mt-3 form-common">
                 <div class="form-group col-md-4 col-sm-5">
                     <label class="control-label required-item">生年月日</label>
-                    <input type="text" name="birthday" class="form-control plugin-datepicker">
+                    <input type="text" name="birthday" class="form-control plugin-datepicker" required>
                 </div>
             </div>
 
@@ -117,7 +117,7 @@
 
                 <div class="form-group col-md-3">
                     <label class="control-label required-item" for="postal-code">郵便番号</label>
-                    <input type="text" name="postal-code" class="form-control col-md col-sm-3" placeholder="9991234" id="postal-code" maxlength="7">
+                    <input type="text" name="postal-code" class="form-control col-md col-sm-3" placeholder="9991234" id="postal-code" maxlength="7" required>
                 </div>
 
                 <div class="form-group col-md-3 col-sm-5">
@@ -176,7 +176,7 @@
 
                 <div class="form-group col-md-3">
                     <label class="control-label required-item" for="cities">住所&ndash;市区町村</label>
-                    <input type="text" name="cities" id="cities" class="form-control col-md col-sm-3" maxlength="6">
+                    <input type="text" name="cities" id="cities" class="form-control col-md col-sm-3" maxlength="6" required>
                 </div>
 
             </div>
@@ -184,14 +184,14 @@
             <div class="form-row form-common">
                 <div class="form-group col-md-5 col-sm-6">
                     <label class="control-label required-item">メールアドレス</label>
-                    <input type="email" name="email-address" class="form-control" placeholder="xxxxxxx@xx.xx.xx" maxlength="254">
+                    <input type="email" name="email-address" class="form-control" placeholder="xxxxxxx@xx.xx.xx" maxlength="254" required>
                 </div>
             </div>
 
             <div class="form-row form-common">
                 <div class="form-group col-md-4 col-sm-5">
                     <label class="control-label required-item">電話番号</label>
-                    <input type="tel" name="telephone-number" class="form-control" placeholder="09012345678" maxlength="11">
+                    <input type="tel" name="telephone-number" class="form-control" placeholder="09012345678" maxlength="11" required>
                 </div>
             </div>
 
@@ -209,7 +209,7 @@
             <div class="form-row form-owner">
                 <div class="form-group col-md-4 col-sm-5">
                     <label class="control-label">ニックネーム</label>
-                    <input type="text" name="pet-name" class="form-control" placeholder="シロ">
+                    <input type="text" name="pet-name" class="form-control" placeholder="シロ" required>
                 </div>
             </div>
 
@@ -246,7 +246,7 @@
             <div class="form-row form-trimmer">
                 <div class="form-group col-md-4 col-sm-6">
                     <label class="control-label required-item">店名</label>
-                    <input type="text" name="store-name" class="form-control" placeholder="ペットサロン ヤマダ">
+                    <input type="text" name="store-name" class="form-control" placeholder="ペットサロン ヤマダ" required>
                 </div>
             </div>
 

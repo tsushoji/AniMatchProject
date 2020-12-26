@@ -3,6 +3,16 @@
  "http://java.sun.com/dtd/web-app_2_3.dtd">
 <web-app>
   <display-name>Archetype Created Web Application</display-name>
+  <filter>
+  	<filter-name>AnimatchFilte</filter-name>
+  	<display-name>AnimatchFilte</display-name>
+  	<description></description>
+  	<filter-class>com.web01.animatch.filter.AnimatchFilte</filter-class>
+  </filter>
+  <filter-mapping>
+  	<filter-name>AnimatchFilte</filter-name>
+  	<url-pattern>/*</url-pattern>
+  </filter-mapping>
   <servlet>
     <servlet-name>IndexServlet</servlet-name>
     <display-name>IndexServlet</display-name>
@@ -124,3 +134,4 @@
   	<url-pattern>/regist/complete</url-pattern>
   </servlet-mapping>
 </web-app>
+
