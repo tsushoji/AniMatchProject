@@ -63,6 +63,13 @@
 	    <artifactId>bootstrap-datepicker</artifactId>
 	    <version>1.9.0</version>
 	</dependency>
+	<!-- https://mvnrepository.com/artifact/org.glassfish.web/jstl-impl -->
+	<dependency>
+	    <groupId>org.glassfish.web</groupId>
+	    <artifactId>jstl-impl</artifactId>
+	    <version>1.2</version>
+	    <scope>runtime</scope>
+	</dependency>
   </dependencies>
 
   <build>

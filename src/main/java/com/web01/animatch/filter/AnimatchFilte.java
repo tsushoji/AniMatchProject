@@ -8,6 +8,7 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
 
 public class AnimatchFilte implements Filter {
 
@@ -18,7 +19,12 @@ public class AnimatchFilte implements Filter {
 	}
 
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-	    request.setCharacterEncoding("UTF-8");
+
+		String path = ((HttpServletRequest)request).getServletPath();
+		if (excludeStaticContent(path)) {
+			chain.doFilter(request, response);
+		}
+		request.setCharacterEncoding("UTF-8");
 	    response.setContentType("text/html; charset=UTF-8");
 
 	    chain.doFilter(request, response);
@@ -27,4 +33,19 @@ public class AnimatchFilte implements Filter {
 	public void init(FilterConfig fConfig) throws ServletException {
 	}
 
+	public boolean excludeStaticContent(String path) throws ServletException {
+		if (path.startsWith("/images/")) {
+			return true;
+		}
+		if (path.startsWith("/scripts/")) {
+			return true;
+		}
+		if (path.startsWith("/styles/")) {
+			return true;
+		}
+		if (path.startsWith("/webjars/")) {
+			return true;
+		}
+		return false;
+	}
 }

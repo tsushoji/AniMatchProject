@@ -23,21 +23,19 @@ public class RegistDao {
 	private static final int PET_COL_COUNT = 10;
 	private static final int STORE_COL_COUNT = 9;
 	private static final int BUSINESS_HOURS_COL_COUNT = 8;
-	private static final int INSERT_INIT_ID = 1000000000;
+	private static final int DEFAULT_ID = 1000000000;
 
 	public RegistDao(Connection con) {
 		this.con = con;
 	}
 
 	public int getMaxUserId() throws SQLException {
-		int userId = 1000000001;
+		int userId = DEFAULT_ID;
 		Statement stmt = con.createStatement();
 		ResultSet rs = stmt.executeQuery("SELECT * FROM t_user ORDER BY user_id DESC LIMIT 1");
 
-		rs.next();
-		int exeResult = rs.getInt("user_id");
-		if(exeResult != 0) {
-			userId = exeResult;
+		if(rs.next()) {
+			userId = rs.getInt("user_id");
 		}
 
 		rs.close();
@@ -47,14 +45,12 @@ public class RegistDao {
 	}
 
 	public int getMaxPetId() throws SQLException {
-		int petId = 1000000001;
+		int petId = DEFAULT_ID;
 		Statement stmt = con.createStatement();
 		ResultSet rs = stmt.executeQuery("SELECT * FROM t_pet ORDER BY pet_id DESC LIMIT 1");
 
-		rs.next();
-		int exeResult = rs.getInt("pet_id");
-		if(exeResult != 0) {
-			petId = exeResult;
+		if(rs.next()) {
+			petId = rs.getInt("pet_id");
 		}
 
 		rs.close();
@@ -64,15 +60,13 @@ public class RegistDao {
 	}
 
 	public int getMaxStoreId() throws SQLException {
-		int storeId = 1000000001;
+		int storeId = DEFAULT_ID;
 		Statement stmt = con.createStatement();
 		ResultSet rs = stmt.executeQuery("SELECT * FROM t_store ORDER BY store_id DESC LIMIT 1");
 
-		rs.next();
-		int exeResult = rs.getInt("store_id");
-		if(exeResult != 0) {
-			storeId = exeResult;
-		}
+		if(rs.next()) {
+			storeId = rs.getInt("store_id");
+		};
 
 		rs.close();
 		stmt.close();
@@ -100,7 +94,7 @@ public class RegistDao {
 		setSQLVarcharParameter(pstmt, 8, user.getEmailAddress());
 		setSQLVarcharParameter(pstmt, 9, user.getTelephoneNumber());
 		setSQLIntegerParameter(pstmt, 10, pet.getPetId());
-		pstmt.setInt(11, INSERT_INIT_ID);
+		pstmt.setInt(11, DEFAULT_ID);
 		pstmt.setInt(12, user.getDelFlg());
 		pstmt.setTimestamp(13, Timestamp.valueOf(user.getInsertedTime()));
 		pstmt.setTimestamp(14, Timestamp.valueOf(user.getUpdatedTime()));
@@ -153,7 +147,7 @@ public class RegistDao {
 		setSQLVarcharParameter(pstmt, 7, user.getStreetAddress());
 		setSQLVarcharParameter(pstmt, 8, user.getEmailAddress());
 		setSQLVarcharParameter(pstmt, 9, user.getTelephoneNumber());
-		pstmt.setInt(10, INSERT_INIT_ID);
+		pstmt.setInt(10, DEFAULT_ID);
 		setSQLIntegerParameter(pstmt, 11, store.getStoreId());
 		pstmt.setInt(12, user.getDelFlg());
 		pstmt.setTimestamp(13, Timestamp.valueOf(user.getInsertedTime()));

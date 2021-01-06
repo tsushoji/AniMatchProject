@@ -1,6 +1,17 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 
+<%@ page isELIgnored="false" %>
+
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+
+<c:set var="humanSexKeyInitStr" value="human.sex." />
+<c:set var="petSexKeyInitStr" value="pet.sex." />
+<c:set var="firstTypeKeyInitEnd" value="001" />
+<c:set var="secondTypeKeyInitEnd" value="002" />
+
 <!DOCTYPE html>
 
 <html>
@@ -24,6 +35,8 @@
 		<link rel="stylesheet" type="text/css" href="/animatch/styles/regist.css" />
 	</head>
 <body>
+
+	<fmt:setBundle basename="animatch" var="resource"/>
 
 	<!--グリッドシステム-->
     <div class="container">
@@ -52,8 +65,11 @@
 	            <label class="required-item" for="regist-type">登録区分</label>
 	            <select name="regist-type" id="regist-type" class="form-control">
 	                <option value="000">選んでください</option>
-	                <option value="001">飼い主</option>
-	                <option value="002">トリマー</option>
+	                <c:forEach items="${registTypeKeyList}" var="registTypeKey" varStatus="status">
+                       	<fmt:formatNumber var="registTypeKeyNum" value="${status.index + 1}" minIntegerDigits="3" />
+						<fmt:message bundle="${resource}" key="${registTypeKey}" var="registTypeVal" />
+                       	<option value="${registTypeKeyNum}">${registTypeVal}</option>
+                   	</c:forEach>
 	            </select>
 	        </div>
 
@@ -85,13 +101,13 @@
             <p class="mb-1 form-common">性別</p>
 
             <div class="custom-control custom-radio custom-control-inline form-common">
-                <input type="radio" id="radio-man" name="radio-user-sex" value="001" class="custom-control-input">
-                <label class="custom-control-label custom-radio-label" for="radio-man">男性</label>
+                <input type="radio" id="radio-man" name="radio-user-sex" value="${firstTypeKeyInitEnd}" class="custom-control-input">
+                <label class="custom-control-label custom-radio-label" for="radio-man"><fmt:message bundle="${resource}" key="${humanSexKeyInitStr}${firstTypeKeyInitEnd}" /></label>
             </div>
 
             <div class="custom-control custom-radio custom-control-inline form-common">
-                <input type="radio" id="radio-woman" name="radio-user-sex" value="002" class="custom-control-input">
-                <label class="custom-control-label custom-radio-label" for="radio-woman">女性</label>
+                <input type="radio" id="radio-woman" name="radio-user-sex" value="${secondTypeKeyInitEnd}" class="custom-control-input">
+                <label class="custom-control-label custom-radio-label" for="radio-woman"><fmt:message bundle="${resource}" key="${humanSexKeyInitStr}${secondTypeKeyInitEnd}" /></label>
             </div>
 
             <div class="form-row mt-3 form-common">
@@ -124,53 +140,11 @@
                     <label class="control-label required-item" for="prefectures">住所&ndash;都道府県</label>
                     <select name="prefectures" id="prefectures" class="custom-select form-control">
                         <option value="000">選んでください</option>
-                        <option value="001">北海道</option>
-                        <option value="002">青森県</option>
-                        <option value="003">岩手県</option>
-                        <option value="004">宮城県</option>
-                        <option value="005">秋田県</option>
-                        <option value="006">山形県</option>
-                        <option value="007">福島県</option>
-                        <option value="008">茨城県</option>
-                        <option value="009">栃木県</option>
-                        <option value="010">群馬県</option>
-                        <option value="011">埼玉県</option>
-                        <option value="012">千葉県</option>
-                        <option value="013">東京都</option>
-                        <option value="014">神奈川県</option>
-                        <option value="015">新潟県</option>
-                        <option value="016">富山県</option>
-                        <option value="017">石川県</option>
-                        <option value="018">福井県</option>
-                        <option value="019">山梨県</option>
-                        <option value="020">長野県</option>
-                        <option value="021">岐阜県</option>
-                        <option value="022">静岡県</option>
-                        <option value="023">愛知県</option>
-                        <option value="024">三重県</option>
-                        <option value="025">滋賀県</option>
-                        <option value="026">京都府</option>
-                        <option value="027">大阪府</option>
-                        <option value="028">兵庫県</option>
-                        <option value="029">奈良県</option>
-                        <option value="030">和歌山県</option>
-                        <option value="031">鳥取県</option>
-                        <option value="032">島根県</option>
-                        <option value="033">岡山県</option>
-                        <option value="034">広島県</option>
-                        <option value="035">山口県</option>
-                        <option value="036">徳島県</option>
-                        <option value="037">香川県</option>
-                        <option value="038">愛媛県</option>
-                        <option value="039">高知県</option>
-                        <option value="040">福岡県</option>
-                        <option value="041">佐賀県</option>
-                        <option value="042">長崎県</option>
-                        <option value="043">熊本県</option>
-                        <option value="044">大分県</option>
-                        <option value="045">宮崎県</option>
-                        <option value="046">鹿児島県</option>
-                        <option value="047">沖縄県</option>
+                        <c:forEach items="${prefecturesKeyList}" var="prefecturesKey" varStatus="status">
+	                       	<fmt:formatNumber var="prefecturesKeyNum" value="${status.index + 1}" minIntegerDigits="3" />
+							<fmt:message bundle="${resource}" key="${prefecturesKey}" var="prefecturesVal" />
+	                       	<option value="${prefecturesKeyNum}">${prefecturesVal}</option>
+	                   	</c:forEach>
                     </select>
                 </div>
 
@@ -208,21 +182,21 @@
 
             <div class="form-row form-owner">
                 <div class="form-group col-md-4 col-sm-5">
-                    <label class="control-label">ニックネーム</label>
-                    <input type="text" name="pet-name" class="form-control" placeholder="シロ" required>
+                    <label class="control-label required-item">ニックネーム</label>
+                    <input type="text" id="pet-name" name="pet-name" class="form-control" placeholder="シロ">
                 </div>
             </div>
 
             <p class="mb-1 form-owner">性別</p>
 
             <div class="custom-control custom-radio custom-control-inline form-owner">
-                <input type="radio" id="radio-male" name="radio-pet-sex" class="custom-control-input" value="001">
-                <label class="custom-control-label custom-radio-label" for="radio-male">オス</label>
+                <input type="radio" id="radio-male" name="radio-pet-sex" class="custom-control-input" value="${firstTypeKeyInitEnd}">
+                <label class="custom-control-label custom-radio-label" for="radio-male"><fmt:message bundle="${resource}" key="${petSexKeyInitStr}${firstTypeKeyInitEnd}" /></label>
             </div>
 
             <div class="custom-control custom-radio custom-control-inline form-owner">
-                <input type="radio" id="radio-female" name="radio-pet-sex" class="custom-control-input" value="002">
-                <label class="custom-control-label custom-radio-label" for="radio-female">メス</label>
+                <input type="radio" id="radio-female" name="radio-pet-sex" class="custom-control-input" value="${secondTypeKeyInitEnd}">
+                <label class="custom-control-label custom-radio-label" for="radio-female"><fmt:message bundle="${resource}" key="${petSexKeyInitStr}${secondTypeKeyInitEnd}" /></label>
             </div>
 
             <div class="form-row mt-3 form-owner">
@@ -230,8 +204,11 @@
                     <label class="control-label">種別</label>
                     <select name="pet-type" class="custom-select form-control">
                         <option value="000">選んでください</option>
-                        <option value="001">犬</option>
-                        <option value="002">猫</option>
+                        <c:forEach items="${petTypeKeyList}" var="petTypeKey" varStatus="status">
+                        	<fmt:formatNumber var="petTypeKeyNum" value="${status.index + 1}" minIntegerDigits="3" />
+							<fmt:message bundle="${resource}" key="${petTypeKey}" var="petTypeVal" />
+                        	<option value="${petTypeKeyNum}">${petTypeVal}</option>
+                    	</c:forEach>
                     </select>
                 </div>
             </div>
@@ -246,7 +223,7 @@
             <div class="form-row form-trimmer">
                 <div class="form-group col-md-4 col-sm-6">
                     <label class="control-label required-item">店名</label>
-                    <input type="text" name="store-name" class="form-control" placeholder="ペットサロン ヤマダ" required>
+                    <input type="text" id="store-name" name="store-name" class="form-control" placeholder="ペットサロン ヤマダ">
                 </div>
             </div>
 
@@ -254,163 +231,38 @@
                 <label class="control-label">営業時間</label>
                 <div>
                     <ul class="plugin-multipicker">
-                        <li>日</li>
-                        <li>月</li>
-                        <li>火</li>
-                        <li>水</li>
-                        <li>木</li>
-                        <li>金</li>
-                        <li>土</li>
+                    	<c:forEach items="${weekdayKeyList}" var="weekdayKey">
+							<fmt:message bundle="${resource}" key="${weekdayKey}" var="weekdayVal" />
+	                       	<li>${fn:substringBefore(weekdayVal, '曜日')}</li>
+	                   	</c:forEach>
                     </ul>
                 </div>
             </div>
 
-            <div class="form-row form-trimmer-business-hours day-val-0">
+			<c:forEach items="${weekdayKeyList}" var="weekdayKey" varStatus="status">
+				<fmt:message bundle="${resource}" key="${weekdayKey}" var="weekdayVal" />
 
-                <h3 class="pt-3">日曜日</h3>
+				<div class="form-row form-trimmer-business-hours day-val-${status.index}">
 
-                <div class="form-group col-lg-2">
-                    <label class="control-label">開始時間</label>
-                    <input type="time" name="business-hours-start-time-0" class="form-control col-lg col-md-2 col-sm-3">
-                </div>
+	                <h3 class="pt-3">${weekdayVal}</h3>
 
-                <div class="form-group col-lg-2">
-                    <label class="control-label">終了時間</label>
-                    <input type="time" name="business-hours-end-time-0" class="form-control col-lg col-md-2 col-sm-3">
-                </div>
+	                <div class="form-group col-lg-2">
+	                    <label class="control-label">開始時間</label>
+	                    <input type="time" name="business-hours-start-time-${status.index}" class="form-control col-lg col-md-2 col-sm-3">
+	                </div>
 
-                <div class="form-group col-lg-5">
-                    <label class="control-label">補足</label>
-                    <textarea name="business-hours-remarks-0" class="form-control col-lg col-md-6 col-sm-7" placeholder="第一日曜日は休業。"></textarea>
-                </div>
+	                <div class="form-group col-lg-2">
+	                    <label class="control-label">終了時間</label>
+	                    <input type="time" name="business-hours-end-time-${status.index}" class="form-control col-lg col-md-2 col-sm-3">
+	                </div>
 
-            </div>
+	                <div class="form-group col-lg-5">
+	                    <label class="control-label">補足</label>
+	                    <textarea name="business-hours-remarks-${status.index}" class="form-control col-lg col-md-6 col-sm-7" placeholder="第一${weekdayVal}は休業。"></textarea>
+	                </div>
 
-            <div class="form-row form-trimmer-business-hours day-val-1">
-
-                <h3 class="pt-3">月曜日</h3>
-
-                <div class="form-group col-lg-2">
-                    <label class="control-label">開始時間</label>
-                    <input type="time" name="business-hours-start-time-1" class="form-control col-lg col-md-2 col-sm-3">
-                </div>
-
-                <div class="form-group col-lg-2">
-                    <label class="control-label">終了時間</label>
-                    <input type="time" name="business-hours-end-time-1" class="form-control col-lg col-md-2 col-sm-3">
-                </div>
-
-                <div class="form-group col-lg-5">
-                    <label class="control-label">補足</label>
-                    <textarea name="business-hours-remarks-1" class="form-control col-lg col-md-6 col-sm-7" placeholder="第一月曜日は休業。"></textarea>
-                </div>
-
-            </div>
-
-            <div class="form-row form-trimmer-business-hours day-val-2">
-
-                <h3 class="pt-3">火曜日</h3>
-
-                <div class="form-group col-lg-2">
-                    <label class="control-label">開始時間</label>
-                    <input type="time" name="business-hours-start-time-2" class="form-control col-lg col-md-2 col-sm-3">
-                </div>
-
-                <div class="form-group col-lg-2">
-                    <label class="control-label">終了時間</label>
-                    <input type="time" name="business-hours-end-time-2" class="form-control col-lg col-md-2 col-sm-3">
-                </div>
-
-                <div class="form-group col-lg-5">
-                    <label class="control-label">補足</label>
-                    <textarea name="business-hours-remarks-2" class="form-control col-lg col-md-6 col-sm-7" placeholder="第一火曜日は休業。"></textarea>
-                </div>
-
-            </div>
-
-            <div class="form-row form-trimmer-business-hours day-val-3">
-
-                <h3 class="pt-3">水曜日</h3>
-
-                <div class="form-group col-lg-2">
-                    <label class="control-label">開始時間</label>
-                    <input type="time" name="business-hours-start-time-3" class="form-control col-lg col-md-2 col-sm-3">
-                </div>
-
-                <div class="form-group col-lg-2">
-                    <label class="control-label">終了時間</label>
-                    <input type="time" name="business-hours-end-time-3" class="form-control col-lg col-md-2 col-sm-3">
-                </div>
-
-                <div class="form-group col-lg-5">
-                    <label class="control-label">補足</label>
-                    <textarea name="business-hours-remarks-3" class="form-control col-lg col-md-6 col-sm-7" placeholder="第一水曜日は休業。"></textarea>
-                </div>
-
-            </div>
-
-            <div class="form-row form-trimmer-business-hours day-val-4">
-
-                <h3 class="pt-3">木曜日</h3>
-
-                <div class="form-group col-lg-2">
-                    <label class="control-label">開始時間</label>
-                    <input type="time" name="business-hours-start-time-4" class="form-control col-lg col-md-2 col-sm-3">
-                </div>
-
-                <div class="form-group col-lg-2">
-                    <label class="control-label">終了時間</label>
-                    <input type="time" name="business-hours-end-time-4" class="form-control col-lg col-md-2 col-sm-3">
-                </div>
-
-                <div class="form-group col-lg-5">
-                    <label class="control-label">補足</label>
-                    <textarea name="business-hours-remarks-4" class="form-control col-lg col-md-6 col-sm-7" placeholder="第一木曜日は休業。"></textarea>
-                </div>
-
-            </div>
-
-            <div class="form-row form-trimmer-business-hours day-val-5">
-
-                <h3 class="pt-3">金曜日</h3>
-
-                <div class="form-group col-lg-2">
-                    <label class="control-label">開始時間</label>
-                    <input type="time" name="business-hours-start-time-5" class="form-control col-lg col-md-2 col-sm-3">
-                </div>
-
-                <div class="form-group col-lg-2">
-                    <label class="control-label">終了時間</label>
-                    <input type="time" name="business-hours-end-time-5" class="form-control col-lg col-md-2 col-sm-3">
-                </div>
-
-                <div class="form-group col-lg-5">
-                    <label class="control-label">補足</label>
-                    <textarea name="business-hours-remarks-5" class="form-control col-lg col-md-6 col-sm-7" placeholder="第一金曜日は休業。"></textarea>
-                </div>
-
-            </div>
-
-            <div class="form-row form-trimmer-business-hours day-val-6">
-
-                <h3 class="pt-3">土曜日</h3>
-
-                <div class="form-group col-lg-2">
-                    <label class="control-label">開始時間</label>
-                    <input type="time" name="business-hours-start-time-6" class="form-control col-lg col-md-2 col-sm-3">
-                </div>
-
-                <div class="form-group col-lg-2">
-                    <label class="control-label">終了時間</label>
-                    <input type="time" name="business-hours-end-time-6" class="form-control col-lg col-md-2 col-sm-3">
-                </div>
-
-                <div class="form-group col-lg-5">
-                    <label class="control-label">補足</label>
-                    <textarea name="business-hours-remarks-6" class="form-control col-lg col-md-6 col-sm-7" placeholder="第一土曜日は休業。"></textarea>
-                </div>
-
-            </div>
+	            </div>
+           	</c:forEach>
 
             <div class="form-row form-trimmer">
                 <div class="form-group col-md-2 col-sm-3">

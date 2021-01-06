@@ -20,6 +20,8 @@ public class RegistServlet extends HttpServlet {
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		RegistLogic registLogic = new RegistLogic();
+		registLogic.setProperties(request);
 		String path = "/WEB-INF/jsp/regist/regist.jsp";
 		RequestDispatcher dispatcher = request.getRequestDispatcher(path);
 		dispatcher.forward(request, response);

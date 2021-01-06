@@ -17,13 +17,22 @@ $(document).ready(function(){
             //飼い主用フォームを表示
             $('.form-common,.form-owner,.footer-top-content').show();
             $('.form-trimmer,.form-trimmer-business-hours').hide();
+            //post送信時、必須項目未入力対応
+            $('#pet-name').prop('required', true);
+            $('#store-name').prop('required', false);
         }else if(registType === trimmerType){
             //トリマー用フォームを表示
             $('.form-common,.form-trimmer,.footer-top-content').show();
             $('.form-owner,.form-trimmer-business-hours').hide();
+            //post送信時、必須項目未入力対応
+            $('#pet-name').prop('required', false);
+            $('#store-name').prop('required', true);
         }else{
             //フォームを非表示
             $('.form-common,.form-owner,.form-trimmer,.form-trimmer-business-hours,.footer-top-content').hide();
+            //post送信時、必須項目未入力対応
+            $('#pet-name').prop('required', false);
+            $('#store-name').prop('required', false);
         }
       });
 
@@ -57,6 +66,37 @@ $(document).ready(function(){
             console.log(XMLHttpRequest);
         });
     });
+
+
+});
+
+$(document).ready(function(){
+	//画像サイズを調整
+    let targetImgbase64 = $('.resize-img').attr('src');
+    if(targetImgbase64 == undefined){
+    	return;
+    }
+    console.log(targetImgbase64);
+    const minSize = 300;
+    let canvas = $('<canvas>');
+    let ctx = canvas.getContext('2d');
+    let image = new Image();
+    image.crossOrigin = 'Anonymous';
+    img.load(function() {
+    	let dstWidth, dstHeight;
+    	if (this.width > this.height) {
+		    dstWidth = minSize;
+		    dstHeight = this.height * minSize / this.width;
+		} else {
+		    dstHeight = minSize;
+		    dstWidth = this.width * minSize / this.height;
+		}
+		canvas.width = dstWidth;
+		canvas.height = dstHeight;
+		ctx.drawImage(this, 0, 0, this.width, this.height, 0, 0, dstWidth, dstHeight);
+		img.attr('src', canvas.toDataURL());
+    });
+    img.attr('src', targetImgbase64);
 
 
 });
