@@ -5,6 +5,7 @@
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
 <c:set var="registTypeKeyInitStr" value="regist.type." />
 <c:set var="humanSexKeyInitStr" value="human.sex." />
@@ -95,11 +96,11 @@
 	                <label>イメージ画像</label>
 	                <p>
 	                	<c:if test="${registType == '001'}">
-							<img src="data:image/png;base64,${petImage}" class="resize-img">
+							<img src="data:image/png;base64,${petImage}" class="resize-img-base64">
 						</c:if>
 
 						<c:if test="${registType == '002'}">
-							<img src="data:image/png;base64,${storeImage}" class="resize-img">
+							<img src="data:image/png;base64,${storeImage}" class="resize-img-base64">
 						</c:if>
 	                </p>
 	            </div>
@@ -128,7 +129,8 @@
 
 		            <div>
 		                <label>備考</label>
-		                <p><c:out value="${pet.remarks}" default=" "/></p>
+		                <c:set var="petRemarks" value="${pet.remarks}" />
+		                <p><c:out value="${fn:replace(petRemarks,'\\n', '&lt;br/&gt;')}" default=" " escapeXml="false"/></p>
 		            </div>
 
 				</c:if>
@@ -159,7 +161,8 @@
 
 			                <div>
 			                    <label>補足</label>
-			                    <p><c:out value="${businessHours.complement}" default=" "/></p>
+			                    <c:set var="businessHoursComplement" value="${businessHours.complement}" />
+			                    <p><c:out value="${fn:replace(businessHoursComplement,'\\n', '&lt;br/&gt;')}" default=" " escapeXml="false"/></p>
 			                </div>
 
 			            </div>
@@ -172,12 +175,14 @@
 
 	                <div>
 		                <label>コース・値段</label>
-		                <p><c:out value="${store.courseInfo}" default=" "/></p>
+		                <c:set var="storeCourseInfo" value="${store.courseInfo}" />
+		                <p><c:out value="${fn:replace(storeCourseInfo,'\\n', '&lt;br/&gt;')}" default=" " escapeXml="false"/></p>
 		            </div>
 
 		            <div>
 		                <label>こだわりポイント</label>
-		                <p><c:out value="${store.commitment}" default=" "/></p>
+		                <c:set var="storeCommitment" value="${store.commitment}" />
+		                <p><c:out value="${fn:replace(storeCommitment,'\\n', '&lt;br/&gt;')}" default=" " escapeXml="false"/></p>
 		            </div>
 
 				</c:if>
