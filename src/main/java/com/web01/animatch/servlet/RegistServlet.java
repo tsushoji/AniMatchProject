@@ -21,7 +21,7 @@ public class RegistServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		RegistLogic registLogic = new RegistLogic();
-		registLogic.setProperties(request);
+		registLogic.setInitPropertiesKey(request);
 		String path = "/WEB-INF/jsp/regist/regist.jsp";
 		RequestDispatcher dispatcher = request.getRequestDispatcher(path);
 		dispatcher.forward(request, response);
@@ -30,12 +30,13 @@ public class RegistServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String registType = request.getParameter("regist-type");
 		RegistLogic registLogic = new RegistLogic(registType);
-		if(!registLogic.regist(request)) {
-			doGet(request, response);
-		}else {
+		if(registLogic.regist(request)) {
 			String path = "/WEB-INF/jsp/regist/regist_complete.jsp";
 			RequestDispatcher dispatcher = request.getRequestDispatcher(path);
 			dispatcher.forward(request, response);
+		}else {
+			registLogic.setMsgPropertiesKey(request);
+			doGet(request, response);
 		}
 	}
 }

@@ -19,6 +19,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.Part;
 
+import com.web01.animatch.Util.StringUtil;
 import com.web01.animatch.dao.AnimatchConnection;
 import com.web01.animatch.dao.RegistDao;
 import com.web01.animatch.dto.BusinessHours;
@@ -29,6 +30,7 @@ import com.web01.animatch.dto.User;
 public class RegistLogic {
 	private String registType;
 	private ResourceBundle resBundle;
+	private List<String> msgKeyList;
 	private boolean canRegistFlg = true;
 	private static final int BYTE_ARY_SIZE = 16777215;
 	private static final String DATE_FORMAT = "yyyy/MM/dd";
@@ -45,6 +47,7 @@ public class RegistLogic {
 	public RegistLogic(String registType) {
 		this.registType = registType;
 		this.resBundle = ResourceBundle.getBundle(PROPERTIES_NAME);
+		this.msgKeyList = new ArrayList<>();
 	}
 
 	public String getRegistType() {
@@ -55,7 +58,7 @@ public class RegistLogic {
 		return canRegistFlg;
 	}
 
-	public void setProperties(HttpServletRequest request) {
+	public void setInitPropertiesKey(HttpServletRequest request) {
 		List<String> registTypeKeyList = new ArrayList<>();
 		List<String> prefecturesKeyList = new ArrayList<>();
 		List<String> petTypeKeyList = new ArrayList<>();
@@ -97,9 +100,9 @@ public class RegistLogic {
 			case "001":
 				Pet pet = getParameterPetDto(request, registDao);
 				user.setPetInfoId(pet);
+				setAttributeRegistOwner(request, user);
 				if(this.canRegistFlg) {
 					this.canRegistFlg = registDao.registOwner(user);
-					setAttributeAfterSuccessRegistOwner(request, user);
 				}
 				break;
 			case "002":
@@ -107,9 +110,9 @@ public class RegistLogic {
 				List<BusinessHours> businessHoursList = getParameterBusinessHoursDto(request);
 				store.setBusinessHoursList(businessHoursList);
 				user.setStore(store);
+				setAttributeRegistTrimmer(request, user);
 				if(this.canRegistFlg) {
 					this.canRegistFlg = registDao.registTrimmer(user);
-					setAttributeAfterSuccessRegistTrimmer(request, user);
 				}
 				break;
 			default:
@@ -133,9 +136,10 @@ public class RegistLogic {
 		String rePassword = request.getParameter("re-password");
 		if(!password.equals(rePassword)) {
 			canRegistFlg = false;
+			this.msgKeyList.add("001");
 		}
 		user.setPassword(password);
-		user.setSex(request.getParameter("radio-user-sex"));
+		user.setSex(getParameterData(request.getParameter("radio-user-sex")));
 		SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
 		user.setBirthday(dateFormat.parse(request.getParameter("birthday")));
 		user.setPostalCode(request.getParameter("postal-code").replace("-", ""));
@@ -157,13 +161,18 @@ public class RegistLogic {
 		Pet pet = new Pet();
 		pet.setPetId(registDao.getMaxPetId() + 1);
 		Part part = request.getPart("file");
-		byte[] fileData = convertPartToByteArray(part);
-		pet.setImage(fileData);
+		if(part.getSize() > 0) {
+			byte[] fileData = convertPartToByteArray(part);
+			pet.setImage(fileData);
+		}
 		pet.setNickName(request.getParameter("pet-name"));
-		pet.setSex(request.getParameter("radio-pet-sex"));
-		pet.setType(request.getParameter("pet-type"));
-		pet.setWeight(Float.parseFloat(request.getParameter("pet-weight")));
-		pet.setRemarks(request.getParameter("pet-remarks"));
+		pet.setSex(getParameterData(request.getParameter("radio-pet-sex")));
+		pet.setType(getSelectParameterData(request.getParameter("pet-type")));
+		String petWeight = request.getParameter("pet-weight");
+		if(!StringUtil.isNullOrEmpty(petWeight)) {
+			pet.setWeight(Float.parseFloat(petWeight));
+		}
+		pet.setRemarks(getParameterData(request.getParameter("pet-remarks")));
 		pet.setDelFlg(1);
 		LocalDateTime now = LocalDateTime.now();
 		pet.setInsertedTime(now);
@@ -176,12 +185,17 @@ public class RegistLogic {
 		Store store = new Store();
 		store.setStoreId(registDao.getMaxStoreId() + 1);
 		Part part = request.getPart("file");
-		byte[] fileData = convertPartToByteArray(part);
-		store.setImage(fileData);
+		if(part.getSize() > 0) {
+			byte[] fileData = convertPartToByteArray(part);
+			store.setImage(fileData);
+		}
 		store.setStoreName(request.getParameter("store-name"));
-		store.setEmployeesNumber(Integer.parseInt(request.getParameter("store-employees")));
-		store.setCourseInfo(request.getParameter("course-info"));
-		store.setCommitment(request.getParameter("commitment"));
+		String storeEmployees = request.getParameter("store-employees");
+		if(!StringUtil.isNullOrEmpty(storeEmployees)) {
+			store.setEmployeesNumber(Integer.parseInt(storeEmployees));
+		}
+		store.setCourseInfo(getParameterData(request.getParameter("course-info")));
+		store.setCommitment(getParameterData(request.getParameter("commitment")));
 		store.setDelFlg(1);
 		LocalDateTime now = LocalDateTime.now();
 		store.setInsertedTime(now);
@@ -191,22 +205,30 @@ public class RegistLogic {
 	}
 
 	private List<BusinessHours> getParameterBusinessHoursDto(HttpServletRequest request) throws IOException, ServletException, ParseException {
-		List<BusinessHours> businessHoursList = new ArrayList<>();
-		String businessHoursWeekAry[] = request.getParameter("business-hours").split(",");
-		for(int i = 0; i < businessHoursWeekAry.length; i++) {
-			BusinessHours businessHours = new BusinessHours();
-			businessHours.setBusinessDay("00" + businessHoursWeekAry[i]);
-			String[] startBusinessTimeAry = request.getParameter("business-hours-start-time-" + businessHoursWeekAry[i]).split(":");
-			String[] endBusinessTimeAry = request.getParameter("business-hours-end-time-" + businessHoursWeekAry[i]).split(":");
-			businessHours.setStartBusinessTime(LocalTime.of(Integer.parseInt(startBusinessTimeAry[0]), Integer.parseInt(startBusinessTimeAry[1])));
-			businessHours.setEndBusinessTime(LocalTime.of(Integer.parseInt(endBusinessTimeAry[0]), Integer.parseInt(endBusinessTimeAry[1])));
-			businessHours.setComplement(request.getParameter("business-hours-remarks-" + businessHoursWeekAry[i]));
-			businessHours.setDelFlg(1);
-			LocalDateTime now = LocalDateTime.now();
-			businessHours.setInsertedTime(now);
-			businessHours.setUpdatedTime(now);
+		List<BusinessHours> businessHoursList = null;
+		String businessHoursWeek = request.getParameter("business-hours");
+		if(!StringUtil.isNullOrEmpty(businessHoursWeek)) {
+			businessHoursList = new ArrayList<>();
+			String businessHoursWeekAry[] = businessHoursWeek.split(",");
+			for(int i = 0; i < businessHoursWeekAry.length; i++) {
+				BusinessHours businessHours = new BusinessHours();
+				businessHours.setBusinessDay("00" + businessHoursWeekAry[i]);
+				String startBusinessTime = request.getParameter("business-hours-start-time-" + businessHoursWeekAry[i]);
+				String endBusinessTime = request.getParameter("business-hours-end-time-" + businessHoursWeekAry[i]);
+				if(!StringUtil.isNullOrEmpty(startBusinessTime) && !StringUtil.isNullOrEmpty(endBusinessTime)) {
+					String[] startBusinessTimeAry = startBusinessTime.split(":");
+					String[] endBusinessTimeAry = endBusinessTime.split(":");
+					businessHours.setStartBusinessTime(LocalTime.of(Integer.parseInt(startBusinessTimeAry[0]), Integer.parseInt(startBusinessTimeAry[1])));
+					businessHours.setEndBusinessTime(LocalTime.of(Integer.parseInt(endBusinessTimeAry[0]), Integer.parseInt(endBusinessTimeAry[1])));
+				}
+				businessHours.setComplement(getParameterData(request.getParameter("business-hours-remarks-" + businessHoursWeekAry[i])));
+				businessHours.setDelFlg(1);
+				LocalDateTime now = LocalDateTime.now();
+				businessHours.setInsertedTime(now);
+				businessHours.setUpdatedTime(now);
 
-			businessHoursList.add(businessHours);
+				businessHoursList.add(businessHours);
+			}
 		}
 		return businessHoursList;
 	}
@@ -226,23 +248,50 @@ public class RegistLogic {
 		return buffer.toByteArray();
 	}
 
-	private void setAttributeAfterSuccessRegistOwner(HttpServletRequest request, User user) {
+	private void setAttributeRegistOwner(HttpServletRequest request, User user) {
 		Pet pet = user.getPet();
 		request.setAttribute("registType", this.registType);
 		request.setAttribute("user", user);
 		request.setAttribute("pet", pet);
-		String base64String = Base64.getEncoder().encodeToString(pet.getImage());
-		request.setAttribute("petImage", base64String);
-
+		byte[] petImage = pet.getImage();
+		if(petImage != null) {
+			String base64String = Base64.getEncoder().encodeToString(petImage);
+			request.setAttribute("petImage", base64String);
+		}
 	}
 
-	private void setAttributeAfterSuccessRegistTrimmer(HttpServletRequest request, User user) {
+	private void setAttributeRegistTrimmer(HttpServletRequest request, User user) {
 		Store store = user.getStore();
 		request.setAttribute("registType", this.registType);
 		request.setAttribute("user", user);
 		request.setAttribute("store", store);
-		String base64String = Base64.getEncoder().encodeToString(store.getImage());
-		request.setAttribute("storeImage", base64String);
+		byte[] storeImage = store.getImage();
+		if(storeImage != null) {
+			String base64String = Base64.getEncoder().encodeToString(storeImage);
+			request.setAttribute("storeImage", base64String);
+		}
 		request.setAttribute("businessHoursList", store.getBusinessHoursList());
+	}
+
+	private String getParameterData(String param) {
+		String rtnVal = null;
+		if(!StringUtil.isNullOrEmpty(param)) {
+			rtnVal = param;
+		}
+		return rtnVal;
+	}
+
+	private String getSelectParameterData(String param) {
+		String rtnVal = null;
+		if(!StringUtil.isNullOrEmpty(param)) {
+			if(!param.equals("000")) {
+				rtnVal = param;
+			}
+		}
+		return rtnVal;
+	}
+
+	public void setMsgPropertiesKey(HttpServletRequest request) {
+		request.setAttribute("msgKeyList", this.msgKeyList);
 	}
 }

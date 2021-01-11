@@ -42,3 +42,32 @@ footer {
 .footer-top {
     min-height:30px;
 }
+
+/* 新規登録結果 */
+.regist-complete-block {
+    width:38%;
+}
+
+/*　画面サイズが991pxまではここを読み込む　*/
+@media screen and (max-width:991px) {
+    /* 新規登録結果 */
+    .regist-complete-block {
+        width:50%;
+    }
+}
+
+/*　画面サイズが767pxまではここを読み込む　*/
+@media screen and (max-width:767px) {
+    /* 新規登録結果 */
+    .regist-complete-block {
+        width:60%;
+    }
+}
+
+/*　画面サイズが250pxまではここを読み込む　*/
+@media screen and (max-width:250px) {
+    /* 新規登録結果 */
+    .regist-complete-block {
+        width:100%;
+    }
+}

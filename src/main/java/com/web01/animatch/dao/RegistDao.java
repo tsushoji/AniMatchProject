@@ -175,9 +175,8 @@ public class RegistDao {
 
 		pstmt.executeUpdate();
 
-		int businessHoursCount = businessHoursList.size();
-		if(businessHoursCount > 0) {
-			for(int i = 0; i < businessHoursCount; i++) {
+		if(businessHoursList != null) {
+			for(int i = 0; i < businessHoursList.size(); i++) {
 				sql = "INSERT INTO t_business_hours VALUES(";
 				for(int j = 0; j < BUSINESS_HOURS_COL_COUNT - 1; j++) {
 					sql += "?, ";

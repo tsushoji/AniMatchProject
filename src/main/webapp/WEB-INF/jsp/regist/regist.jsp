@@ -9,6 +9,7 @@
 
 <c:set var="humanSexKeyInitStr" value="human.sex." />
 <c:set var="petSexKeyInitStr" value="pet.sex." />
+<c:set var="errMsgKeyInitStr" value="msg.err." />
 <c:set var="firstTypeKeyInitEnd" value="001" />
 <c:set var="secondTypeKeyInitEnd" value="002" />
 
@@ -83,7 +84,7 @@
 
                 <div class="form-group col-md-4 col-sm-5">
                     <label class="control-label required-item">ユーザー名</label>
-                    <input type="text" name="user-name" class="form-control" required>
+                    <input type="text" name="user-name" class="form-control" value="${user.password}" required>
                 </div>
 
                 <div class="form-group col-md-4">
@@ -93,6 +94,11 @@
 
                     <label class="control-label mt-2 required-item">再入力</label>
                     <input type="password" name="re-password" class="form-control col-md col-sm-5" required>
+					<c:if test="${not empty msgKeyList}">
+						<c:if test="${fn:contains(msgKeyList, firstTypeKeyInitEnd)}">
+							<p><fmt:message bundle="${resource}" key="${errMsgKeyInitStr}${firstTypeKeyInitEnd}" /></p>
+						</c:if>
+					</c:if>
 
                 </div>
 
