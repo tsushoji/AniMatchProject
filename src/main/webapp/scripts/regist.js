@@ -36,6 +36,35 @@ $(document).ready(function(){
         }
       });
 
+	//入力間違いの場合、入力値を「multipicker」にセット
+	let formInputVal = $('input[name="form-business-hours"]').val();
+	if(formInputVal){
+		console.log("テスト");
+		$('input[name="business-hours"]').val(formInputVal);
+		let formInputValAry = formInputVal.split(',');
+		let businessHoursStartTimeName;
+		let businessHoursEndTimeName;
+		let businessHoursRemarksName;
+		let formBusinessHoursStartTimeName;
+		let formBusinessHoursEndTimeName;
+		let formBusinessHoursRemarksName;
+		$.each(formInputValAry, function(index, value){
+			console.log(index);
+			console.log(value);
+			$('.plugin-multipicker li').eq(value).prop('selected', true);
+			businessHoursStartTimeName = 'business-hours-start-time-' + value;
+			businessHoursEndTimeName = 'business-hours-end-time-' + value;
+			businessHoursRemarksName = 'business-hours-remarks-' + value;
+			formBusinessHoursStartTimeName = 'form-business-hours-start-time-' + value;
+			formBusinessHoursEndTimeName = 'form-business-hours-end-time-' + value;
+			formBusinessHoursRemarksName = 'form-business-hours-remarks-' + value;
+			$('input[name=businessHoursStartTimeName]').val($('input[name=formBusinessHoursStartTimeName]').val());
+			$('input[name=businessHoursEndTimeName]').val($('input[name=formBusinessHoursEndTimeName]').val());
+			$('input[name=businessHoursRemarksName]').val($('input[name=formBusinessHoursRemarksName]').val());
+			console.log(formBusinessHoursStartTimeName);
+		});
+	}
+
     //アクション:「郵便番号」を入力する
     $("#postal-code").change(function(){
         const successStatus = 200

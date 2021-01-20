@@ -23,7 +23,9 @@ import com.web01.animatch.Util.StringUtil;
 import com.web01.animatch.dao.AnimatchConnection;
 import com.web01.animatch.dao.RegistDao;
 import com.web01.animatch.dto.BusinessHours;
+import com.web01.animatch.dto.FormBusinessHours;
 import com.web01.animatch.dto.Pet;
+import com.web01.animatch.dto.RegistForm;
 import com.web01.animatch.dto.Store;
 import com.web01.animatch.dto.User;
 
@@ -92,6 +94,22 @@ public class RegistLogic {
 	}
 
 	public boolean regist(HttpServletRequest request) {
+		try {
+			RegistForm registForm = getFormParameterDto(request);
+			if(isValidate(registForm)) {
+				registDao(request);
+			}else {
+				setAttributeKeyWithNotValidate(request, registForm);
+			}
+		} catch (SQLException | ParseException | IOException | ServletException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		}
+
+		return this.canRegistFlg;
+	}
+
+	private void registDao(HttpServletRequest request) {
 		AnimatchConnection con = new AnimatchConnection();
 		RegistDao registDao = new RegistDao(con.getConnection());
 		try {
@@ -124,21 +142,87 @@ public class RegistLogic {
 		}finally {
 			con.close();
 		}
+	}
 
+	private RegistForm getFormParameterDto(HttpServletRequest request) throws SQLException, ParseException, IOException, ServletException {
+		RegistForm registForm = new RegistForm();
+		registForm.setUserName(request.getParameter("user-name"));
+		registForm.setPassword(request.getParameter("password"));
+		registForm.setRePassword(request.getParameter("re-password"));
+		registForm.setSex(request.getParameter("radio-user-sex"));
+		registForm.setBirthday(request.getParameter("birthday"));
+		registForm.setPostalCode(request.getParameter("postal-code"));
+		registForm.setPrefectures(request.getParameter("prefectures"));
+		registForm.setCities(request.getParameter("cities"));
+		registForm.setEmailAddress(request.getParameter("email-address"));
+		registForm.setTelephoneNumber(request.getParameter("telephone-number"));
+		switch(this.registType) {
+		case "001":
+			registForm.setPetName(request.getParameter("pet-name"));
+			registForm.setPetSex(request.getParameter("radio-pet-sex"));
+			registForm.setPetType(request.getParameter("pet-type"));
+			registForm.setPetWeight(request.getParameter("pet-weight"));
+			registForm.setPetRemarks(request.getParameter("pet-remarks"));
+			break;
+		case "002":
+			registForm.setStoreName(request.getParameter("store-name"));
+			registForm.setFormBusinessHoursInputValue(request.getParameter("business-hours"));
+			registForm.setFormBusinessHoursList(getFormParameterBusinessHoursDto(request));
+			registForm.setStoreEmployees(request.getParameter("store-employees"));
+			registForm.setCourseInfo(request.getParameter("course-info"));
+			registForm.setCommitment(request.getParameter("commitment"));
+			break;
+		default:
+			break;
+		}
+
+		return registForm;
+	}
+
+	private List<FormBusinessHours> getFormParameterBusinessHoursDto(HttpServletRequest request) throws IOException, ServletException, ParseException {
+		List<FormBusinessHours> formBusinessHoursList = null;
+		String formBusinessHoursWeek = request.getParameter("business-hours");
+		if(!StringUtil.isNullOrEmpty(formBusinessHoursWeek)) {
+			formBusinessHoursList = new ArrayList<>();
+			String formBusinessHoursWeekAry[] = formBusinessHoursWeek.split(",");
+			for(int i = 0; i < formBusinessHoursWeekAry.length; i++) {
+				FormBusinessHours formBusinessHours = new FormBusinessHours();
+				formBusinessHours.setBusinessHoursWeekdayNum(formBusinessHoursWeekAry[i]);
+				formBusinessHours.setBusinessHoursStartTime(request.getParameter("business-hours-start-time-" + formBusinessHoursWeekAry[i]));
+				formBusinessHours.setBusinessHoursEndTime(request.getParameter("business-hours-end-time-" + formBusinessHoursWeekAry[i]));
+				formBusinessHours.setBusinessHoursRemarks(getParameterData(request.getParameter("business-hours-remarks-" + formBusinessHoursWeekAry[i])));
+
+				formBusinessHoursList.add(formBusinessHours);
+			}
+		}
+		return formBusinessHoursList;
+	}
+
+	private boolean isValidate(RegistForm registForm) {
+		int errCount = 0;
+		if(!registForm.getPassword().equals(registForm.getRePassword())) {
+			this.msgKeyList.add("001");
+			errCount++;
+		}
+
+		if(errCount > 0) {
+			this.msgKeyList.add("002");
+			canRegistFlg = false;
+		}
 		return this.canRegistFlg;
+	}
+
+	private void setAttributeKeyWithNotValidate(HttpServletRequest request, RegistForm registForm) {
+		request.setAttribute("registForm", registForm);
+		request.setAttribute("formBusinessHoursList", registForm.getFormBusinessHoursList());
+		request.setAttribute("msgKeyList", this.msgKeyList);
 	}
 
 	private User getParameterUserDto(HttpServletRequest request, RegistDao registDao) throws SQLException, ParseException {
 		User user = new User();
 		user.setUserId(registDao.getMaxUserId() + 1);
 		user.setUserName(request.getParameter("user-name"));
-		String password = request.getParameter("password");
-		String rePassword = request.getParameter("re-password");
-		if(!password.equals(rePassword)) {
-			canRegistFlg = false;
-			this.msgKeyList.add("001");
-		}
-		user.setPassword(password);
+		user.setPassword(request.getParameter("password"));
 		user.setSex(getParameterData(request.getParameter("radio-user-sex")));
 		SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
 		user.setBirthday(dateFormat.parse(request.getParameter("birthday")));
@@ -289,9 +373,5 @@ public class RegistLogic {
 			}
 		}
 		return rtnVal;
-	}
-
-	public void setMsgPropertiesKey(HttpServletRequest request) {
-		request.setAttribute("msgKeyList", this.msgKeyList);
 	}
 }

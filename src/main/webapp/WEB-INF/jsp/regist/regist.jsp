@@ -84,16 +84,16 @@
 
                 <div class="form-group col-md-4 col-sm-5">
                     <label class="control-label required-item">ユーザー名</label>
-                    <input type="text" name="user-name" class="form-control" value="${user.password}" required>
+                    <input type="text" name="user-name" class="form-control" value="${registForm.userName}" required>
                 </div>
 
                 <div class="form-group col-md-4">
 
                     <label class="control-label required-item">パスワード</label>
-                    <input type="password" name="password" class="form-control col-md col-sm-5" required>
+                    <input type="password" name="password" class="form-control col-md col-sm-5" value="${registForm.password}" required>
 
                     <label class="control-label mt-2 required-item">再入力</label>
-                    <input type="password" name="re-password" class="form-control col-md col-sm-5" required>
+                    <input type="password" name="re-password" class="form-control col-md col-sm-5" value="${registForm.rePassword}" required>
 					<c:if test="${not empty msgKeyList}">
 						<c:if test="${fn:contains(msgKeyList, firstTypeKeyInitEnd)}">
 							<p><fmt:message bundle="${resource}" key="${errMsgKeyInitStr}${firstTypeKeyInitEnd}" /></p>
@@ -107,19 +107,21 @@
             <p class="mb-1 form-common">性別</p>
 
             <div class="custom-control custom-radio custom-control-inline form-common">
-                <input type="radio" id="radio-man" name="radio-user-sex" value="${firstTypeKeyInitEnd}" class="custom-control-input">
+                <input type="radio" id="radio-man" name="radio-user-sex" value="${firstTypeKeyInitEnd}" class="custom-control-input"
+                	<c:if test="${not empty registForm.sex and registForm.sex == firstTypeKeyInitEnd}">checked</c:if>>
                 <label class="custom-control-label custom-radio-label" for="radio-man"><fmt:message bundle="${resource}" key="${humanSexKeyInitStr}${firstTypeKeyInitEnd}" /></label>
             </div>
 
             <div class="custom-control custom-radio custom-control-inline form-common">
-                <input type="radio" id="radio-woman" name="radio-user-sex" value="${secondTypeKeyInitEnd}" class="custom-control-input">
+                <input type="radio" id="radio-woman" name="radio-user-sex" value="${secondTypeKeyInitEnd}" class="custom-control-input"
+                	<c:if test="${not empty registForm.sex and registForm.sex == secondTypeKeyInitEnd}">checked</c:if>>
                 <label class="custom-control-label custom-radio-label" for="radio-woman"><fmt:message bundle="${resource}" key="${humanSexKeyInitStr}${secondTypeKeyInitEnd}" /></label>
             </div>
 
             <div class="form-row mt-3 form-common">
                 <div class="form-group col-md-4 col-sm-5">
                     <label class="control-label required-item">生年月日</label>
-                    <input type="text" name="birthday" class="form-control plugin-datepicker" required>
+                    <input type="text" name="birthday" class="form-control plugin-datepicker" value="${registForm.birthday}" required>
                 </div>
             </div>
 
@@ -139,7 +141,7 @@
 
                 <div class="form-group col-md-3">
                     <label class="control-label required-item" for="postal-code">郵便番号</label>
-                    <input type="text" name="postal-code" class="form-control col-md col-sm-3" placeholder="9991234" id="postal-code" maxlength="7" required>
+                    <input type="text" name="postal-code" class="form-control col-md col-sm-3" placeholder="9991234" id="postal-code" maxlength="7" value="${registForm.postalCode}" required>
                 </div>
 
                 <div class="form-group col-md-3 col-sm-5">
@@ -149,14 +151,16 @@
                         <c:forEach items="${prefecturesKeyList}" var="prefecturesKey" varStatus="status">
 	                       	<fmt:formatNumber var="prefecturesKeyNum" value="${status.index + 1}" minIntegerDigits="3" />
 							<fmt:message bundle="${resource}" key="${prefecturesKey}" var="prefecturesVal" />
-	                       	<option value="${prefecturesKeyNum}">${prefecturesVal}</option>
+	                       	<option value="${prefecturesKeyNum}"
+	                       		<c:if test="${not empty registForm.prefectures and registForm.prefectures == prefecturesKeyNum}">selected</c:if>>
+	                       	${prefecturesVal}</option>
 	                   	</c:forEach>
                     </select>
                 </div>
 
                 <div class="form-group col-md-3">
                     <label class="control-label required-item" for="cities">住所&ndash;市区町村</label>
-                    <input type="text" name="cities" id="cities" class="form-control col-md col-sm-3" maxlength="6" required>
+                    <input type="text" name="cities" id="cities" class="form-control col-md col-sm-3" maxlength="6" value="${registForm.cities}" required>
                 </div>
 
             </div>
@@ -164,14 +168,14 @@
             <div class="form-row form-common">
                 <div class="form-group col-md-5 col-sm-6">
                     <label class="control-label required-item">メールアドレス</label>
-                    <input type="email" name="email-address" class="form-control" placeholder="xxxxxxx@xx.xx.xx" maxlength="254" required>
+                    <input type="email" name="email-address" class="form-control" placeholder="xxxxxxx@xx.xx.xx" maxlength="254" value="${registForm.emailAddress}" required>
                 </div>
             </div>
 
             <div class="form-row form-common">
                 <div class="form-group col-md-4 col-sm-5">
                     <label class="control-label required-item">電話番号</label>
-                    <input type="tel" name="telephone-number" class="form-control" placeholder="09012345678" maxlength="11" required>
+                    <input type="tel" name="telephone-number" class="form-control" placeholder="09012345678" maxlength="11" value="${registForm.telephoneNumber}" required>
                 </div>
             </div>
 
@@ -184,24 +188,31 @@
             <div class="form-group form-common">
                 <label class="control-label">イメージ画像</label>
                 <input type="file" name="file" class="plugin-dropify">
+                <c:if test="${not empty msgKeyList}">
+					<c:if test="${fn:contains(msgKeyList, secondTypeKeyInitEnd)}">
+						<p><fmt:message bundle="${resource}" key="${errMsgKeyInitStr}${secondTypeKeyInitEnd}" /></p>
+					</c:if>
+				</c:if>
             </div>
 
             <div class="form-row form-owner">
                 <div class="form-group col-md-4 col-sm-5">
                     <label class="control-label required-item">ニックネーム</label>
-                    <input type="text" id="pet-name" name="pet-name" class="form-control" placeholder="シロ">
+                    <input type="text" id="pet-name" name="pet-name" class="form-control" placeholder="シロ" value="${registForm.petName}">
                 </div>
             </div>
 
             <p class="mb-1 form-owner">性別</p>
 
             <div class="custom-control custom-radio custom-control-inline form-owner">
-                <input type="radio" id="radio-male" name="radio-pet-sex" class="custom-control-input" value="${firstTypeKeyInitEnd}">
+                <input type="radio" id="radio-male" name="radio-pet-sex" class="custom-control-input" value="${firstTypeKeyInitEnd}"
+                <c:if test="${not empty registForm.petSex and registForm.petSex == firstTypeKeyInitEnd}">checked</c:if>>
                 <label class="custom-control-label custom-radio-label" for="radio-male"><fmt:message bundle="${resource}" key="${petSexKeyInitStr}${firstTypeKeyInitEnd}" /></label>
             </div>
 
             <div class="custom-control custom-radio custom-control-inline form-owner">
-                <input type="radio" id="radio-female" name="radio-pet-sex" class="custom-control-input" value="${secondTypeKeyInitEnd}">
+                <input type="radio" id="radio-female" name="radio-pet-sex" class="custom-control-input" value="${secondTypeKeyInitEnd}"
+                <c:if test="${not empty registForm.petSex and registForm.petSex == secondTypeKeyInitEnd}">checked</c:if>>
                 <label class="custom-control-label custom-radio-label" for="radio-female"><fmt:message bundle="${resource}" key="${petSexKeyInitStr}${secondTypeKeyInitEnd}" /></label>
             </div>
 
@@ -213,7 +224,9 @@
                         <c:forEach items="${petTypeKeyList}" var="petTypeKey" varStatus="status">
                         	<fmt:formatNumber var="petTypeKeyNum" value="${status.index + 1}" minIntegerDigits="3" />
 							<fmt:message bundle="${resource}" key="${petTypeKey}" var="petTypeVal" />
-                        	<option value="${petTypeKeyNum}">${petTypeVal}</option>
+                        	<option value="${petTypeKeyNum}"
+                        		<c:if test="${not empty registForm.petType and registForm.petType == petTypeKeyNum}">selected</c:if>>
+                        	${petTypeVal}</option>
                     	</c:forEach>
                     </select>
                 </div>
@@ -222,14 +235,14 @@
             <div class="form-row form-owner">
                 <div class="form-group col-md-2 col-sm-3">
                     <label class="control-label">体重&ndash;&#13199;</label>
-                    <input type="text" name="pet-weight" class="form-control" placeholder="23" maxlength="6">
+                    <input type="text" name="pet-weight" class="form-control" placeholder="23" maxlength="6" value="${registForm.petWeight}">
                 </div>
             </div>
 
             <div class="form-row form-trimmer">
                 <div class="form-group col-md-4 col-sm-6">
                     <label class="control-label required-item">店名</label>
-                    <input type="text" id="store-name" name="store-name" class="form-control" placeholder="ペットサロン ヤマダ">
+                    <input type="text" id="store-name" name="store-name" class="form-control" placeholder="ペットサロン ヤマダ" value="${registForm.storeName}">
                 </div>
             </div>
 
@@ -242,6 +255,7 @@
 	                       	<li>${fn:substringBefore(weekdayVal, '曜日')}</li>
 	                   	</c:forEach>
                     </ul>
+                    <input type="hidden" name="form-business-hours" value="${registForm.formBusinessHoursInputValue}">
                 </div>
             </div>
 
@@ -270,26 +284,33 @@
 	            </div>
            	</c:forEach>
 
+           	<c:forEach items="${formBusinessHoursList}" var="formBusinessHours">
+           		<c:set var="businessHoursWeekdayNum" value="${formBusinessHours.businessHoursWeekdayNum}" />
+				<input type="hidden" name="form-business-hours-start-time-${businessHoursWeekdayNum}" value="${formBusinessHours.businessHoursStartTime}">
+				<input type="hidden" name="form-business-hours-end-time-${businessHoursWeekdayNum}" value="${formBusinessHours.businessHoursEndTime}">
+				<input type="hidden" name="form-business-hours-remarks-${businessHoursWeekdayNum}" value="${formBusinessHours.businessHoursRemarks}">
+           	</c:forEach>
+
             <div class="form-row form-trimmer">
                 <div class="form-group col-md-2 col-sm-3">
                     <label class="control-label">従業員数&ndash;人</label>
-                    <input type="text" name="store-employees" class="form-control" placeholder="20" maxlength="6">
+                    <input type="text" name="store-employees" class="form-control" placeholder="20" maxlength="6" value="${registForm.storeEmployees}">
                 </div>
             </div>
 
             <div class="form-group form-owner">
                 <label class="control-label">備考</label>
-                <textarea name="pet-remarks" class="form-control" rows="10" placeholder="トリマーに伝えておきたいことを書いてください"></textarea>
+                <textarea name="pet-remarks" class="form-control" rows="10" placeholder="トリマーに伝えておきたいことを書いてください">${registForm.petRemarks}</textarea>
             </div>
 
             <div class="form-group form-trimmer">
                 <label class="control-label">コース・値段</label>
-                <textarea name="course-info" class="form-control" rows="10" placeholder="サービスの詳細を書いてください"></textarea>
+                <textarea name="course-info" class="form-control" rows="10" placeholder="サービスの詳細を書いてください">${registForm.courseInfo}</textarea>
             </div>
 
             <div class="form-group form-trimmer">
                 <label class="control-label">こだわりポイント</label>
-                <textarea name="commitment" class="form-control" rows="10" placeholder="セールスポイントを書いてください"></textarea>
+                <textarea name="commitment" class="form-control" rows="10" placeholder="セールスポイントを書いてください">${registForm.commitment}</textarea>
             </div>
 
             <div class="form-group form-common">
@@ -320,9 +341,6 @@
     <!-- plugin multipicker -->
     <script src="/animatch/scripts/plugin/multipicker.min.js"></script>
 
-	<script src="/animatch/scripts/regist.js"></script>
-	<script src="/animatch/scripts/common.js"></script>
-
 	<script>
         $(document).ready(function(){
         	//plugin dropify
@@ -350,5 +368,8 @@
             });
         });
     </script>
+
+    <script src="/animatch/scripts/regist.js"></script>
+	<script src="/animatch/scripts/common.js"></script>
 </body>
 </html>

@@ -63,12 +63,18 @@
 	    <artifactId>bootstrap-datepicker</artifactId>
 	    <version>1.9.0</version>
 	</dependency>
-	<!-- https://mvnrepository.com/artifact/org.glassfish.web/jstl-impl -->
+	<!-- https://mvnrepository.com/artifact/org.apache.taglibs/taglibs-standard-jstlel -->
 	<dependency>
-	    <groupId>org.glassfish.web</groupId>
-	    <artifactId>jstl-impl</artifactId>
-	    <version>1.2</version>
-	    <scope>runtime</scope>
+	    <groupId>org.apache.taglibs</groupId>
+	    <artifactId>taglibs-standard-jstlel</artifactId>
+	    <version>1.2.5</version>
+	</dependency>
+	<!-- https://mvnrepository.com/artifact/javax.servlet.jsp/jsp-api -->
+	<dependency>
+	    <groupId>javax.servlet.jsp</groupId>
+	    <artifactId>jsp-api</artifactId>
+	    <version>2.0</version>
+	    <scope>provided</scope>
 	</dependency>
   </dependencies>
 

@@ -35,7 +35,6 @@ public class RegistServlet extends HttpServlet {
 			RequestDispatcher dispatcher = request.getRequestDispatcher(path);
 			dispatcher.forward(request, response);
 		}else {
-			registLogic.setMsgPropertiesKey(request);
 			doGet(request, response);
 		}
 	}
