@@ -69,10 +69,14 @@
 	                <c:forEach items="${registTypeKeyList}" var="registTypeKey" varStatus="status">
                        	<fmt:formatNumber var="registTypeKeyNum" value="${status.index + 1}" minIntegerDigits="3" />
 						<fmt:message bundle="${resource}" key="${registTypeKey}" var="registTypeVal" />
-                       	<option value="${registTypeKeyNum}">${registTypeVal}</option>
+                       	<option value="${registTypeKeyNum}"
+	                       		<c:if test="${not empty formRegistType and formRegistType == registTypeKeyNum}">selected</c:if>>
+	                       	${registTypeVal}</option>
                    	</c:forEach>
 	            </select>
 	        </div>
+
+	        <input type="hidden" id="formRegistType" value="${formRegistType}">
 
             <div class="form-common">
                 <h3 class="mb-3">
@@ -255,7 +259,7 @@
 	                       	<li>${fn:substringBefore(weekdayVal, '曜日')}</li>
 	                   	</c:forEach>
                     </ul>
-                    <input type="hidden" name="form-business-hours" value="${registForm.formBusinessHoursInputValue}">
+                    <input type="hidden" id="form-business-hours" value="${registForm.formBusinessHoursInputValue}">
                 </div>
             </div>
 
@@ -268,17 +272,17 @@
 
 	                <div class="form-group col-lg-2">
 	                    <label class="control-label">開始時間</label>
-	                    <input type="time" name="business-hours-start-time-${status.index}" class="form-control col-lg col-md-2 col-sm-3">
+	                    <input type="time" id="business-hours-start-time-${status.index}" name="business-hours-start-time-${status.index}" class="form-control col-lg col-md-2 col-sm-3">
 	                </div>
 
 	                <div class="form-group col-lg-2">
 	                    <label class="control-label">終了時間</label>
-	                    <input type="time" name="business-hours-end-time-${status.index}" class="form-control col-lg col-md-2 col-sm-3">
+	                    <input type="time" id="business-hours-end-time-${status.index}" name="business-hours-end-time-${status.index}" class="form-control col-lg col-md-2 col-sm-3">
 	                </div>
 
 	                <div class="form-group col-lg-5">
 	                    <label class="control-label">補足</label>
-	                    <textarea name="business-hours-remarks-${status.index}" class="form-control col-lg col-md-6 col-sm-7" placeholder="第一${weekdayVal}は休業。"></textarea>
+	                    <textarea id="business-hours-remarks-${status.index}" name="business-hours-remarks-${status.index}" class="form-control col-lg col-md-6 col-sm-7" placeholder="第一${weekdayVal}は休業。"></textarea>
 	                </div>
 
 	            </div>
@@ -286,9 +290,9 @@
 
            	<c:forEach items="${formBusinessHoursList}" var="formBusinessHours">
            		<c:set var="businessHoursWeekdayNum" value="${formBusinessHours.businessHoursWeekdayNum}" />
-				<input type="hidden" name="form-business-hours-start-time-${businessHoursWeekdayNum}" value="${formBusinessHours.businessHoursStartTime}">
-				<input type="hidden" name="form-business-hours-end-time-${businessHoursWeekdayNum}" value="${formBusinessHours.businessHoursEndTime}">
-				<input type="hidden" name="form-business-hours-remarks-${businessHoursWeekdayNum}" value="${formBusinessHours.businessHoursRemarks}">
+				<input type="hidden" id="form-business-hours-start-time-${businessHoursWeekdayNum}" value="${formBusinessHours.businessHoursStartTime}">
+				<input type="hidden" id="form-business-hours-end-time-${businessHoursWeekdayNum}" value="${formBusinessHours.businessHoursEndTime}">
+				<input type="hidden" id="form-business-hours-remarks-${businessHoursWeekdayNum}" value="${formBusinessHours.businessHoursRemarks}">
            	</c:forEach>
 
             <div class="form-row form-trimmer">
@@ -354,18 +358,36 @@
             });
 
           	//plugin multipicker
-            $('.plugin-multipicker').multiPicker({
-                'selector' : 'li',
-                'inputName' : 'business-hours',
-                //アクション:「営業時間」の営業日選択値が変更される
-                'onSelect' : function (elm, val) {
-                        $('.day-val-' + val).show();
-                    },
+          	let formInputVal = $('#form-business-hours').val();
+          	if(formInputVal){
+          		//入力間違いの場合、入力値を「multipicker」にセット
+          		let formInputValAry = formInputVal.split(',');
+          		$('.plugin-multipicker').multiPicker({
+                    'selector' : 'li',
+                    'inputName' : 'business-hours',
+                    //アクション:「営業時間」の営業日選択値が変更される
+                    'onSelect' : function (elm, val) {
+                            $('.day-val-' + val).show();
+                        },
 
-                'onUnselect' : function (elm, val) {
-                        $('.day-val-' + val).hide();
-                    }
-            });
+                    'onUnselect' : function (elm, val) {
+                            $('.day-val-' + val).hide();
+                        }
+                }).multiPicker('select', formInputValAry);
+          	}else{
+          		$('.plugin-multipicker').multiPicker({
+                    'selector' : 'li',
+                    'inputName' : 'business-hours',
+                    //アクション:「営業時間」の営業日選択値が変更される
+                    'onSelect' : function (elm, val) {
+                            $('.day-val-' + val).show();
+                        },
+
+                    'onUnselect' : function (elm, val) {
+                            $('.day-val-' + val).hide();
+                        }
+                });
+          	}
         });
     </script>
 

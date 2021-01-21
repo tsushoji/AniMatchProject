@@ -215,6 +215,7 @@ public class RegistLogic {
 	private void setAttributeKeyWithNotValidate(HttpServletRequest request, RegistForm registForm) {
 		request.setAttribute("registForm", registForm);
 		request.setAttribute("formBusinessHoursList", registForm.getFormBusinessHoursList());
+		request.setAttribute("formRegistType", getRegistType());
 		request.setAttribute("msgKeyList", this.msgKeyList);
 	}
 

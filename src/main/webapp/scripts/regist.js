@@ -2,13 +2,12 @@ $(document).ready(function(){
     //初期表示時、フォームを非表示
     $('.form-common,.form-owner,.form-trimmer,.form-trimmer-business-hours,.footer-top-content').hide();
 
+	//飼い主区分
+    const ownerType = '001';
+    //トリマー区分
+    const trimmerType = '002';
     //アクション:「登録区分」の値が変更される
     $('#regist-type').change(function() {
-        //飼い主区分
-        const ownerType = '001';
-        //トリマー区分
-        const trimmerType = '002';
-
         //登録区分の値を取得
         let registType = $(this).val();
 
@@ -35,35 +34,6 @@ $(document).ready(function(){
             $('#store-name').prop('required', false);
         }
       });
-
-	//入力間違いの場合、入力値を「multipicker」にセット
-	let formInputVal = $('input[name="form-business-hours"]').val();
-	if(formInputVal){
-		console.log("テスト");
-		$('input[name="business-hours"]').val(formInputVal);
-		let formInputValAry = formInputVal.split(',');
-		let businessHoursStartTimeName;
-		let businessHoursEndTimeName;
-		let businessHoursRemarksName;
-		let formBusinessHoursStartTimeName;
-		let formBusinessHoursEndTimeName;
-		let formBusinessHoursRemarksName;
-		$.each(formInputValAry, function(index, value){
-			console.log(index);
-			console.log(value);
-			$('.plugin-multipicker li').eq(value).prop('selected', true);
-			businessHoursStartTimeName = 'business-hours-start-time-' + value;
-			businessHoursEndTimeName = 'business-hours-end-time-' + value;
-			businessHoursRemarksName = 'business-hours-remarks-' + value;
-			formBusinessHoursStartTimeName = 'form-business-hours-start-time-' + value;
-			formBusinessHoursEndTimeName = 'form-business-hours-end-time-' + value;
-			formBusinessHoursRemarksName = 'form-business-hours-remarks-' + value;
-			$('input[name=businessHoursStartTimeName]').val($('input[name=formBusinessHoursStartTimeName]').val());
-			$('input[name=businessHoursEndTimeName]').val($('input[name=formBusinessHoursEndTimeName]').val());
-			$('input[name=businessHoursRemarksName]').val($('input[name=formBusinessHoursRemarksName]').val());
-			console.log(formBusinessHoursStartTimeName);
-		});
-	}
 
     //アクション:「郵便番号」を入力する
     $("#postal-code").change(function(){
@@ -95,6 +65,27 @@ $(document).ready(function(){
             console.log(XMLHttpRequest);
         });
     });
+
+	let formRegistType = $('#formRegistType').val();
+	if(formRegistType == ownerType){
+		//飼い主用フォームを表示
+		$('.form-common,.form-owner,.footer-top-content').show();
+	}else if(formRegistType == trimmerType){
+		//トリマー用フォームを表示
+		$('.form-common,.form-trimmer,.footer-top-content').show();
+	}
+
+	//入力間違いの場合、入力値を「multipicker」にセット
+	let formInputVal = $('#form-business-hours').val();
+	if(formInputVal){
+		let formInputValAry = formInputVal.split(',');
+		$.each(formInputValAry, function(index, value){
+			$('.day-val-' + value).show();
+			$('#business-hours-start-time-' + value).val($('#form-business-hours-start-time-' + value).val());
+			$('#business-hours-end-time-' + value).val($('#form-business-hours-end-time-' + value).val());
+			$('#business-hours-remarks-' + value).val($('#form-business-hours-remarks-' + value).val());
+		});
+	}
 
 
 });
