@@ -26,6 +26,8 @@
 		<%@ include file="/WEB-INF/jsp/head.jsp" %>
 
 		<link rel="stylesheet" type="text/css" href="/animatch/styles/regist.css" />
+
+		<link rel="stylesheet" type="text/css" href="/animatch/styles/common.css" />
     </head>
 
 	<body>
@@ -50,22 +52,22 @@
 	            </p>
 
 				<div>
-		            <label>登録区分</label>
+		            <label class="regist-complete-item-name"> &lt;登録区分&gt;</label>
 		            <p><fmt:message bundle="${resource}" key="${registTypeKeyInitStr}${registType}" /></p>
 		        </div>
 
 	            <div>
-	                <label>ユーザー名</label>
+	                <label class="regist-complete-item-name"> &lt;ユーザー名&gt;</label>
 	                <p><c:out value="${user.userName}" default=" "/></p>
 	            </div>
 
 	            <div>
-	                <label>パスワード</label>
+	                <label class="regist-complete-item-name"> &lt;パスワード&gt;</label>
 	                <p><c:out value="${user.password}" default=" "/></p>
 	            </div>
 
 	            <div>
-	                <label>性別</label>
+	                <label class="regist-complete-item-name">&lt;性別&gt;</label>
 	                <p>
 	                	<c:if test="${user.sex != null}">
 	                		<fmt:message bundle="${resource}" key="${humanSexKeyInitStr}${user.sex}" />
@@ -74,32 +76,32 @@
 	            </div>
 
 	            <div>
-	                <label>生年月日</label>
+	                <label class="regist-complete-item-name">&lt;生年月日&gt;</label>
 	                <p><fmt:formatDate type="DATE" pattern="yyyy-MM-dd" value="${user.birthday}" /></p>
 	            </div>
 
 	            <div>
-	                <label>郵便番号</label>
+	                <label class="regist-complete-item-name">&lt;郵便番号&gt;</label>
 	                <p><c:out value="${user.postalCode}" default=" "/></p>
 	            </div>
 
 				<div>
-	                <label>住所</label>
+	                <label class="regist-complete-item-name">&lt;住所&gt;</label>
 	                <p><c:out value="${user.streetAddress}" default=" "/></p>
 	            </div>
 
 	            <div>
-	                <label>メールアドレス</label>
+	                <label class="regist-complete-item-name">&lt;メールアドレス&gt;</label>
 	                <p><c:out value="${user.emailAddress}" default=" "/></p>
 	            </div>
 
 	            <div>
-	                <label>電話番号</label>
+	                <label class="regist-complete-item-name">&lt;電話番号&gt;</label>
 	                <p><c:out value="${user.telephoneNumber}" default=" "/></p>
 	            </div>
 
 				<div>
-	                <label>イメージ画像</label>
+	                <label class="regist-complete-item-name">&lt;イメージ画像&gt;</label>
 	                <p>
 	                	<c:if test="${registType == '001'}">
 	                		<c:if test="${petImage != null}">
@@ -118,12 +120,12 @@
 	            <c:if test="${registType == '001'}">
 
 	            	<div>
-		                <label>ペットニックネーム</label>
+		                <label class="regist-complete-item-name">&lt;ペットニックネーム&gt;</label>
 		                <p><c:out value="${pet.nickName}" default=" "/></p>
 		            </div>
 
 		            <div>
-		                <label>ペット性別</label>
+		                <label class="regist-complete-item-name">&lt;ペット性別&gt;</label>
 		                <p>
 		                	<c:if test="${pet.sex != null}">
 		                		<fmt:message bundle="${resource}" key="${petSexKeyInitStr}${pet.sex}" />
@@ -132,7 +134,7 @@
 		            </div>
 
 		            <div>
-		                <label>ペット種別</label>
+		                <label class="regist-complete-item-name">&lt;ペット種別&gt;</label>
 		                <p>
 			                <c:if test="${pet.type != null}">
 			                	<fmt:message bundle="${resource}" key="${petTypeKeyInitStr}${pet.type}" />
@@ -141,7 +143,7 @@
 		            </div>
 
 		            <div>
-		                <label>ペット体重</label>
+		                <label class="regist-complete-item-name">&lt;ペット体重&gt;</label>
 		                <p>
 			                <c:if test="${pet.weight != 0.0}">
 			                	<fmt:formatNumber value="${pet.weight}" />
@@ -150,7 +152,7 @@
 		            </div>
 
 		            <div>
-		                <label>備考</label>
+		                <label class="regist-complete-item-name">&lt;備考&gt;</label>
 		                <c:set var="petRemarks" value="${pet.remarks}" />
 		                <p><c:out value="${fn:replace(petRemarks, newLine, '<br/>')}" default=" " escapeXml="false"/></p>
 		            </div>
@@ -160,32 +162,32 @@
 				<c:if test="${registType == '002'}">
 
 					<div>
-		                <label>店名</label>
+		                <label class="regist-complete-item-name">&lt;店名&gt;</label>
 		                <p><c:out value="${store.storeName}" default=" "/></p>
 		            </div>
 
 					<div>
-						<label>営業日時</label>
+						<label class="regist-complete-item-name">&lt;営業日時&gt;</label>
 
 						<c:forEach items="${businessHoursList}" var="businessHours">
 							<fmt:message bundle="${resource}" key="${weekdayKeyInitStr}${businessHours.businessDay}" var="businessDay" />
 
 							<div>
 
-				                <p>${businessDay}</p>
+				                <p class="regist-complete-item-name under-line">${businessDay}</p>
 
 				                <div>
-				                    <label>開始時間</label>
+				                    <label class="regist-complete-item-name">&lt;開始時間&gt;</label>
 				                    <p>${businessHours.startBusinessTime.getHour()}:<fmt:formatNumber value="${businessHours.startBusinessTime.getMinute()}" minIntegerDigits="2" /></p>
 				                </div>
 
 				                <div>
-				                    <label>終了時間</label>
+				                    <label class="regist-complete-item-name">&lt;終了時間&gt;</label>
 				                    <p>${businessHours.endBusinessTime.getHour()}:<fmt:formatNumber value="${businessHours.endBusinessTime.getMinute()}" minIntegerDigits="2" /></p>
 				                </div>
 
 				                <div>
-				                    <label>補足</label>
+				                    <label class="regist-complete-item-name">&lt;補足&gt;</label>
 				                    <c:set var="businessHoursComplement" value="${businessHours.complement}" />
 				                    <p><c:out value="${fn:replace(businessHoursComplement, newLine, '<br/>')}" default=" " escapeXml="false"/></p>
 				                </div>
@@ -196,7 +198,7 @@
 
 
 		            <div>
-	                    <label>従業員数&ndash;人</label>
+	                    <label class="regist-complete-item-name">&lt;従業員数&ndash;人&gt;</label>
 	                    <p>
 	                    	<c:if test="${store.employeesNumber != 0}">
 	                    		<fmt:formatNumber value="${store.employeesNumber}" />
@@ -205,13 +207,13 @@
 	                </div>
 
 	                <div>
-		                <label>コース・値段</label>
+		                <label class="regist-complete-item-name">&lt;コース・値段&gt;</label>
 		                <c:set var="storeCourseInfo" value="${store.courseInfo}" />
 		                <p><c:out value="${fn:replace(storeCourseInfo, newLine, '<br/>')}" default=" " escapeXml="false"/></p>
 		            </div>
 
 		            <div>
-		                <label>こだわりポイント</label>
+		                <label class="regist-complete-item-name">&lt;こだわりポイント&gt;</label>
 		                <c:set var="storeCommitment" value="${store.commitment}" />
 		                <p><c:out value="${fn:replace(storeCommitment, newLine, '<br/>')}" default=" " escapeXml="false"/></p>
 		            </div>

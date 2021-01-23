@@ -10,14 +10,16 @@
 		<%@ include file="/WEB-INF/jsp/head.jsp" %>
 
 		<link rel="stylesheet" type="text/css" href="/animatch/styles/login.css" />
+
+		<link rel="stylesheet" type="text/css" href="/animatch/styles/common.css" />
     </head>
 
 	<body class="text-center d-flex flex-column justify-content-center py-5">
 		<div class="mx-auto">
 
-			<img class="mb-5" src="/animatch/images/icon_animatch.png" alt="Animatchロゴ">
+			<img src="/animatch/images/icon_animatch.png" alt="Animatchロゴ">
 
-			<form class="py-5">
+			<form class="py-3">
 
 		        <input type="text" class="form-control" placeholder="ユーザー名">
 		        <input type="password" class="form-control" placeholder="パスワード">

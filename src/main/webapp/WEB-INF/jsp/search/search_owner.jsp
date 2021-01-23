@@ -13,6 +13,8 @@
     	<link rel="stylesheet" type="text/css" href="/animatch/styles/plugin/multipicker.min.css">
 
 		<link rel="stylesheet" type="text/css" href="/animatch/styles/search.css" />
+
+		<link rel="stylesheet" type="text/css" href="/animatch/styles/common.css" />
     </head>
 
 	<body>

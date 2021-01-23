@@ -10,6 +10,8 @@
 		<%@ include file="/WEB-INF/jsp/head.jsp" %>
 
 		<link rel="stylesheet" type="text/css" href="/animatch/styles/index.css" />
+
+		<link rel="stylesheet" type="text/css" href="/animatch/styles/common.css" />
     </head>
 
 	<body>

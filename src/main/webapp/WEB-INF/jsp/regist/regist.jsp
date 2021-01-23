@@ -34,6 +34,8 @@
     	<link rel="stylesheet" type="text/css" href="/animatch/styles/plugin/multipicker.min.css">
 
 		<link rel="stylesheet" type="text/css" href="/animatch/styles/regist.css" />
+
+		<link rel="stylesheet" type="text/css" href="/animatch/styles/common.css" />
 	</head>
 <body>
 

@@ -97,7 +97,7 @@ public class RegistLogic {
 		try {
 			RegistForm registForm = getFormParameterDto(request);
 			if(isValidate(registForm)) {
-				registDao(request);
+				registDao(request, registForm);
 			}else {
 				setAttributeKeyWithNotValidate(request, registForm);
 			}
@@ -107,41 +107,6 @@ public class RegistLogic {
 		}
 
 		return this.canRegistFlg;
-	}
-
-	private void registDao(HttpServletRequest request) {
-		AnimatchConnection con = new AnimatchConnection();
-		RegistDao registDao = new RegistDao(con.getConnection());
-		try {
-			User user = getParameterUserDto(request, registDao);
-			switch(this.registType) {
-			case "001":
-				Pet pet = getParameterPetDto(request, registDao);
-				user.setPetInfoId(pet);
-				setAttributeRegistOwner(request, user);
-				if(this.canRegistFlg) {
-					this.canRegistFlg = registDao.registOwner(user);
-				}
-				break;
-			case "002":
-				Store store = getParameterStoreDto(request, registDao);
-				List<BusinessHours> businessHoursList = getParameterBusinessHoursDto(request);
-				store.setBusinessHoursList(businessHoursList);
-				user.setStore(store);
-				setAttributeRegistTrimmer(request, user);
-				if(this.canRegistFlg) {
-					this.canRegistFlg = registDao.registTrimmer(user);
-				}
-				break;
-			default:
-				break;
-			}
-		} catch (SQLException | ParseException | IOException | ServletException e) {
-			// TODO 自動生成された catch ブロック
-			e.printStackTrace();
-		}finally {
-			con.close();
-		}
 	}
 
 	private RegistForm getFormParameterDto(HttpServletRequest request) throws SQLException, ParseException, IOException, ServletException {
@@ -219,21 +184,56 @@ public class RegistLogic {
 		request.setAttribute("msgKeyList", this.msgKeyList);
 	}
 
-	private User getParameterUserDto(HttpServletRequest request, RegistDao registDao) throws SQLException, ParseException {
+	private void registDao(HttpServletRequest request, RegistForm registForm) {
+		AnimatchConnection con = new AnimatchConnection();
+		RegistDao registDao = new RegistDao(con.getConnection());
+		try {
+			User user = getParameterUserDto(registForm, registDao);
+			switch(this.registType) {
+			case "001":
+				Pet pet = getParameterPetDto(request, registForm, registDao);
+				user.setPetInfoId(pet);
+				setAttributeRegistOwner(request, user);
+				if(this.canRegistFlg) {
+					this.canRegistFlg = registDao.registOwner(user);
+				}
+				break;
+			case "002":
+				Store store = getParameterStoreDto(request, registForm, registDao);
+				List<BusinessHours> businessHoursList = getParameterBusinessHoursDto(registForm);
+				store.setBusinessHoursList(businessHoursList);
+				user.setStore(store);
+				setAttributeRegistTrimmer(request, user);
+				if(this.canRegistFlg) {
+					this.canRegistFlg = registDao.registTrimmer(user);
+				}
+				break;
+			default:
+				break;
+			}
+		} catch (SQLException | ParseException | IOException | ServletException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		}finally {
+			con.close();
+		}
+	}
+
+	private User getParameterUserDto(RegistForm registForm, RegistDao registDao) throws SQLException, ParseException {
 		User user = new User();
 		user.setUserId(registDao.getMaxUserId() + 1);
-		user.setUserName(request.getParameter("user-name"));
-		user.setPassword(request.getParameter("password"));
-		user.setSex(getParameterData(request.getParameter("radio-user-sex")));
+		user.setUserName(registForm.getUserName());
+		user.setPassword(registForm.getPassword());
+		user.setSex(getParameterData(registForm.getSex()));
 		SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
-		user.setBirthday(dateFormat.parse(request.getParameter("birthday")));
-		user.setPostalCode(request.getParameter("postal-code").replace("-", ""));
-		String prefectures = this.resBundle.getString(PREFECTURES_KEY_INIT_STR + request.getParameter("prefectures"));
-		String cities = request.getParameter("cities");
+		user.setBirthday(dateFormat.parse(registForm.getBirthday()));
+		user.setPostalCode(registForm.getPostalCode().replace("-", ""));
+		String prefectures = this.resBundle.getString(PREFECTURES_KEY_INIT_STR + registForm.getPrefectures());
+		String cities = registForm.getCities();
 		String address = prefectures + cities;
 		user.setStreetAddress(address);
-		user.setEmailAddress(request.getParameter("email-address"));
-		user.setTelephoneNumber(request.getParameter("telephone-number").replace("-", ""));
+		user.setEmailAddress(registForm.getEmailAddress());
+		user.setTelephoneNumber(registForm.getTelephoneNumber());
 		user.setDelFlg(1);
 		LocalDateTime now = LocalDateTime.now();
 		user.setInsertedTime(now);
@@ -242,7 +242,7 @@ public class RegistLogic {
 		return user;
 	}
 
-	private Pet getParameterPetDto(HttpServletRequest request, RegistDao registDao) throws SQLException, IOException, ServletException {
+	private Pet getParameterPetDto(HttpServletRequest request, RegistForm registForm, RegistDao registDao) throws SQLException, IOException, ServletException {
 		Pet pet = new Pet();
 		pet.setPetId(registDao.getMaxPetId() + 1);
 		Part part = request.getPart("file");
@@ -250,14 +250,14 @@ public class RegistLogic {
 			byte[] fileData = convertPartToByteArray(part);
 			pet.setImage(fileData);
 		}
-		pet.setNickName(request.getParameter("pet-name"));
-		pet.setSex(getParameterData(request.getParameter("radio-pet-sex")));
-		pet.setType(getSelectParameterData(request.getParameter("pet-type")));
-		String petWeight = request.getParameter("pet-weight");
+		pet.setNickName(registForm.getPetName());
+		pet.setSex(getParameterData(registForm.getPetSex()));
+		pet.setType(getSelectParameterData(registForm.getPetType()));
+		String petWeight = registForm.getPetWeight();
 		if(!StringUtil.isNullOrEmpty(petWeight)) {
 			pet.setWeight(Float.parseFloat(petWeight));
 		}
-		pet.setRemarks(getParameterData(request.getParameter("pet-remarks")));
+		pet.setRemarks(getParameterData(registForm.getPetRemarks()));
 		pet.setDelFlg(1);
 		LocalDateTime now = LocalDateTime.now();
 		pet.setInsertedTime(now);
@@ -266,7 +266,7 @@ public class RegistLogic {
 		return pet;
 	}
 
-	private Store getParameterStoreDto(HttpServletRequest request, RegistDao registDao) throws SQLException, IOException, ServletException {
+	private Store getParameterStoreDto(HttpServletRequest request, RegistForm registForm, RegistDao registDao) throws SQLException, IOException, ServletException {
 		Store store = new Store();
 		store.setStoreId(registDao.getMaxStoreId() + 1);
 		Part part = request.getPart("file");
@@ -274,48 +274,19 @@ public class RegistLogic {
 			byte[] fileData = convertPartToByteArray(part);
 			store.setImage(fileData);
 		}
-		store.setStoreName(request.getParameter("store-name"));
-		String storeEmployees = request.getParameter("store-employees");
+		store.setStoreName(registForm.getStoreName());
+		String storeEmployees = registForm.getStoreEmployees();
 		if(!StringUtil.isNullOrEmpty(storeEmployees)) {
 			store.setEmployeesNumber(Integer.parseInt(storeEmployees));
 		}
-		store.setCourseInfo(getParameterData(request.getParameter("course-info")));
-		store.setCommitment(getParameterData(request.getParameter("commitment")));
+		store.setCourseInfo(getParameterData(registForm.getCourseInfo()));
+		store.setCommitment(getParameterData(registForm.getCommitment()));
 		store.setDelFlg(1);
 		LocalDateTime now = LocalDateTime.now();
 		store.setInsertedTime(now);
 		store.setUpdatedTime(now);
 
 		return store;
-	}
-
-	private List<BusinessHours> getParameterBusinessHoursDto(HttpServletRequest request) throws IOException, ServletException, ParseException {
-		List<BusinessHours> businessHoursList = null;
-		String businessHoursWeek = request.getParameter("business-hours");
-		if(!StringUtil.isNullOrEmpty(businessHoursWeek)) {
-			businessHoursList = new ArrayList<>();
-			String businessHoursWeekAry[] = businessHoursWeek.split(",");
-			for(int i = 0; i < businessHoursWeekAry.length; i++) {
-				BusinessHours businessHours = new BusinessHours();
-				businessHours.setBusinessDay("00" + businessHoursWeekAry[i]);
-				String startBusinessTime = request.getParameter("business-hours-start-time-" + businessHoursWeekAry[i]);
-				String endBusinessTime = request.getParameter("business-hours-end-time-" + businessHoursWeekAry[i]);
-				if(!StringUtil.isNullOrEmpty(startBusinessTime) && !StringUtil.isNullOrEmpty(endBusinessTime)) {
-					String[] startBusinessTimeAry = startBusinessTime.split(":");
-					String[] endBusinessTimeAry = endBusinessTime.split(":");
-					businessHours.setStartBusinessTime(LocalTime.of(Integer.parseInt(startBusinessTimeAry[0]), Integer.parseInt(startBusinessTimeAry[1])));
-					businessHours.setEndBusinessTime(LocalTime.of(Integer.parseInt(endBusinessTimeAry[0]), Integer.parseInt(endBusinessTimeAry[1])));
-				}
-				businessHours.setComplement(getParameterData(request.getParameter("business-hours-remarks-" + businessHoursWeekAry[i])));
-				businessHours.setDelFlg(1);
-				LocalDateTime now = LocalDateTime.now();
-				businessHours.setInsertedTime(now);
-				businessHours.setUpdatedTime(now);
-
-				businessHoursList.add(businessHours);
-			}
-		}
-		return businessHoursList;
 	}
 
 	private byte[] convertPartToByteArray(Part part) throws IOException {
@@ -331,6 +302,44 @@ public class RegistLogic {
 		buffer.close();
 
 		return buffer.toByteArray();
+	}
+
+	private String getSelectParameterData(String param) {
+		String rtnVal = null;
+		if(!StringUtil.isNullOrEmpty(param)) {
+			if(!param.equals("000")) {
+				rtnVal = param;
+			}
+		}
+		return rtnVal;
+	}
+
+	private List<BusinessHours> getParameterBusinessHoursDto(RegistForm registForm) throws IOException, ServletException, ParseException {
+		List<BusinessHours> businessHoursList = new ArrayList<>();
+		for(FormBusinessHours formBusinessHours: registForm.getFormBusinessHoursList()){
+			BusinessHours businessHours = new BusinessHours();
+			businessHours.setBusinessDay("00" + formBusinessHours.getBusinessHoursWeekdayNum());
+			String[] startBusinessTimeAry = formBusinessHours.getBusinessHoursStartTime().split(":");
+			String[] endBusinessTimeAry = formBusinessHours.getBusinessHoursEndTime().split(":");
+			businessHours.setStartBusinessTime(LocalTime.of(Integer.parseInt(startBusinessTimeAry[0]), Integer.parseInt(startBusinessTimeAry[1])));
+			businessHours.setEndBusinessTime(LocalTime.of(Integer.parseInt(endBusinessTimeAry[0]), Integer.parseInt(endBusinessTimeAry[1])));
+			businessHours.setComplement(getParameterData(formBusinessHours.getBusinessHoursRemarks()));
+			businessHours.setDelFlg(1);
+			LocalDateTime now = LocalDateTime.now();
+			businessHours.setInsertedTime(now);
+			businessHours.setUpdatedTime(now);
+
+			businessHoursList.add(businessHours);
+		}
+		return businessHoursList;
+	}
+
+	private String getParameterData(String param) {
+		String rtnVal = null;
+		if(!StringUtil.isNullOrEmpty(param)) {
+			rtnVal = param;
+		}
+		return rtnVal;
 	}
 
 	private void setAttributeRegistOwner(HttpServletRequest request, User user) {
@@ -358,21 +367,4 @@ public class RegistLogic {
 		request.setAttribute("businessHoursList", store.getBusinessHoursList());
 	}
 
-	private String getParameterData(String param) {
-		String rtnVal = null;
-		if(!StringUtil.isNullOrEmpty(param)) {
-			rtnVal = param;
-		}
-		return rtnVal;
-	}
-
-	private String getSelectParameterData(String param) {
-		String rtnVal = null;
-		if(!StringUtil.isNullOrEmpty(param)) {
-			if(!param.equals("000")) {
-				rtnVal = param;
-			}
-		}
-		return rtnVal;
-	}
 }
