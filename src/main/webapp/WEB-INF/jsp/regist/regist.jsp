@@ -12,6 +12,24 @@
 <c:set var="errMsgKeyInitStr" value="msg.err." />
 <c:set var="firstTypeKeyInitEnd" value="001" />
 <c:set var="secondTypeKeyInitEnd" value="002" />
+<c:set var="thirdTypeKeyInitEnd" value="003" />
+<c:set var="forthTypeKeyInitEnd" value="004" />
+<c:set var="fifthTypeKeyInitEnd" value="005" />
+<c:set var="sixthTypeKeyInitEnd" value="006" />
+<c:set var="seventhTypeKeyInitEnd" value="007" />
+<c:set var="eighthTypeKeyInitEnd" value="008" />
+<c:set var="ninethTypeKeyInitEnd" value="009" />
+<c:set var="tenthTypeKeyInitEnd" value="010" />
+<c:set var="eleventhTypeKeyInitEnd" value="011" />
+<c:set var="twelvethTypeKeyInitEnd" value="012" />
+<c:set var="thirteenthTypeKeyInitEnd" value="013" />
+<c:set var="fourteenthTypeKeyInitEnd" value="014" />
+<c:set var="fifteenthTypeKeyInitEnd" value="015" />
+<c:set var="sixteenthTypeKeyInitEnd" value="016" />
+<c:set var="seventeenthTypeKeyInitEnd" value="017" />
+<c:set var="eighteenthTypeKeyInitEnd" value="018" />
+<c:set var="nineteenthTypeKeyInitEnd" value="019" />
+<c:set var="twentithTypeKeyInitEnd" value="020" />
 
 <!DOCTYPE html>
 
@@ -91,18 +109,28 @@
                 <div class="form-group col-md-4 col-sm-5">
                     <label class="control-label required-item">ユーザー名</label>
                     <input type="text" name="user-name" class="form-control" value="${registForm.userName}" required>
+                    <c:if test="${not empty msgKeyList}">
+						<c:if test="${fn:contains(msgKeyList, firstTypeKeyInitEnd)}">
+							<p><fmt:message bundle="${resource}" key="${errMsgKeyInitStr}${firstTypeKeyInitEnd}" /></p>
+						</c:if>
+					</c:if>
                 </div>
 
                 <div class="form-group col-md-4">
 
                     <label class="control-label required-item">パスワード</label>
                     <input type="password" name="password" class="form-control col-md col-sm-5" value="${registForm.password}" required>
+                    <c:if test="${not empty msgKeyList}">
+						<c:if test="${fn:contains(msgKeyList, thirdTypeKeyInitEnd)}">
+							<p><fmt:message bundle="${resource}" key="${errMsgKeyInitStr}${thirdTypeKeyInitEnd}" /></p>
+						</c:if>
+					</c:if>
 
                     <label class="control-label mt-2 required-item">再入力</label>
                     <input type="password" name="re-password" class="form-control col-md col-sm-5" value="${registForm.rePassword}" required>
 					<c:if test="${not empty msgKeyList}">
-						<c:if test="${fn:contains(msgKeyList, firstTypeKeyInitEnd)}">
-							<p><fmt:message bundle="${resource}" key="${errMsgKeyInitStr}${firstTypeKeyInitEnd}" /></p>
+						<c:if test="${fn:contains(msgKeyList, secondTypeKeyInitEnd)}">
+							<p><fmt:message bundle="${resource}" key="${errMsgKeyInitStr}${secondTypeKeyInitEnd}" /></p>
 						</c:if>
 					</c:if>
 
@@ -128,6 +156,11 @@
                 <div class="form-group col-md-4 col-sm-5">
                     <label class="control-label required-item">生年月日</label>
                     <input type="text" name="birthday" class="form-control plugin-datepicker" value="${registForm.birthday}" required>
+                    <c:if test="${not empty msgKeyList}">
+						<c:if test="${fn:contains(msgKeyList, forthTypeKeyInitEnd)}">
+							<p><fmt:message bundle="${resource}" key="${errMsgKeyInitStr}${forthTypeKeyInitEnd}" /></p>
+						</c:if>
+					</c:if>
                 </div>
             </div>
 
@@ -148,6 +181,11 @@
                 <div class="form-group col-md-3">
                     <label class="control-label required-item" for="postal-code">郵便番号</label>
                     <input type="text" name="postal-code" class="form-control col-md col-sm-3" placeholder="9991234" id="postal-code" maxlength="7" value="${registForm.postalCode}" required>
+                    <c:if test="${not empty msgKeyList}">
+						<c:if test="${fn:contains(msgKeyList, fifthTypeKeyInitEnd)}">
+							<p><fmt:message bundle="${resource}" key="${errMsgKeyInitStr}${fifthTypeKeyInitEnd}" /></p>
+						</c:if>
+					</c:if>
                 </div>
 
                 <div class="form-group col-md-3 col-sm-5">
@@ -167,6 +205,14 @@
                 <div class="form-group col-md-3">
                     <label class="control-label required-item" for="cities">住所&ndash;市区町村</label>
                     <input type="text" name="cities" id="cities" class="form-control col-md col-sm-3" maxlength="6" value="${registForm.cities}" required>
+                    <c:if test="${not empty msgKeyList}">
+						<c:if test="${fn:contains(msgKeyList, sixthTypeKeyInitEnd)}">
+							<p><fmt:message bundle="${resource}" key="${errMsgKeyInitStr}${sixthTypeKeyInitEnd}" /></p>
+						</c:if>
+						<c:if test="${fn:contains(msgKeyList, seventhTypeKeyInitEnd)}">
+							<p><fmt:message bundle="${resource}" key="${errMsgKeyInitStr}${seventhTypeKeyInitEnd}" /></p>
+						</c:if>
+					</c:if>
                 </div>
 
             </div>
@@ -182,6 +228,11 @@
                 <div class="form-group col-md-4 col-sm-5">
                     <label class="control-label required-item">電話番号</label>
                     <input type="tel" name="telephone-number" class="form-control" placeholder="09012345678" maxlength="11" value="${registForm.telephoneNumber}" required>
+                    <c:if test="${not empty msgKeyList}">
+						<c:if test="${fn:contains(msgKeyList, eighthTypeKeyInitEnd)}">
+							<p><fmt:message bundle="${resource}" key="${errMsgKeyInitStr}${eighthTypeKeyInitEnd}" /></p>
+						</c:if>
+					</c:if>
                 </div>
             </div>
 
@@ -195,8 +246,8 @@
                 <label class="control-label">イメージ画像</label>
                 <input type="file" name="file" class="plugin-dropify">
                 <c:if test="${not empty msgKeyList}">
-					<c:if test="${fn:contains(msgKeyList, secondTypeKeyInitEnd)}">
-						<p><fmt:message bundle="${resource}" key="${errMsgKeyInitStr}${secondTypeKeyInitEnd}" /></p>
+					<c:if test="${fn:contains(msgKeyList, twentithTypeKeyInitEnd)}">
+						<p><fmt:message bundle="${resource}" key="${errMsgKeyInitStr}${twentithTypeKeyInitEnd}" /></p>
 					</c:if>
 				</c:if>
             </div>
@@ -205,6 +256,11 @@
                 <div class="form-group col-md-4 col-sm-5">
                     <label class="control-label required-item">ニックネーム</label>
                     <input type="text" id="pet-name" name="pet-name" class="form-control" placeholder="シロ" value="${registForm.petName}">
+                    <c:if test="${not empty msgKeyList}">
+						<c:if test="${fn:contains(msgKeyList, ninethTypeKeyInitEnd)}">
+							<p><fmt:message bundle="${resource}" key="${errMsgKeyInitStr}${ninethTypeKeyInitEnd}" /></p>
+						</c:if>
+					</c:if>
                 </div>
             </div>
 
@@ -242,6 +298,14 @@
                 <div class="form-group col-md-2 col-sm-3">
                     <label class="control-label">体重&ndash;&#13199;</label>
                     <input type="text" name="pet-weight" class="form-control" placeholder="23" maxlength="6" value="${registForm.petWeight}">
+                    <c:if test="${not empty msgKeyList}">
+						<c:if test="${fn:contains(msgKeyList, tenthTypeKeyInitEnd)}">
+							<p><fmt:message bundle="${resource}" key="${errMsgKeyInitStr}${tenthTypeKeyInitEnd}" /></p>
+						</c:if>
+						<c:if test="${fn:contains(msgKeyList, eleventhTypeKeyInitEnd)}">
+							<p><fmt:message bundle="${resource}" key="${errMsgKeyInitStr}${eleventhTypeKeyInitEnd}" /></p>
+						</c:if>
+					</c:if>
                 </div>
             </div>
 
@@ -249,6 +313,11 @@
                 <div class="form-group col-md-4 col-sm-6">
                     <label class="control-label required-item">店名</label>
                     <input type="text" id="store-name" name="store-name" class="form-control" placeholder="ペットサロン ヤマダ" value="${registForm.storeName}">
+                    <c:if test="${not empty msgKeyList}">
+						<c:if test="${fn:contains(msgKeyList, thirteenthTypeKeyInitEnd)}">
+							<p><fmt:message bundle="${resource}" key="${errMsgKeyInitStr}${thirteenthTypeKeyInitEnd}" /></p>
+						</c:if>
+					</c:if>
                 </div>
             </div>
 
@@ -275,16 +344,19 @@
 	                <div class="form-group col-lg-2">
 	                    <label class="control-label">開始時間</label>
 	                    <input type="time" id="business-hours-start-time-${status.index}" name="business-hours-start-time-${status.index}" class="form-control col-lg col-md-2 col-sm-3">
+	                    <p id="business-hours-start-time-${status.index}-err-msg" class="is-hidden"><fmt:message bundle="${resource}" key="${errMsgKeyInitStr}${fourteenthTypeKeyInitEnd}" /></p>
 	                </div>
 
 	                <div class="form-group col-lg-2">
 	                    <label class="control-label">終了時間</label>
 	                    <input type="time" id="business-hours-end-time-${status.index}" name="business-hours-end-time-${status.index}" class="form-control col-lg col-md-2 col-sm-3">
+	                    <p id="business-hours-end-time-${status.index}-err-msg" class="is-hidden"><fmt:message bundle="${resource}" key="${errMsgKeyInitStr}${fourteenthTypeKeyInitEnd}" /></p>
 	                </div>
 
 	                <div class="form-group col-lg-5">
 	                    <label class="control-label">補足</label>
 	                    <textarea id="business-hours-remarks-${status.index}" name="business-hours-remarks-${status.index}" class="form-control col-lg col-md-6 col-sm-7" placeholder="第一${weekdayVal}は休業。"></textarea>
+	                    <p id="business-hours-remarks-${status.index}-err-msg" class="is-hidden"><fmt:message bundle="${resource}" key="${errMsgKeyInitStr}${fifteenthTypeKeyInitEnd}" /></p>
 	                </div>
 
 	            </div>
@@ -295,28 +367,54 @@
 				<input type="hidden" id="form-business-hours-start-time-${businessHoursWeekdayNum}" value="${formBusinessHours.businessHoursStartTime}">
 				<input type="hidden" id="form-business-hours-end-time-${businessHoursWeekdayNum}" value="${formBusinessHours.businessHoursEndTime}">
 				<input type="hidden" id="form-business-hours-remarks-${businessHoursWeekdayNum}" value="${formBusinessHours.businessHoursRemarks}">
+				<input type="hidden" id="form-business-hours-start-time-${businessHoursWeekdayNum}-err-flg" value="${formBusinessHours.businessHoursStartTimeErrFlg}">
+				<input type="hidden" id="form-business-hours-end-time-${businessHoursWeekdayNum}-err-flg" value="${formBusinessHours.businessHoursEndTimeErrFlg}">
+				<input type="hidden" id="form-business-hours-remarks-${businessHoursWeekdayNum}-err-flg" value="${formBusinessHours.businessHoursRemarksErrFlg}">
            	</c:forEach>
 
             <div class="form-row form-trimmer">
                 <div class="form-group col-md-2 col-sm-3">
                     <label class="control-label">従業員数&ndash;人</label>
                     <input type="text" name="store-employees" class="form-control" placeholder="20" maxlength="6" value="${registForm.storeEmployees}">
+                    <c:if test="${not empty msgKeyList}">
+						<c:if test="${fn:contains(msgKeyList, sixteenthTypeKeyInitEnd)}">
+							<p><fmt:message bundle="${resource}" key="${errMsgKeyInitStr}${sixteenthTypeKeyInitEnd}" /></p>
+						</c:if>
+						<c:if test="${fn:contains(msgKeyList, seventeenthTypeKeyInitEnd)}">
+							<p><fmt:message bundle="${resource}" key="${errMsgKeyInitStr}${seventeenthTypeKeyInitEnd}" /></p>
+						</c:if>
+					</c:if>
                 </div>
             </div>
 
             <div class="form-group form-owner">
                 <label class="control-label">備考</label>
                 <textarea name="pet-remarks" class="form-control" rows="10" placeholder="トリマーに伝えておきたいことを書いてください">${registForm.petRemarks}</textarea>
+                <c:if test="${not empty msgKeyList}">
+					<c:if test="${fn:contains(msgKeyList, twelvethTypeKeyInitEnd)}">
+						<p><fmt:message bundle="${resource}" key="${errMsgKeyInitStr}${twelvethTypeKeyInitEnd}" /></p>
+					</c:if>
+				</c:if>
             </div>
 
             <div class="form-group form-trimmer">
                 <label class="control-label">コース・値段</label>
                 <textarea name="course-info" class="form-control" rows="10" placeholder="サービスの詳細を書いてください">${registForm.courseInfo}</textarea>
+                <c:if test="${not empty msgKeyList}">
+					<c:if test="${fn:contains(msgKeyList, eighteenthTypeKeyInitEnd)}">
+						<p><fmt:message bundle="${resource}" key="${errMsgKeyInitStr}${eighteenthTypeKeyInitEnd}" /></p>
+					</c:if>
+				</c:if>
             </div>
 
             <div class="form-group form-trimmer">
                 <label class="control-label">こだわりポイント</label>
                 <textarea name="commitment" class="form-control" rows="10" placeholder="セールスポイントを書いてください">${registForm.commitment}</textarea>
+                <c:if test="${not empty msgKeyList}">
+					<c:if test="${fn:contains(msgKeyList, nineteenthTypeKeyInitEnd)}">
+						<p><fmt:message bundle="${resource}" key="${errMsgKeyInitStr}${nineteenthTypeKeyInitEnd}" /></p>
+					</c:if>
+				</c:if>
             </div>
 
             <div class="form-group form-common">
@@ -356,7 +454,7 @@
             $('.plugin-datepicker').datepicker({
                 format: 'yyyy/mm/dd',
                 language:'ja',
-                orientation: 'bottom'
+                orientation: 'right'
             });
 
           	//plugin multipicker

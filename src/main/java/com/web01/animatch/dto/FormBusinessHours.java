@@ -5,6 +5,9 @@ public class FormBusinessHours {
 	private String businessHoursStartTime;
 	private String businessHoursEndTime;
 	private String businessHoursRemarks;
+	private boolean businessHoursStartTimeErrFlg;
+	private boolean businessHoursEndTimeErrFlg;
+	private boolean businessHoursRemarksErrFlg;
 
 	public String getBusinessHoursWeekdayNum() {
 		return businessHoursWeekdayNum;
@@ -29,5 +32,23 @@ public class FormBusinessHours {
 	}
 	public void setBusinessHoursRemarks(String businessHoursRemarks) {
 		this.businessHoursRemarks = businessHoursRemarks;
+	}
+	public boolean isBusinessHoursStartTimeErrFlg() {
+		return businessHoursStartTimeErrFlg;
+	}
+	public void setBusinessHoursStartTimeErrFlg(boolean businessHoursStartTimeErrFlg) {
+		this.businessHoursStartTimeErrFlg = businessHoursStartTimeErrFlg;
+	}
+	public boolean isBusinessHoursEndTimeErrFlg() {
+		return businessHoursEndTimeErrFlg;
+	}
+	public void setBusinessHoursEndTimeErrFlg(boolean businessHoursEndTimeErrFlg) {
+		this.businessHoursEndTimeErrFlg = businessHoursEndTimeErrFlg;
+	}
+	public boolean isBusinessHoursRemarksErrFlg() {
+		return businessHoursRemarksErrFlg;
+	}
+	public void setBusinessHoursRemarksErrFlg(boolean businessHoursRemarksErrFlg) {
+		this.businessHoursRemarksErrFlg = businessHoursRemarksErrFlg;
 	}
 }
