@@ -244,19 +244,22 @@ public class RegistLogic {
 
 			//ペット体重数値チェック
 			String registFormPetWeight = registForm.getPetWeight();
-			if(Pattern.matches(DECIMAL_FORMAT, registFormPetWeight)) {
-				//ペット体重桁数チェック
-				// 文末が ".0"とか".00000"で終わってるやつは全部桁０とする
-				if(!Pattern.matches(DECIMAL_ZERO_FORMAT, registFormPetWeight)){
-					int index = registFormPetWeight.indexOf(".");
-					if(registFormPetWeight.substring(index + 1).length() > 7) {
-						this.msgKeyList.add("011");
-						errCount++;
+			//任意項目のため
+			if(!registFormPetWeight.isEmpty()) {
+				if(Pattern.matches(DECIMAL_FORMAT, registFormPetWeight)) {
+					//ペット体重桁数チェック
+					// 文末が ".0"とか".00000"で終わってるやつは全部桁０とする
+					if(!Pattern.matches(DECIMAL_ZERO_FORMAT, registFormPetWeight)){
+						int index = registFormPetWeight.indexOf(".");
+						if(registFormPetWeight.substring(index + 1).length() > 7) {
+							this.msgKeyList.add("011");
+							errCount++;
+						}
 					}
+				}else {
+					this.msgKeyList.add("010");
+					errCount++;
 				}
-			}else {
-				this.msgKeyList.add("010");
-				errCount++;
 			}
 
 			//備考200文字以下チェック
@@ -276,44 +279,17 @@ public class RegistLogic {
 			int errorTimeCount = 0;
 			int errorRemarksCount = 0;
 			//営業時間チェック
-			for(FormBusinessHours formBusinessHours: registForm.getFormBusinessHoursList()){
-				boolean judgeTimeFlg = true;
-				//営業時間形式チェック
-				if(!Pattern.matches(BUSINESS_TIME_FORMAT, formBusinessHours.getBusinessHoursStartTime())) {
-					formBusinessHours.setBusinessHoursStartTimeErrFlg(true);
-					judgeTimeFlg = false;
-					if(errorTimeCount == 0) {
-						this.msgKeyList.add("014");
-						errorTimeCount++;
-						errCount++;
-					}
-				}
-
-				if(!Pattern.matches(BUSINESS_TIME_FORMAT, formBusinessHours.getBusinessHoursEndTime())) {
-					formBusinessHours.setBusinessHoursEndTimeErrFlg(true);
-					judgeTimeFlg = false;
-					if(errorTimeCount == 0) {
-						this.msgKeyList.add("014");
-						errorTimeCount++;
-						errCount++;
-					}
-				}
-
-				if(judgeTimeFlg) {
-					String[] startBusinessTimeAry = formBusinessHours.getBusinessHoursStartTime().split(":");
-					String[] endBusinessTimeAry = formBusinessHours.getBusinessHoursEndTime().split(":");
-					if(startBusinessTimeAry[0].equals(endBusinessTimeAry[0])) {
-						if(Integer.parseInt(startBusinessTimeAry[1]) >= Integer.parseInt(endBusinessTimeAry[1])) {
+			List<FormBusinessHours> formBusinessHoursList = registForm.getFormBusinessHoursList();
+			//Multipickerで選択されている場合
+			if(formBusinessHoursList != null) {
+				for(FormBusinessHours formBusinessHours: formBusinessHoursList){
+					boolean judgeTimeFlg = true;
+					//営業時間形式チェック
+					String formBusinessHoursStartTime = formBusinessHours.getBusinessHoursStartTime();
+					if(!formBusinessHoursStartTime.isEmpty()) {
+						if(!Pattern.matches(BUSINESS_TIME_FORMAT, formBusinessHoursStartTime)) {
 							formBusinessHours.setBusinessHoursStartTimeErrFlg(true);
-							if(errorTimeCount == 0) {
-								this.msgKeyList.add("014");
-								errorTimeCount++;
-								errCount++;
-							}
-						}
-					}else {
-						if(Integer.parseInt(startBusinessTimeAry[0]) > Integer.parseInt(endBusinessTimeAry[0])) {
-							formBusinessHours.setBusinessHoursStartTimeErrFlg(true);
+							judgeTimeFlg = false;
 							if(errorTimeCount == 0) {
 								this.msgKeyList.add("014");
 								errorTimeCount++;
@@ -321,29 +297,86 @@ public class RegistLogic {
 							}
 						}
 					}
-				}
 
-				//補足100文字以下チェック
-				if(formBusinessHours.getBusinessHoursRemarks().length() > 100) {
-					formBusinessHours.setBusinessHoursRemarksErrFlg(true);
-					if(errorRemarksCount == 0) {
-						this.msgKeyList.add("015");
-						errorRemarksCount++;
-						errCount++;
+					String formBusinessHoursEndTime = formBusinessHours.getBusinessHoursEndTime();
+					if(!formBusinessHoursEndTime.isEmpty()) {
+						if(!Pattern.matches(BUSINESS_TIME_FORMAT, formBusinessHoursEndTime)) {
+							formBusinessHours.setBusinessHoursEndTimeErrFlg(true);
+							judgeTimeFlg = false;
+							if(errorTimeCount == 0) {
+								this.msgKeyList.add("014");
+								errorTimeCount++;
+								errCount++;
+							}
+						}
+					}
+
+					if(judgeTimeFlg) {
+						if(!formBusinessHoursStartTime.isEmpty() && !formBusinessHoursEndTime.isEmpty()) {
+							String[] startBusinessTimeAry = formBusinessHoursStartTime.split(":");
+							String[] endBusinessTimeAry = formBusinessHoursEndTime.split(":");
+							if(startBusinessTimeAry[0].equals(endBusinessTimeAry[0])) {
+								if(Integer.parseInt(startBusinessTimeAry[1]) >= Integer.parseInt(endBusinessTimeAry[1])) {
+									formBusinessHours.setBusinessHoursStartTimeErrFlg(true);
+									if(errorTimeCount == 0) {
+										this.msgKeyList.add("014");
+										errorTimeCount++;
+										errCount++;
+									}
+								}
+							}else {
+								if(Integer.parseInt(startBusinessTimeAry[0]) > Integer.parseInt(endBusinessTimeAry[0])) {
+									formBusinessHours.setBusinessHoursStartTimeErrFlg(true);
+									if(errorTimeCount == 0) {
+										this.msgKeyList.add("014");
+										errorTimeCount++;
+										errCount++;
+									}
+								}
+							}
+						}else if(formBusinessHoursStartTime.isEmpty()) {
+							formBusinessHours.setBusinessHoursStartTimeErrFlg(true);
+							if(errorTimeCount == 0) {
+								this.msgKeyList.add("014");
+								errorTimeCount++;
+								errCount++;
+							}
+						}else if(formBusinessHoursEndTime.isEmpty()) {
+							formBusinessHours.setBusinessHoursStartTimeErrFlg(true);
+							if(errorTimeCount == 0) {
+								this.msgKeyList.add("014");
+								errorTimeCount++;
+								errCount++;
+							}
+						}
+					}
+
+					//補足100文字以下チェック
+					if(formBusinessHours.getBusinessHoursRemarks().length() > 100) {
+						formBusinessHours.setBusinessHoursRemarksErrFlg(true);
+						if(errorRemarksCount == 0) {
+							this.msgKeyList.add("015");
+							errorRemarksCount++;
+							errCount++;
+						}
 					}
 				}
 			}
 
-			//従業員数数値チェック
-			if(!Pattern.matches(NUMBER_FORMAT, registForm.getStoreEmployees())) {
-				this.msgKeyList.add("016");
-				errCount++;
-			}
+			String registFormStoreEmployees = registForm.getStoreEmployees();
+			//任意項目のため
+			if(!registFormStoreEmployees.isEmpty()) {
+				//従業員数数値チェック
+				if(!Pattern.matches(NUMBER_FORMAT, registFormStoreEmployees)) {
+					this.msgKeyList.add("016");
+					errCount++;
+				}
 
-			//従業員数桁数チェック
-			if(registForm.getStoreEmployees().length() > 8) {
-				this.msgKeyList.add("017");
-				errCount++;
+				//従業員数桁数チェック
+				if(registFormStoreEmployees.length() > 8) {
+					this.msgKeyList.add("017");
+					errCount++;
+				}
 			}
 
 			//コース200文字以下チェック
@@ -364,6 +397,7 @@ public class RegistLogic {
 		}
 
 		if(errCount > 0) {
+			//画像添付している場合
 			if(request.getPart("file").getSize() > 0) {
 				this.msgKeyList.add("020");
 			}
