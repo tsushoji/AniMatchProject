@@ -17,18 +17,53 @@ import com.web01.animatch.dto.Pet;
 import com.web01.animatch.dto.Store;
 import com.web01.animatch.dto.User;
 
+/**
+ * registDBクラス
+ * @author Tsuji
+ * @version 1.0
+ */
 public class RegistDao {
+
+	//メンバー
+	/**
+	 * DBコネクションオブジェクト
+	 */
 	private Connection con;
+
+	//定数
+	/**
+	 * ユーザテーブルカラム数
+	 */
 	private static final int USER_COL_COUNT = 14;
+	/**
+	 * ペットテーブルカラム数
+	 */
 	private static final int PET_COL_COUNT = 10;
+	/**
+	 * 店舗テーブルカラム数
+	 */
 	private static final int STORE_COL_COUNT = 9;
+	/**
+	 * 営業時間テーブルカラム数
+	 */
 	private static final int BUSINESS_HOURS_COL_COUNT = 8;
+	/**
+	 * IDデフォルト値
+	 */
 	private static final int DEFAULT_ID = 1000000000;
 
+	/**
+	 * 引数付きコンストラクタ
+	 * @param con DBコネクションオブジェクト
+	 */
 	public RegistDao(Connection con) {
 		this.con = con;
 	}
 
+	/**
+	 * 最大ユーザID取得
+	 * @return ユーザID
+	 */
 	public int getMaxUserId() throws SQLException {
 		int userId = DEFAULT_ID;
 		Statement stmt = con.createStatement();
@@ -44,6 +79,10 @@ public class RegistDao {
 		return userId;
 	}
 
+	/**
+	 * 最大ペットID取得
+	 * @return ペットID
+	 */
 	public int getMaxPetId() throws SQLException {
 		int petId = DEFAULT_ID;
 		Statement stmt = con.createStatement();
@@ -59,6 +98,10 @@ public class RegistDao {
 		return petId;
 	}
 
+	/**
+	 * 最大店舗ID取得
+	 * @return 店舗ID
+	 */
 	public int getMaxStoreId() throws SQLException {
 		int storeId = DEFAULT_ID;
 		Statement stmt = con.createStatement();
@@ -74,6 +117,11 @@ public class RegistDao {
 		return storeId;
 	}
 
+	/**
+	 * 飼い主DB登録
+	 * @param user ユーザオブジェクト
+	 * @return DB登録成功失敗
+	 */
 	public boolean registOwner(User user) throws SQLException {
 		Pet pet = user.getPet();
 		this.con.setAutoCommit(false);
@@ -95,7 +143,7 @@ public class RegistDao {
 		setSQLVarcharParameter(pstmt, 9, user.getTelephoneNumber());
 		setSQLIntegerParameter(pstmt, 10, pet.getPetId());
 		pstmt.setInt(11, DEFAULT_ID);
-		pstmt.setInt(12, user.getDelFlg());
+		pstmt.setInt(12, user.getIsDeleted());
 		pstmt.setTimestamp(13, Timestamp.valueOf(user.getInsertedTime()));
 		pstmt.setTimestamp(14, Timestamp.valueOf(user.getUpdatedTime()));
 
@@ -115,7 +163,7 @@ public class RegistDao {
 		setSQLVarcharParameter(pstmt, 5, pet.getType());
 		setSQLFloatParameter(pstmt, 6, pet.getWeight());
 		setSQLVarcharParameter(pstmt, 7, pet.getRemarks());
-		pstmt.setInt(8, pet.getDelFlg());
+		pstmt.setInt(8, pet.getIsDeleted());
 		pstmt.setTimestamp(9, Timestamp.valueOf(pet.getInsertedTime()));
 		pstmt.setTimestamp(10, Timestamp.valueOf(pet.getUpdatedTime()));
 
@@ -127,6 +175,11 @@ public class RegistDao {
 		return true;
 	}
 
+	/**
+	 * トリマーDB登録
+	 * @param user ユーザオブジェクト
+	 * @return DB登録成功失敗
+	 */
 	public boolean registTrimmer(User user) throws SQLException {
 		Store store = user.getStore();
 		List<BusinessHours> businessHoursList = user.getStore().getBusinessHoursList();
@@ -149,7 +202,7 @@ public class RegistDao {
 		setSQLVarcharParameter(pstmt, 9, user.getTelephoneNumber());
 		pstmt.setInt(10, DEFAULT_ID);
 		setSQLIntegerParameter(pstmt, 11, store.getStoreId());
-		pstmt.setInt(12, user.getDelFlg());
+		pstmt.setInt(12, user.getIsDeleted());
 		pstmt.setTimestamp(13, Timestamp.valueOf(user.getInsertedTime()));
 		pstmt.setTimestamp(14, Timestamp.valueOf(user.getUpdatedTime()));
 
@@ -169,7 +222,7 @@ public class RegistDao {
 		setSQLIntegerParameter(pstmt, 4, store.getEmployeesNumber());
 		setSQLVarcharParameter(pstmt, 5, store.getCourseInfo());
 		setSQLVarcharParameter(pstmt, 6, store.getCommitment());
-		pstmt.setInt(7, store.getDelFlg());
+		pstmt.setInt(7, store.getIsDeleted());
 		pstmt.setTimestamp(8, Timestamp.valueOf(store.getInsertedTime()));
 		pstmt.setTimestamp(9, Timestamp.valueOf(store.getUpdatedTime()));
 
@@ -188,7 +241,7 @@ public class RegistDao {
 				setSQLTimeParameter(pstmt, 3, Time.valueOf(businessHoursList.get(i).getStartBusinessTime()));
 				setSQLTimeParameter(pstmt, 4, Time.valueOf(businessHoursList.get(i).getEndBusinessTime()));
 				setSQLVarcharParameter(pstmt, 5, businessHoursList.get(i).getComplement());
-				pstmt.setInt(6, businessHoursList.get(i).getDelFlg());
+				pstmt.setInt(6, businessHoursList.get(i).getIsDeleted());
 				pstmt.setTimestamp(7, Timestamp.valueOf(businessHoursList.get(i).getInsertedTime()));
 				pstmt.setTimestamp(8, Timestamp.valueOf(businessHoursList.get(i).getUpdatedTime()));
 
@@ -202,6 +255,12 @@ public class RegistDao {
 		return true;
 	}
 
+	/**
+	 * SQL数値パラメータ設定
+	 * @param pstmt プリコンパイルされたSQL文オブジェクト
+	 * @param paramIndex 引数インデックス
+	 * @param value 値
+	 */
 	private void setSQLIntegerParameter(PreparedStatement pstmt, int paramIndex, int value) throws SQLException {
 		if(value == 0) {
 			pstmt.setNull(paramIndex, Types.INTEGER);
@@ -210,6 +269,12 @@ public class RegistDao {
 		}
 	}
 
+	/**
+	 * SQL文字列パラメータ設定
+	 * @param pstmt プリコンパイルされたSQL文オブジェクト
+	 * @param paramIndex 引数インデックス
+	 * @param value 値
+	 */
 	private void setSQLVarcharParameter(PreparedStatement pstmt, int paramIndex, String value) throws SQLException {
 		if(value == null || value.length() == 0) {
 			pstmt.setNull(paramIndex, Types.VARCHAR);
@@ -218,6 +283,12 @@ public class RegistDao {
 		}
 	}
 
+	/**
+	 * SQL日付パラメータ設定
+	 * @param pstmt プリコンパイルされたSQL文オブジェクト
+	 * @param paramIndex 引数インデックス
+	 * @param value 値
+	 */
 	private void setSQLDateParameter(PreparedStatement pstmt, int paramIndex, Date value) throws SQLException {
 		if(value == null) {
 			pstmt.setNull(paramIndex, Types.DATE);
@@ -226,6 +297,12 @@ public class RegistDao {
 		}
 	}
 
+	/**
+	 * SQL小数パラメータ設定
+	 * @param pstmt プリコンパイルされたSQL文オブジェクト
+	 * @param paramIndex 引数インデックス
+	 * @param value 値
+	 */
 	private void setSQLFloatParameter(PreparedStatement pstmt, int paramIndex, float value) throws SQLException {
 		if(value == 0.0) {
 			pstmt.setNull(paramIndex, Types.FLOAT);
@@ -234,6 +311,12 @@ public class RegistDao {
 		}
 	}
 
+	/**
+	 * SQLバイナリーオブジェクトパラメータ設定
+	 * @param pstmt プリコンパイルされたSQL文オブジェクト
+	 * @param paramIndex 引数インデックス
+	 * @param value 値
+	 */
 	private void setSQLBlobParameter(PreparedStatement pstmt, int paramIndex, byte[] value) throws SQLException {
 		if(value == null) {
 			pstmt.setNull(paramIndex, Types.BLOB);
@@ -242,6 +325,12 @@ public class RegistDao {
 		}
 	}
 
+	/**
+	 * SQL時間パラメータ設定
+	 * @param pstmt プリコンパイルされたSQL文オブジェクト
+	 * @param paramIndex 引数インデックス
+	 * @param value 値
+	 */
 	private void setSQLTimeParameter(PreparedStatement pstmt, int paramIndex, Time value) throws SQLException {
 		if(value == null) {
 			pstmt.setNull(paramIndex, Types.TIME);

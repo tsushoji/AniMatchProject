@@ -5,14 +5,45 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
+/**
+ * AnimatchDBコネクションクラス
+ * @author Tsuji
+ * @version 1.0
+ */
 public class AnimatchConnection {
+
+	//メンバー
+	/**
+	 * DBコネクションオブジェクト
+	 */
 	private Connection con = null;
+
+	//定数
+	/**
+	 * プロパティDBコネクションキー先頭文字列
+	 */
 	private static final String DB_CONNECTION_KEY_INIT_STR = "db.connection.";
+	/**
+	 * プロパティDBコネクションURLキー先頭文字列
+	 */
 	private static final String DB_CONNECTION_KEY_URL_STR = "url";
+	/**
+	 * プロパティDBコネクションユーザ名キー先頭文字列
+	 */
 	private static final String DB_CONNECTION_KEY_USER_STR = "user";
+	/**
+	 * プロパティDBコネクションパスワードキー先頭文字列
+	 */
 	private static final String DB_CONNECTION_KEY_PASS_STR = "pass";
+	/**
+	 * プロパティファイル名
+	 */
 	private static final String PROPERTIES_NAME = "animatch";
 
+	/**
+	 * DBコネクション取得
+	 * @return DBコネクションオブジェクト
+	 */
 	public Connection getConnection(){
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
@@ -27,6 +58,9 @@ public class AnimatchConnection {
 		return con;
 	}
 
+	/**
+	 * DBオブジェクトを閉じる
+	 */
 	public void close() {
 		try {
 			if( con != null ) {

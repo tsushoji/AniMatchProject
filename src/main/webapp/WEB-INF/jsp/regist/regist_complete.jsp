@@ -92,7 +92,7 @@
 
 	            <div>
 	                <label class="regist-complete-item-name">&lt;メールアドレス&gt;</label>
-	                <p><c:out value="${user.emailAddress}" default=" "/></p>
+	                <p class="line-break"><c:out value="${user.emailAddress}" default=" "/></p>
 	            </div>
 
 	            <div>
@@ -121,7 +121,7 @@
 
 	            	<div>
 		                <label class="regist-complete-item-name">&lt;ペットニックネーム&gt;</label>
-		                <p><c:out value="${pet.nickName}" default=" "/></p>
+		                <p class="line-break"><c:out value="${pet.nickName}" default=" "/></p>
 		            </div>
 
 		            <div>
@@ -154,7 +154,7 @@
 		            <div>
 		                <label class="regist-complete-item-name">&lt;備考&gt;</label>
 		                <c:set var="petRemarks" value="${pet.remarks}" />
-		                <p><c:out value="${fn:replace(petRemarks, newLine, '<br/>')}" default=" " escapeXml="false"/></p>
+		                <p class="line-break"><c:out value="${fn:replace(petRemarks, newLine, '<br/>')}" default=" " escapeXml="false"/></p>
 		            </div>
 
 				</c:if>
@@ -163,7 +163,7 @@
 
 					<div>
 		                <label class="regist-complete-item-name">&lt;店名&gt;</label>
-		                <p><c:out value="${store.storeName}" default=" "/></p>
+		                <p class="line-break"><c:out value="${store.storeName}" default=" "/></p>
 		            </div>
 
 					<div>
@@ -189,7 +189,7 @@
 				                <div>
 				                    <label class="regist-complete-item-name">&lt;補足&gt;</label>
 				                    <c:set var="businessHoursComplement" value="${businessHours.complement}" />
-				                    <p><c:out value="${fn:replace(businessHoursComplement, newLine, '<br/>')}" default=" " escapeXml="false"/></p>
+				                    <p class="line-break"><c:out value="${fn:replace(businessHoursComplement, newLine, '<br/>')}" default=" " escapeXml="false"/></p>
 				                </div>
 
 				            </div>
@@ -209,13 +209,13 @@
 	                <div>
 		                <label class="regist-complete-item-name">&lt;コース・値段&gt;</label>
 		                <c:set var="storeCourseInfo" value="${store.courseInfo}" />
-		                <p><c:out value="${fn:replace(storeCourseInfo, newLine, '<br/>')}" default=" " escapeXml="false"/></p>
+		                <p class="line-break"><c:out value="${fn:replace(storeCourseInfo, newLine, '<br/>')}" default=" " escapeXml="false"/></p>
 		            </div>
 
 		            <div>
 		                <label class="regist-complete-item-name">&lt;こだわりポイント&gt;</label>
 		                <c:set var="storeCommitment" value="${store.commitment}" />
-		                <p><c:out value="${fn:replace(storeCommitment, newLine, '<br/>')}" default=" " escapeXml="false"/></p>
+		                <p class="line-break"><c:out value="${fn:replace(storeCommitment, newLine, '<br/>')}" default=" " escapeXml="false"/></p>
 		            </div>
 
 				</c:if>

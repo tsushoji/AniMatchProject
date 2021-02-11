@@ -36,7 +36,7 @@
 	                    <div class="row pt-4 pb-2">
 	                        <div class="col-md text-center">
 	                            <img src="/animatch/images/icon_beauty_salon.png" alt="お店アイコン">
-	                            <h2>お店専用</h2>
+	                            <h2 class="font-weight-bold">お店専用</h2>
 	                        </div>
 	                    </div>
 
@@ -105,7 +105,7 @@
 	                    <div class="row pt-4 pb-2">
 	                        <div class="col-md text-center">
 	                            <img src="/animatch/images/icon_pad.png" alt="犬アイコン">
-	                            <h2>飼い主専用</h2>
+	                            <h2 class="font-weight-bold">飼い主専用</h2>
 	                        </div>
 	                    </div>
 

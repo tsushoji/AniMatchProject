@@ -85,15 +85,15 @@ $(document).ready(function(){
 			$('#business-hours-end-time-' + value).val($('#form-business-hours-end-time-' + value).val());
 			$('#business-hours-remarks-' + value).val($('#form-business-hours-remarks-' + value).val());
 
-			if($('#form-business-hours-start-time-' + value + '-err-flg').val()){
+			if($('#err-form-business-hours-start-time-' + value).val() === '1'){
 				$('#business-hours-start-time-' + value + '-err-msg').removeClass('is-hidden');
 			}
 
-			if($('#form-business-hours-end-time-' + value + '-err-flg').val()){
+			if($('#err-form-business-hours-end-time-' + value).val() === '1'){
 				$('#business-hours-end-time-' + value + '-err-msg').removeClass('is-hidden');
 			}
 
-			if($('#form-business-hours-remarks-' + value + '-err-flg').val()){
+			if($('#err-form-business-hours-remarks-' + value).val() === '1'){
 				$('#business-hours-remarks-' + value + '-err-msg').removeClass('is-hidden');
 			}
 		});

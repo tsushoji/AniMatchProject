@@ -4,7 +4,7 @@ html {
 }
 
 body {
-    font-family:fantasy;
+    font-family:Meiryo;
     font-size:80%;
     color:rgb(0, 0, 0);
 }
@@ -34,10 +34,16 @@ footer {
 
 /* 下線 */
 .under-line {
-	border-bottom: solid 10px rgb(0, 0, 0);
+	text-decoration:underline;
+	text-decoration-color:rgb(0, 0, 0);
 }
 
 /* 非表示 */
 .is-hidden {
 	display:none;
+}
+
+/* 領域を超えたら、改行 */
+.line-break {
+	word-wrap:break-word;
 }
