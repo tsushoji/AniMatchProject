@@ -11,16 +11,16 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * AnimatchHTTPフィルタークラス
+ * HTTPフィルタークラス
  * @author Tsuji
  * @version 1.0
  */
-public class AnimatchFilte implements Filter {
+public class DefaultFilter implements Filter {
 
 	/**
 	 * デフォルトコンストラクタ
 	 */
-    public AnimatchFilte() {
+    public DefaultFilter() {
     }
 
     /**

@@ -4,13 +4,13 @@
 <web-app>
   <display-name>Archetype Created Web Application</display-name>
   <filter>
-  	<filter-name>AnimatchFilte</filter-name>
-  	<display-name>AnimatchFilte</display-name>
+  	<filter-name>AnimatchFilter</filter-name>
+  	<display-name>AnimatchFilter</display-name>
   	<description></description>
-  	<filter-class>com.web01.animatch.filter.AnimatchFilte</filter-class>
+  	<filter-class>com.web01.animatch.filter.DefaultFilter</filter-class>
   </filter>
   <filter-mapping>
-  	<filter-name>AnimatchFilte</filter-name>
+  	<filter-name>AnimatchFilter</filter-name>
   	<url-pattern>/*</url-pattern>
   </filter-mapping>
   <servlet>
