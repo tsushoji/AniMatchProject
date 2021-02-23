@@ -15,7 +15,6 @@
 <c:set var="tenthTypeKeyInitEnd" value="010" />
 <c:set var="twentithTypeKeyInitEnd" value="020" />
 <c:set var="twentyonethTypeKeyInitEnd" value="021" />
-<c:set var="thirtithTypeKeyInitEnd" value="030" />
 <c:set var="fourtithTypeKeyInitEnd" value="040" />
 <c:set var="fiftithTypeKeyInitEnd" value="050" />
 <c:set var="sixtithTypeKeyInitEnd" value="060" />
@@ -160,11 +159,6 @@
                 <div class="form-group col-md-4 col-sm-5">
                     <label class="control-label required-item">生年月日</label>
                     <input type="text" name="birthday" class="form-control plugin-datepicker" value="${registForm.birthday}" required>
-                    <c:if test="${not empty msgKeyList}">
-						<c:if test="${fn:contains(msgKeyList, thirtithTypeKeyInitEnd)}">
-							<p><fmt:message bundle="${resource}" key="${errMsgKeyInitStr}${thirtithTypeKeyInitEnd}" /></p>
-						</c:if>
-					</c:if>
                 </div>
             </div>
 
