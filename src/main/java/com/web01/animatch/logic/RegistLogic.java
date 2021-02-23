@@ -297,19 +297,6 @@ public class RegistLogic {
 			errCount++;
 		}
 
-		//生年月日日付形式チェック
-		SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
-		dateFormat.setLenient(false);
-		String registFormBirthday = registForm.getBirthday();
-		String tmpBirthday = dateFormat.format(dateFormat.parse(registFormBirthday));
-		if(registFormBirthday.equals(tmpBirthday)) {
-			//正しい日付形式に変換
-			registForm.setBirthday(tmpBirthday);
-		}else {
-			this.msgKeyList.add("030");
-			errCount++;
-		}
-
 		//郵便番号形式チェック
 		if(!Pattern.matches(POSTAL_CODE_FORMAT, registForm.getPostalCode())) {
 			this.msgKeyList.add("040");

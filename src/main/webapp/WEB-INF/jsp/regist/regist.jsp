@@ -471,6 +471,13 @@
                 format: 'yyyy/mm/dd',
                 language:'ja',
                 orientation: 'right'
+            //アクション:要素からフォーカスが外れる
+            }).on('blur', function() {
+            	//形式があっていない場合
+                if(this.value.match(/\d{4}\/\d{2}\/\d{2}/) == null){
+                	//入力欄を空白とする
+                	this.value = '';
+                }
             });
 
           	//plugin multipicker
