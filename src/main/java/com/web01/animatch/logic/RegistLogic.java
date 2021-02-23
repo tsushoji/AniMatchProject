@@ -279,59 +279,49 @@ public class RegistLogic {
 	 * @return 登録成功失敗
 	 */
 	private boolean isValidate(HttpServletRequest request, RegistForm registForm) throws ParseException, IOException, ServletException {
-		int errCount = 0;
 		//ユーザーネーム10文字以下チェック
 		if(registForm.getUserName().length() > 10) {
 			this.msgKeyList.add("010");
-			errCount++;
 		}
 
 		//パスワード欄と再入力欄が一致するかチェック
 		if(!registForm.getPassword().equals(registForm.getRePassword())) {
 			this.msgKeyList.add("020");
-			errCount++;
 		}
 
 		//パスワード20文字以下チェック
 		if(registForm.getPassword().length() > 20) {
 			this.msgKeyList.add("021");
-			errCount++;
 		}
 
 		//郵便番号形式チェック
 		if(!Pattern.matches(POSTAL_CODE_FORMAT, registForm.getPostalCode())) {
 			this.msgKeyList.add("040");
-			errCount++;
 		}
 
 		//都道府県選択チェック
 		if(registForm.getPrefectures().equals("000")) {
 			this.msgKeyList.add("050");
-			errCount++;
 		}
 
 		//市区町村形式チェック
 		if(!Pattern.matches(CITIES_FORMAT, registForm.getCities())) {
 			this.msgKeyList.add("060");
-			errCount++;
 		}
 
 		//市区町村9文字以下チェック
 		if(registForm.getCities().length() > 9) {
 			this.msgKeyList.add("061");
-			errCount++;
 		}
 
 		//メールアドレス254文字以下チェック
 		if(registForm.getEmailAddress().length() > 254) {
 			this.msgKeyList.add("070");
-			errCount++;
 		}
 
 		//電話番号形式チェック
 		if(!Pattern.matches(TELEPHONE_NUMBER_FORMAT, registForm.getTelephoneNumber())) {
 			this.msgKeyList.add("080");
-			errCount++;
 		}
 
 		switch(this.registType) {
@@ -340,7 +330,6 @@ public class RegistLogic {
 				//ペットニックネーム20文字以下チェック
 				if(registForm.getPetName().length() > 20) {
 					this.msgKeyList.add("090");
-					errCount++;
 				}
 
 				//ペット体重数値チェック
@@ -354,19 +343,16 @@ public class RegistLogic {
 							BigDecimal registFormPetWeightVal = new BigDecimal(registFormPetWeight);
 							if(registFormPetWeightVal.stripTrailingZeros().toString().substring(pointIndex + 1).length() > 2) {
 								this.msgKeyList.add("101");
-								errCount++;
 							}
 						}
 					}else {
 						this.msgKeyList.add("100");
-						errCount++;
 					}
 				}
 
 				//備考200文字以下チェック
 				if(registForm.getPetRemarks().length() > 200) {
 					this.msgKeyList.add("110");
-					errCount++;
 				}
 
 				break;
@@ -376,7 +362,6 @@ public class RegistLogic {
 				//店名50文字以下チェック
 				if(registForm.getStoreName().length() > 50) {
 					this.msgKeyList.add("120");
-					errCount++;
 				}
 
 				int errorTimeCount = 0;
@@ -396,7 +381,6 @@ public class RegistLogic {
 								if(errorTimeCount == 0) {
 									this.msgKeyList.add("130");
 									errorTimeCount++;
-									errCount++;
 								}
 							}
 						}
@@ -409,7 +393,6 @@ public class RegistLogic {
 								if(errorTimeCount == 0) {
 									this.msgKeyList.add("130");
 									errorTimeCount++;
-									errCount++;
 								}
 							}
 						}
@@ -424,7 +407,6 @@ public class RegistLogic {
 										if(errorTimeCount == 0) {
 											this.msgKeyList.add("130");
 											errorTimeCount++;
-											errCount++;
 										}
 									}
 								}else {
@@ -433,7 +415,6 @@ public class RegistLogic {
 										if(errorTimeCount == 0) {
 											this.msgKeyList.add("130");
 											errorTimeCount++;
-											errCount++;
 										}
 									}
 								}
@@ -442,14 +423,12 @@ public class RegistLogic {
 								if(errorTimeCount == 0) {
 									this.msgKeyList.add("130");
 									errorTimeCount++;
-									errCount++;
 								}
 							}else if(!formBusinessHoursStartTime.isEmpty() && formBusinessHoursEndTime.isEmpty()) {
 								formBusinessHours.setIsErrBusinessHoursStartTime("1");
 								if(errorTimeCount == 0) {
 									this.msgKeyList.add("130");
 									errorTimeCount++;
-									errCount++;
 								}
 							}
 						}
@@ -460,7 +439,6 @@ public class RegistLogic {
 							if(errorRemarksCount == 0) {
 								this.msgKeyList.add("140");
 								errorRemarksCount++;
-								errCount++;
 							}
 						}
 					}
@@ -474,24 +452,20 @@ public class RegistLogic {
 						//従業員数桁数チェック
 						if(registFormStoreEmployees.length() > 8) {
 							this.msgKeyList.add("151");
-							errCount++;
 						}
 					}else {
 						this.msgKeyList.add("150");
-						errCount++;
 					}
 				}
 
 				//コース200文字以下チェック
 				if(registForm.getCourseInfo().length() > 200) {
 					this.msgKeyList.add("160");
-					errCount++;
 				}
 
 				//こだわり200文字以下チェック
 				if(registForm.getCommitment().length() > 200) {
 					this.msgKeyList.add("170");
-					errCount++;
 				}
 
 				break;
@@ -501,7 +475,7 @@ public class RegistLogic {
 		}
 
 		//バリデーションエラーがある場合
-		if(errCount > 0) {
+		if(this.msgKeyList.size() > 0) {
 			//画像添付している場合
 			if(request.getPart("file").getSize() > 0) {
 				this.msgKeyList.add("180");
