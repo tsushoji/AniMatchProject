@@ -21,7 +21,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.Part;
 
-import com.web01.animatch.Util.StringUtil;
+import org.apache.commons.lang3.StringUtils;
+
 import com.web01.animatch.dao.AnimatchConnection;
 import com.web01.animatch.dao.RegistDao;
 import com.web01.animatch.dto.BusinessHours;
@@ -255,7 +256,7 @@ public class RegistLogic {
 	private List<FormBusinessHours> getFormParameterBusinessHoursDto(HttpServletRequest request) throws IOException, ServletException, ParseException {
 		List<FormBusinessHours> formBusinessHoursList = null;
 		String formBusinessHoursWeek = request.getParameter("business-hours");
-		if(!StringUtil.isNullOrEmpty(formBusinessHoursWeek)) {
+		if(!StringUtils.isEmpty(formBusinessHoursWeek)) {
 			formBusinessHoursList = new ArrayList<>();
 			String formBusinessHoursWeekAry[] = formBusinessHoursWeek.split(",");
 			for(int i = 0; i < formBusinessHoursWeekAry.length; i++) {
@@ -614,7 +615,7 @@ public class RegistLogic {
 		pet.setSex(getParameterData(registForm.getPetSex()));
 		pet.setType(getSelectParameterData(registForm.getPetType()));
 		String petWeight = registForm.getPetWeight();
-		if(!StringUtil.isNullOrEmpty(petWeight)) {
+		if(!StringUtils.isEmpty(petWeight)) {
 			pet.setWeight(Float.parseFloat(petWeight));
 		}
 		pet.setRemarks(getParameterData(registForm.getPetRemarks()));
@@ -643,7 +644,7 @@ public class RegistLogic {
 		}
 		store.setStoreName(registForm.getStoreName());
 		String storeEmployees = registForm.getStoreEmployees();
-		if(!StringUtil.isNullOrEmpty(storeEmployees)) {
+		if(!StringUtils.isEmpty(storeEmployees)) {
 			store.setEmployeesNumber(Integer.parseInt(storeEmployees));
 		}
 		store.setCourseInfo(getParameterData(registForm.getCourseInfo()));
@@ -684,7 +685,7 @@ public class RegistLogic {
 	 */
 	private String getSelectParameterData(String param) {
 		String rtnVal = null;
-		if(!StringUtil.isNullOrEmpty(param)) {
+		if(!StringUtils.isEmpty(param)) {
 			if(!param.equals("000")) {
 				rtnVal = param;
 			}
@@ -729,7 +730,7 @@ public class RegistLogic {
 	 */
 	private String getParameterData(String param) {
 		String rtnVal = null;
-		if(!StringUtil.isNullOrEmpty(param)) {
+		if(!StringUtils.isEmpty(param)) {
 			rtnVal = param;
 		}
 		return rtnVal;
