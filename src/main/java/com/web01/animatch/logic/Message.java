@@ -34,10 +34,6 @@ public class Message {
 
 	//メンバー
 	/**
-	 * メッセージキー
-	 */
-	private String messageKey;
-	/**
 	 * リソース・バンドルオブジェクト
 	 */
 	private ResourceBundle resBundle;
@@ -68,24 +64,14 @@ public class Message {
 	}
 
 	/**
-	 * メッセージキーgetter
-	 * @return メッセージキー
-	 */
-	public String getMessageKey() {
-		return messageKey;
-	}
-
-	/**
 	 * プロパティファイルからメッセージ取得
 	 * @param messageType メッセージ種別
 	 * @param messageKey メッセージキー
 	 * @return 失敗した場合、null 成功した場合、取得したメッセージ
 	 */
 	public String getMessage(Message.Type messageType, String messageKey) {
-		this.messageKey = messageKey;
 
-
-		String messageInitPropertyKey = getMessageInitPropertyKey(messageType);
+		String messageInitPropertyKey = getMessageInitPropertyKey(messageType, messageKey);
 		if(StringUtils.isEmpty(messageInitPropertyKey)) {
 			return null;
 		}
@@ -106,9 +92,8 @@ public class Message {
 	 * @return 失敗した場合、null 成功した場合、取得し、置換したメッセージ
 	 */
 	public String getMessage(Message.Type messageType, String messageKey, String ... replacedStr) {
-		this.messageKey = messageKey;
 
-		String messageInitPropertyKey = getMessageInitPropertyKey(messageType);
+		String messageInitPropertyKey = getMessageInitPropertyKey(messageType, messageKey);
 		if(StringUtils.isEmpty(messageInitPropertyKey)) {
 			return null;
 		}
@@ -130,21 +115,22 @@ public class Message {
 	/**
 	 * メッセージ種別からメッセージプロパティーキー頭文字列取得
 	 * @param messageType メッセージ種別
+	 * @param messageKey メッセージキー
 	 * @return 失敗した場合、null 成功した場合、メッセージプロパティーキー頭文字列
 	 */
-	private String getMessageInitPropertyKey(Message.Type messageType) {
+	private String getMessageInitPropertyKey(Message.Type messageType, String messageKey) {
 		String messageInitPropertyKey = null;
 		switch(messageType) {
 			case INFO:
-				messageKey = INFO_MESSAGE_INIT_PROPERTIES_KEY;
+				messageInitPropertyKey = INFO_MESSAGE_INIT_PROPERTIES_KEY;
 				break;
 
 			case WARNING:
-				messageKey = WARNING_MESSAGE_INIT_PROPERTIES_KEY;
+				messageInitPropertyKey = WARNING_MESSAGE_INIT_PROPERTIES_KEY;
 				break;
 
 			case ERROR:
-				messageKey = ERROR_MESSAGE_INIT_PROPERTIES_KEY;
+				messageInitPropertyKey = ERROR_MESSAGE_INIT_PROPERTIES_KEY;
 				break;
 
 			default:
