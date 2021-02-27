@@ -190,7 +190,7 @@
             <div class="form-row form-common">
                 <div class="form-group col-md-5 col-sm-6">
                     <label class="control-label required-item">メールアドレス</label>
-                    <input type="email" name="email-address" class="form-control" placeholder="xxxxxxx@xx.xx.xx" value="${registForm.emailAddress}" required>
+                    <input type="text" name="email-address" class="form-control" placeholder="xxxxxxx@xx.xx.xx" value="${registForm.emailAddress}" required>
                     <c:if test="${not empty msgMap['008']}">
 						<p>${msgMap["008"]}</p>
 					</c:if>
