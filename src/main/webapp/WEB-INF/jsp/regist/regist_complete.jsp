@@ -58,12 +58,12 @@
 
 	            <div>
 	                <label class="regist-complete-item-name"> &lt;ユーザー名&gt;</label>
-	                <p><c:out value="${user.userName}" default=" "/></p>
+	                <p><c:out value="${user.userName}"/></p>
 	            </div>
 
 	            <div>
 	                <label class="regist-complete-item-name"> &lt;パスワード&gt;</label>
-	                <p><c:out value="${user.password}" default=" "/></p>
+	                <p><c:out value="${user.password}"/></p>
 	            </div>
 
 	            <div>
@@ -82,22 +82,22 @@
 
 	            <div>
 	                <label class="regist-complete-item-name">&lt;郵便番号&gt;</label>
-	                <p><c:out value="${user.postalCode}" default=" "/></p>
+	                <p><c:out value="${user.postalCode}"/></p>
 	            </div>
 
 				<div>
 	                <label class="regist-complete-item-name">&lt;住所&gt;</label>
-	                <p><c:out value="${user.streetAddress}" default=" "/></p>
+	                <p><c:out value="${user.streetAddress}"/></p>
 	            </div>
 
 	            <div>
 	                <label class="regist-complete-item-name">&lt;メールアドレス&gt;</label>
-	                <p class="line-break"><c:out value="${user.emailAddress}" default=" "/></p>
+	                <p class="line-break"><c:out value="${user.emailAddress}"/></p>
 	            </div>
 
 	            <div>
 	                <label class="regist-complete-item-name">&lt;電話番号&gt;</label>
-	                <p><c:out value="${user.telephoneNumber}" default=" "/></p>
+	                <p><c:out value="${user.telephoneNumber}"/></p>
 	            </div>
 
 				<div>
@@ -121,7 +121,7 @@
 
 	            	<div>
 		                <label class="regist-complete-item-name">&lt;ペットニックネーム&gt;</label>
-		                <p class="line-break"><c:out value="${pet.nickName}" default=" "/></p>
+		                <p class="line-break"><c:out value="${pet.nickName}"/></p>
 		            </div>
 
 		            <div>
@@ -145,7 +145,7 @@
 		            <div>
 		                <label class="regist-complete-item-name">&lt;ペット体重&gt;</label>
 		                <p>
-			                <c:if test="${pet.weight != 0.0}">
+			                <c:if test="${pet.weight != null}">
 			                	<fmt:formatNumber value="${pet.weight}" />
 			                </c:if>
 		                </p>
@@ -200,7 +200,7 @@
 		            <div>
 	                    <label class="regist-complete-item-name">&lt;従業員数&ndash;人&gt;</label>
 	                    <p>
-	                    	<c:if test="${store.employeesNumber != 0}">
+	                    	<c:if test="${store.employeesNumber != null}">
 	                    		<fmt:formatNumber value="${store.employeesNumber}" />
 	                    	</c:if>
 	                    </p>

@@ -261,8 +261,8 @@ public class RegistDao {
 	 * @param paramIndex 引数インデックス
 	 * @param value 値
 	 */
-	private void setSQLIntegerParameter(PreparedStatement pstmt, int paramIndex, int value) throws SQLException {
-		if(value == 0) {
+	private void setSQLIntegerParameter(PreparedStatement pstmt, int paramIndex, Integer value) throws SQLException {
+		if(value == null) {
 			pstmt.setNull(paramIndex, Types.INTEGER);
 		}else {
 			pstmt.setInt(paramIndex, value);
@@ -303,8 +303,8 @@ public class RegistDao {
 	 * @param paramIndex 引数インデックス
 	 * @param value 値
 	 */
-	private void setSQLFloatParameter(PreparedStatement pstmt, int paramIndex, float value) throws SQLException {
-		if(value == 0.0) {
+	private void setSQLFloatParameter(PreparedStatement pstmt, int paramIndex, Float value) throws SQLException {
+		if(value == null) {
 			pstmt.setNull(paramIndex, Types.FLOAT);
 		}else {
 			pstmt.setFloat(paramIndex, value);
