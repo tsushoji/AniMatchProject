@@ -45,12 +45,4 @@ public class Store extends BaseDto{
 	 * こだわり
 	 */
 	private String commitment;
-
-	/**
-	 * 店舗IDgetter
-	 * @return 店舗ID
-	 */
-	public int getStoreId() {
-		return storeId;
-	}
 }
