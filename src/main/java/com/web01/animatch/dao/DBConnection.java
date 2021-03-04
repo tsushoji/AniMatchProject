@@ -6,15 +6,15 @@ import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 /**
- * AnimatchDBコネクションクラス
+ * DBコネクションクラス
  * @author Tsuji
  * @version 1.0
  */
-public class AnimatchConnection {
+public class DBConnection {
 
 	//メンバー
 	/**
-	 * DBコネクションオブジェクト
+	 * コネクションオブジェクト
 	 */
 	private Connection con = null;
 

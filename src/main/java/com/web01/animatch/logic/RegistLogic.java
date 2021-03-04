@@ -25,7 +25,7 @@ import javax.servlet.http.Part;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.web01.animatch.dao.AnimatchConnection;
+import com.web01.animatch.dao.DBConnection;
 import com.web01.animatch.dao.RegistDao;
 import com.web01.animatch.dto.BusinessHours;
 import com.web01.animatch.dto.FormBusinessHours;
@@ -518,7 +518,7 @@ public class RegistLogic {
 	 * @param registForm 登録フォームオブジェクト
 	 */
 	private void registDao(HttpServletRequest request, RegistForm registForm) {
-		AnimatchConnection con = new AnimatchConnection();
+		DBConnection con = new DBConnection();
 		RegistDao registDao = new RegistDao(con.getConnection());
 		try {
 			User user = getParameterUserDto(registForm, registDao);

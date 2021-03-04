@@ -18,7 +18,7 @@ public class Pet extends BaseDto{
 	/**
 	 * ペットID
 	 */
-	private int petId;
+	private Integer petId;
 	/**
 	 * 画像
 	 */
@@ -38,7 +38,7 @@ public class Pet extends BaseDto{
 	/**
 	 * 体重
 	 */
-	private float weight;
+	private Float weight;
 	/**
 	 * 補足
 	 */

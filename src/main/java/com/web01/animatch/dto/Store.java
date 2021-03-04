@@ -20,7 +20,7 @@ public class Store extends BaseDto{
 	/**
 	 * 店舗ID
 	 */
-	private int storeId;
+	private Integer storeId;
 	/**
 	 * 画像
 	 */
@@ -36,7 +36,7 @@ public class Store extends BaseDto{
 	/**
 	 * 従業員数
 	 */
-	private int employeesNumber;
+	private Integer employeesNumber;
 	/**
 	 * コース情報
 	 */

@@ -15,7 +15,7 @@ public class BaseDto {
 	/**
 	 * 削除ステータス
 	 */
-	private int isDeleted;
+	private Integer isDeleted;
 
 	/**
 	 * 新規登録時間

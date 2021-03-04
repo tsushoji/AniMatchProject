@@ -20,7 +20,7 @@ public class User extends BaseDto{
 	/**
 	 * ユーザID
 	 */
-	private int userId;
+	private Integer userId;
 	/**
 	 * ユーザ名
 	 */
