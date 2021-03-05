@@ -691,8 +691,8 @@ public class RegistLogic {
 		List<BusinessHours> businessHoursList = null;
 		List<FormBusinessHours> formBusinessHoursList = registForm.getFormBusinessHoursList();
 		if(formBusinessHoursList != null) {
+			businessHoursList = new ArrayList<>();
 			for(FormBusinessHours formBusinessHours: formBusinessHoursList){
-				businessHoursList = new ArrayList<>();
 				BusinessHours businessHours = new BusinessHours();
 				businessHours.setBusinessDay("00" + formBusinessHours.getBusinessHoursWeekdayNum());
 				String[] startBusinessTimeAry = formBusinessHours.getBusinessHoursStartTime().split(":");
