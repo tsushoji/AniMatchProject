@@ -13,6 +13,8 @@
 <c:set var="firstTypeKeyInitEnd" value="001" />
 <c:set var="secondTypeKeyInitEnd" value="002" />
 
+<c:set var="newLine" value="${System.lineSeparator()}" />
+
 <!DOCTYPE html>
 
 <html>
@@ -72,8 +74,9 @@
                        	<fmt:formatNumber var="registTypeKeyNum" value="${status.index + 1}" minIntegerDigits="3" />
 						<fmt:message bundle="${resource}" key="${registTypeKey}" var="registTypeVal" />
                        	<option value="${registTypeKeyNum}"
-	                       		<c:if test="${not empty formRegistType and formRegistType == registTypeKeyNum}">selected</c:if>>
-	                       	${registTypeVal}</option>
+	                       	<c:if test="${not empty formRegistType and formRegistType == registTypeKeyNum}">selected</c:if>>
+	                       	${registTypeVal}
+	                    </option>
                    	</c:forEach>
 	            </select>
 	        </div>
@@ -90,7 +93,7 @@
 
                 <div class="form-group col-md-4 col-sm-5">
                     <label class="control-label required-item">ユーザー名</label>
-                    <input type="text" name="user-name" class="form-control" value="${registForm.userName}" required>
+                    <input type="text" name="user-name" class="form-control" value="<c:out value="${registForm.userName}"/>" required>
 					<c:if test="${not empty msgMap['001']}">
 						<p>${msgMap["001"]}</p>
 					</c:if>
@@ -99,13 +102,13 @@
                 <div class="form-group col-md-4">
 
                     <label class="control-label required-item">パスワード</label>
-                    <input type="password" name="password" class="form-control col-md col-sm-5" value="${registForm.password}" required>
+                    <input type="password" name="password" class="form-control col-md col-sm-5" value="<c:out value="${registForm.password}"/>" required>
                     <c:if test="${not empty msgMap['003']}">
 						<p>${msgMap["003"]}</p>
 					</c:if>
 
                     <label class="control-label mt-2 required-item">再入力</label>
-                    <input type="password" name="re-password" class="form-control col-md col-sm-5" value="${registForm.rePassword}" required>
+                    <input type="password" name="re-password" class="form-control col-md col-sm-5" value="<c:out value="${registForm.rePassword}"/>" required>
 					<c:if test="${not empty msgMap['002']}">
 						<p>${msgMap["002"]}</p>
 					</c:if>
@@ -118,20 +121,20 @@
 
             <div class="custom-control custom-radio custom-control-inline form-common">
                 <input type="radio" id="radio-man" name="radio-user-sex" value="${firstTypeKeyInitEnd}" class="custom-control-input"
-                	<c:if test="${not empty registForm.sex and registForm.sex == firstTypeKeyInitEnd}">checked</c:if>>
+                <c:if test="${not empty registForm.sex and registForm.sex == firstTypeKeyInitEnd}">checked</c:if>>
                 <label class="custom-control-label custom-radio-label" for="radio-man"><fmt:message bundle="${resource}" key="${humanSexKeyInitStr}${firstTypeKeyInitEnd}" /></label>
             </div>
 
             <div class="custom-control custom-radio custom-control-inline form-common">
                 <input type="radio" id="radio-woman" name="radio-user-sex" value="${secondTypeKeyInitEnd}" class="custom-control-input"
-                	<c:if test="${not empty registForm.sex and registForm.sex == secondTypeKeyInitEnd}">checked</c:if>>
+                <c:if test="${not empty registForm.sex and registForm.sex == secondTypeKeyInitEnd}">checked</c:if>>
                 <label class="custom-control-label custom-radio-label" for="radio-woman"><fmt:message bundle="${resource}" key="${humanSexKeyInitStr}${secondTypeKeyInitEnd}" /></label>
             </div>
 
             <div class="form-row mt-3 form-common">
                 <div class="form-group col-md-4 col-sm-5">
                     <label class="control-label required-item">生年月日</label>
-                    <input type="text" name="birthday" class="form-control plugin-datepicker" value="${registForm.birthday}" required>
+                    <input type="text" name="birthday" class="form-control plugin-datepicker" value="<c:out value="${registForm.birthday}"/>" required>
                 </div>
             </div>
 
@@ -151,7 +154,7 @@
 
                 <div class="form-group col-md-3">
                     <label class="control-label required-item" for="postal-code">郵便番号</label>
-                    <input type="text" name="postal-code" class="form-control col-md col-sm-3" placeholder="9991234" id="postal-code" maxlength="7" value="${registForm.postalCode}" required>
+                    <input type="text" name="postal-code" class="form-control col-md col-sm-3" placeholder="9991234" id="postal-code" maxlength="7" value="<c:out value="${registForm.postalCode}"/>" required>
                     <c:if test="${not empty msgMap['004']}">
 						<p>${msgMap["004"]}</p>
 					</c:if>
@@ -166,7 +169,8 @@
 							<fmt:message bundle="${resource}" key="${prefecturesKey}" var="prefecturesVal" />
 	                       	<option value="${prefecturesKeyNum}"
 	                       		<c:if test="${not empty registForm.prefectures and registForm.prefectures == prefecturesKeyNum}">selected</c:if>>
-	                       	${prefecturesVal}</option>
+	                       		${prefecturesVal}
+	                       	</option>
 	                   	</c:forEach>
                     </select>
                     <c:if test="${not empty msgMap['005']}">
@@ -176,7 +180,7 @@
 
                 <div class="form-group col-md-3">
                     <label class="control-label required-item" for="cities">住所&ndash;市区町村</label>
-                    <input type="text" name="cities" id="cities" class="form-control col-md col-sm-3" value="${registForm.cities}" required>
+                    <input type="text" name="cities" id="cities" class="form-control col-md col-sm-3" value="<c:out value="${registForm.cities}"/>" required>
                     <c:if test="${not empty msgMap['006']}">
 						<p>${msgMap["006"]}</p>
 					</c:if>
@@ -190,7 +194,7 @@
             <div class="form-row form-common">
                 <div class="form-group col-md-5 col-sm-6">
                     <label class="control-label required-item">メールアドレス</label>
-                    <input type="text" name="email-address" class="form-control" placeholder="xxxxxxx@xx.xx.xx" value="${registForm.emailAddress}" required>
+                    <input type="text" name="email-address" class="form-control" placeholder="xxxxxxx@xx.xx.xx" value="<c:out value="${registForm.emailAddress}"/>" required>
                     <c:if test="${not empty msgMap['008']}">
 						<p>${msgMap["008"]}</p>
 					</c:if>
@@ -203,7 +207,7 @@
             <div class="form-row form-common">
                 <div class="form-group col-md-4 col-sm-5">
                     <label class="control-label required-item">電話番号</label>
-                    <input type="tel" name="telephone-number" class="form-control" placeholder="09012345678" value="${registForm.telephoneNumber}" required>
+                    <input type="tel" name="telephone-number" class="form-control" placeholder="09012345678" value="<c:out value="${registForm.telephoneNumber}"/>" required>
                     <c:if test="${not empty msgMap['010']}">
 						<p>${msgMap["010"]}</p>
 					</c:if>
@@ -227,7 +231,7 @@
             <div class="form-row form-owner">
                 <div class="form-group col-md-4 col-sm-5">
                     <label class="control-label required-item">ニックネーム</label>
-                    <input type="text" id="pet-name" name="pet-name" class="form-control" placeholder="シロ" value="${registForm.petName}">
+                    <input type="text" id="pet-name" name="pet-name" class="form-control" placeholder="シロ" value="<c:out value="${registForm.petName}"/>">
                     <c:if test="${not empty msgMap['011']}">
 						<p>${msgMap["011"]}</p>
 					</c:if>
@@ -258,7 +262,8 @@
 							<fmt:message bundle="${resource}" key="${petTypeKey}" var="petTypeVal" />
                         	<option value="${petTypeKeyNum}"
                         		<c:if test="${not empty registForm.petType and registForm.petType == petTypeKeyNum}">selected</c:if>>
-                        	${petTypeVal}</option>
+                        		${petTypeVal}
+                        	</option>
                     	</c:forEach>
                     </select>
                 </div>
@@ -267,7 +272,7 @@
             <div class="form-row form-owner">
                 <div class="form-group col-md-2 col-sm-3">
                     <label class="control-label">体重&ndash;&#13199;</label>
-                    <input type="text" name="pet-weight" class="form-control" placeholder="23" value="${registForm.petWeight}">
+                    <input type="text" name="pet-weight" class="form-control" placeholder="23" value="<c:out value="${registForm.petWeight}"/>">
                     <c:if test="${not empty msgMap['012']}">
 						<p>${msgMap["012"]}</p>
 					</c:if>
@@ -280,7 +285,7 @@
             <div class="form-row form-trimmer">
                 <div class="form-group col-md-4 col-sm-6">
                     <label class="control-label required-item">店名</label>
-                    <input type="text" id="store-name" name="store-name" class="form-control" placeholder="ペットサロン ヤマダ" value="${registForm.storeName}">
+                    <input type="text" id="store-name" name="store-name" class="form-control" placeholder="ペットサロン ヤマダ" value="<c:out value="${registForm.storeName}"/>">
                     <c:if test="${not empty msgMap['015']}">
 						<p>${msgMap["015"]}</p>
 					</c:if>
@@ -341,7 +346,7 @@
             <div class="form-row form-trimmer">
                 <div class="form-group col-md-2 col-sm-3">
                     <label class="control-label">従業員数&ndash;人</label>
-                    <input type="text" name="store-employees" class="form-control" placeholder="20" value="${registForm.storeEmployees}">
+                    <input type="text" name="store-employees" class="form-control" placeholder="20" value="<c:out value="${registForm.storeEmployees}"/>">
                     <c:if test="${not empty msgMap['018']}">
 						<p>${msgMap["018"]}</p>
 					</c:if>
@@ -353,7 +358,7 @@
 
             <div class="form-group form-owner">
                 <label class="control-label">備考</label>
-                <textarea name="pet-remarks" class="form-control" rows="10" placeholder="トリマーに伝えておきたいことを書いてください">${registForm.petRemarks}</textarea>
+                <textarea name="pet-remarks" class="form-control" rows="10" placeholder="トリマーに伝えておきたいことを書いてください"><c:set var="registFormPetRemarks" value="${registForm.petRemarks}" /><c:forEach var="registFormPetRemarksStr" items="${fn:split(registFormPetRemarks, newLine)}" ><c:out value="${registFormPetRemarksStr}"/><br/></c:forEach></textarea>
                 <c:if test="${not empty msgMap['014']}">
 					<p>${msgMap["014"]}</p>
 				</c:if>
@@ -361,7 +366,7 @@
 
             <div class="form-group form-trimmer">
                 <label class="control-label">コース・値段</label>
-                <textarea name="course-info" class="form-control" rows="10" placeholder="サービスの詳細を書いてください">${registForm.courseInfo}</textarea>
+                <textarea name="course-info" class="form-control" rows="10" placeholder="サービスの詳細を書いてください"><c:set var="registFormCourseInfo" value="${registForm.courseInfo}" /><c:forEach var="registFormCourseInfoStr" items="${fn:split(registFormCourseInfo, newLine)}" ><c:out value="${registFormCourseInfoStr}"/><br/></c:forEach></textarea>
                 <c:if test="${not empty msgMap['020']}">
 					<p>${msgMap["020"]}</p>
 				</c:if>
@@ -369,7 +374,7 @@
 
             <div class="form-group form-trimmer">
                 <label class="control-label">こだわりポイント</label>
-                <textarea name="commitment" class="form-control" rows="10" placeholder="セールスポイントを書いてください">${registForm.commitment}</textarea>
+                <textarea name="commitment" class="form-control" rows="10" placeholder="セールスポイントを書いてください"><c:set var="registFormCommitment" value="${registForm.commitment}" /><c:forEach var="registFormCommitmentStr" items="${fn:split(registFormCommitment, newLine)}" ><c:out value="${registFormCommitmentStr}"/><br/></c:forEach></textarea>
                 <c:if test="${not empty msgMap['021']}">
 					<p>${msgMap["021"]}</p>
 				</c:if>

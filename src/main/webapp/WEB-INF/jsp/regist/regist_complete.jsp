@@ -146,15 +146,19 @@
 		                <label class="regist-complete-item-name">&lt;ペット体重&gt;</label>
 		                <p>
 			                <c:if test="${pet.weight != null}">
-			                	<fmt:formatNumber value="${pet.weight}" />
+			                	<fmt:formatNumber value="${pet.weight}"/>
 			                </c:if>
 		                </p>
 		            </div>
 
 		            <div>
 		                <label class="regist-complete-item-name">&lt;備考&gt;</label>
-		                <c:set var="petRemarks" value="${pet.remarks}" />
-		                <p class="line-break"><c:out value="${fn:replace(petRemarks, newLine, '<br/>')}" default=" " escapeXml="false"/></p>
+		                <p class="line-break">
+		                	<c:set var="petRemarks" value="${pet.remarks}" />
+		                	<c:forEach var="petRemarksStr" items="${fn:split(petRemarks, newLine)}" >
+		                		<c:out value="${petRemarksStr}"/><br/>
+		                	</c:forEach>
+		                </p>
 		            </div>
 
 				</c:if>
@@ -163,7 +167,7 @@
 
 					<div>
 		                <label class="regist-complete-item-name">&lt;店名&gt;</label>
-		                <p class="line-break"><c:out value="${store.storeName}" default=" "/></p>
+		                <p class="line-break"><c:out value="${store.storeName}"/></p>
 		            </div>
 
 					<div>
@@ -178,18 +182,22 @@
 
 				                <div>
 				                    <label class="regist-complete-item-name">&lt;開始時間&gt;</label>
-				                    <p>${businessHours.startBusinessTime.getHour()}:<fmt:formatNumber value="${businessHours.startBusinessTime.getMinute()}" minIntegerDigits="2" /></p>
+				                    <p><c:out value="${businessHours.startBusinessTime.getHour()}"/>:<fmt:formatNumber value="${businessHours.startBusinessTime.getMinute()}" minIntegerDigits="2" /></p>
 				                </div>
 
 				                <div>
 				                    <label class="regist-complete-item-name">&lt;終了時間&gt;</label>
-				                    <p>${businessHours.endBusinessTime.getHour()}:<fmt:formatNumber value="${businessHours.endBusinessTime.getMinute()}" minIntegerDigits="2" /></p>
+				                    <p><c:out value="${businessHours.endBusinessTime.getHour()}"/>:<fmt:formatNumber value="${businessHours.endBusinessTime.getMinute()}" minIntegerDigits="2" /></p>
 				                </div>
 
 				                <div>
 				                    <label class="regist-complete-item-name">&lt;補足&gt;</label>
-				                    <c:set var="businessHoursComplement" value="${businessHours.complement}" />
-				                    <p class="line-break"><c:out value="${fn:replace(businessHoursComplement, newLine, '<br/>')}" default=" " escapeXml="false"/></p>
+				                    <p class="line-break">
+				                    	<c:set var="businessHoursComplement" value="${businessHours.complement}" />
+				                    	<c:forEach var="businessHoursComplementStr" items="${fn:split(businessHoursComplement, newLine)}" >
+											<c:out value="${businessHoursComplementStr}"/><br/>
+										</c:forEach>
+				                    </p>
 				                </div>
 
 				            </div>
@@ -201,21 +209,29 @@
 	                    <label class="regist-complete-item-name">&lt;従業員数&ndash;人&gt;</label>
 	                    <p>
 	                    	<c:if test="${store.employeesNumber != null}">
-	                    		<fmt:formatNumber value="${store.employeesNumber}" />
+	                    		<fmt:formatNumber value="${store.employeesNumber}"/>
 	                    	</c:if>
 	                    </p>
 	                </div>
 
 	                <div>
 		                <label class="regist-complete-item-name">&lt;コース・値段&gt;</label>
-		                <c:set var="storeCourseInfo" value="${store.courseInfo}" />
-		                <p class="line-break"><c:out value="${fn:replace(storeCourseInfo, newLine, '<br/>')}" default=" " escapeXml="false"/></p>
+		                <p class="line-break">
+		                	<c:set var="storeCourseInfo" value="${store.courseInfo}" />
+		                	<c:forEach var="storeCourseInfoStr" items="${fn:split(storeCourseInfo, newLine)}" >
+								<c:out value="${storeCourseInfoStr}"/><br/>
+							</c:forEach>
+		                </p>
 		            </div>
 
 		            <div>
 		                <label class="regist-complete-item-name">&lt;こだわりポイント&gt;</label>
-		                <c:set var="storeCommitment" value="${store.commitment}" />
-		                <p class="line-break"><c:out value="${fn:replace(storeCommitment, newLine, '<br/>')}" default=" " escapeXml="false"/></p>
+		                <p class="line-break">
+		                	<c:set var="storeCommitment" value="${store.commitment}" />
+		                	<c:forEach var="storeCommitmentStr" items="${fn:split(storeCommitment, newLine)}" >
+								<c:out value="${storeCommitmentStr}"/><br/>
+							</c:forEach>
+		                </p>
 		            </div>
 
 				</c:if>
