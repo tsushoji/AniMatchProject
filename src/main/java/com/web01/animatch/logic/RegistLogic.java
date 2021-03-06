@@ -564,7 +564,8 @@ public class RegistLogic {
 	 */
 	private User getParameterUserDto(RegistForm registForm, RegistDao registDao) throws SQLException, ParseException {
 		User user = new User();
-		user.setUserId(registDao.getMaxUserId() + 1);
+
+		user.setUserId(registDao.getMaxId(RegistDao.USER_TABLE_NAME));
 		user.setUserName(registForm.getUserName());
 		user.setPassword(registForm.getPassword());
 		user.setSex(getParameterData(registForm.getSex()));
@@ -594,7 +595,7 @@ public class RegistLogic {
 	 */
 	private Pet getParameterPetDto(HttpServletRequest request, RegistForm registForm, RegistDao registDao) throws SQLException, IOException, ServletException {
 		Pet pet = new Pet();
-		pet.setPetId(registDao.getMaxPetId() + 1);
+		pet.setPetId(registDao.getMaxId(RegistDao.PET_TABLE_NAME));
 		Part part = request.getPart("file");
 		if(part.getSize() > 0) {
 			byte[] fileData = convertPartToByteArray(part);
@@ -625,7 +626,7 @@ public class RegistLogic {
 	 */
 	private Store getParameterStoreDto(HttpServletRequest request, RegistForm registForm, RegistDao registDao) throws SQLException, IOException, ServletException {
 		Store store = new Store();
-		store.setStoreId(registDao.getMaxStoreId() + 1);
+		store.setStoreId(registDao.getMaxId(RegistDao.STORE_TABLE_NAME));
 		Part part = request.getPart("file");
 		if(part.getSize() > 0) {
 			byte[] fileData = convertPartToByteArray(part);

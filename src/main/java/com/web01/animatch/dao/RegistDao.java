@@ -6,7 +6,6 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.sql.Types;
@@ -41,6 +40,21 @@ public class RegistDao {
 	private static final int DEFAULT_ID = 1000000000;
 
 	/**
+	 * ユーザテーブル名
+	 */
+	public static final String USER_TABLE_NAME = "t_user";
+
+	/**
+	 * ペットテーブル名
+	 */
+	public static final String PET_TABLE_NAME = "t_pet";
+
+	/**
+	 * 店舗テーブル名
+	 */
+	public static final String STORE_TABLE_NAME = "t_store";
+
+	/**
 	 * 引数付きコンストラクタ
 	 * @param con DBコネクションオブジェクト
 	 */
@@ -49,60 +63,25 @@ public class RegistDao {
 	}
 
 	/**
-	 * 最大ユーザID取得
-	 * @return ユーザID
+	 * 最大ID取得
+	 * @param con DBコネクションオブジェクト
+	 * @return 最大ID
 	 */
-	public int getMaxUserId() throws SQLException {
-		int userId = DEFAULT_ID;
-		Statement stmt = con.createStatement();
-		ResultSet rs = stmt.executeQuery("SELECT * FROM t_user ORDER BY user_id DESC LIMIT 1");
+	public int getMaxId(String tableName) throws SQLException {
+		int id = 0;
+		String sql = "SELECT AUTO_INCREMENT FROM information_schema.tables WHERE table_name=?";
+		PreparedStatement pstmt = con.prepareStatement(sql);
+		pstmt.setString(1, tableName);
+		ResultSet rs = pstmt.executeQuery();
 
 		if(rs.next()) {
-			userId = rs.getInt("user_id");
+			id = rs.getInt("AUTO_INCREMENT");
 		}
 
 		rs.close();
-		stmt.close();
+		pstmt.close();
 
-		return userId;
-	}
-
-	/**
-	 * 最大ペットID取得
-	 * @return ペットID
-	 */
-	public int getMaxPetId() throws SQLException {
-		int petId = DEFAULT_ID;
-		Statement stmt = con.createStatement();
-		ResultSet rs = stmt.executeQuery("SELECT * FROM t_pet ORDER BY pet_id DESC LIMIT 1");
-
-		if(rs.next()) {
-			petId = rs.getInt("pet_id");
-		}
-
-		rs.close();
-		stmt.close();
-
-		return petId;
-	}
-
-	/**
-	 * 最大店舗ID取得
-	 * @return 店舗ID
-	 */
-	public int getMaxStoreId() throws SQLException {
-		int storeId = DEFAULT_ID;
-		Statement stmt = con.createStatement();
-		ResultSet rs = stmt.executeQuery("SELECT * FROM t_store ORDER BY store_id DESC LIMIT 1");
-
-		if(rs.next()) {
-			storeId = rs.getInt("store_id");
-		};
-
-		rs.close();
-		stmt.close();
-
-		return storeId;
+		return id;
 	}
 
 	/**
