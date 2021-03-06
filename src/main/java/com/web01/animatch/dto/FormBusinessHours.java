@@ -44,11 +44,19 @@ public class FormBusinessHours {
 	*/
 	private String isErrBusinessHoursEndTime;
 	/**
-	 * 営業時間フォーム時間補足エラーステータス
+	 * 営業時間フォーム時間補足文字数エラーステータス
 	 */
 	/*
 	* EL式に埋め込むため、String型
 	* 0：flase、1：true
 	*/
-	private String isErrBusinessHoursRemarks;
+	private String isErrLengthBusinessHoursRemarks;
+	/**
+	 * 営業時間フォーム時間補足XSSエラーステータス
+	 */
+	/*
+	* EL式に埋め込むため、String型
+	* 0：flase、1：true
+	*/
+	private String isErrXSSBusinessHoursRemarks;
 }

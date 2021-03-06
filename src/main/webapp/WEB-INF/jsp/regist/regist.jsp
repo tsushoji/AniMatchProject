@@ -327,7 +327,8 @@
 	                <div class="form-group col-lg-5">
 	                    <label class="control-label">補足</label>
 	                    <textarea id="business-hours-remarks-${status.index}" name="business-hours-remarks-${status.index}" class="form-control col-lg col-md-6 col-sm-7" placeholder="第一${weekdayVal}は休業。"></textarea>
-	                    <p id="business-hours-remarks-${status.index}-err-msg" class="is-hidden">${msgMap["017"]}</p>
+	                    <p id="business-hours-remarks-${status.index}-err-length-msg" class="is-hidden">${msgMap["017"]}</p>
+	                    <p id="business-hours-remarks-${status.index}-err-xss-msg" class="is-hidden">${msgMap["024"]}</p>
 	                </div>
 
 	            </div>
@@ -335,12 +336,13 @@
 
            	<c:forEach items="${formBusinessHoursList}" var="formBusinessHours">
            		<c:set var="businessHoursWeekdayNum" value="${formBusinessHours.businessHoursWeekdayNum}" />
-				<input type="hidden" id="form-business-hours-start-time-${businessHoursWeekdayNum}" value="${formBusinessHours.businessHoursStartTime}">
-				<input type="hidden" id="form-business-hours-end-time-${businessHoursWeekdayNum}" value="${formBusinessHours.businessHoursEndTime}">
-				<input type="hidden" id="form-business-hours-remarks-${businessHoursWeekdayNum}" value="${formBusinessHours.businessHoursRemarks}">
+				<input type="hidden" id="form-business-hours-start-time-${businessHoursWeekdayNum}" value="<c:out value="${formBusinessHours.businessHoursStartTime}"/>">
+				<input type="hidden" id="form-business-hours-end-time-${businessHoursWeekdayNum}" value="<c:out value="${formBusinessHours.businessHoursEndTime}"/>">
+				<input type="hidden" id="form-business-hours-remarks-${businessHoursWeekdayNum}" value="<c:out value="${formBusinessHours.businessHoursRemarks}"/>">
 				<input type="hidden" id="err-form-business-hours-start-time-${businessHoursWeekdayNum}" value="${formBusinessHours.isErrBusinessHoursStartTime}">
 				<input type="hidden" id="err-form-business-hours-end-time-${businessHoursWeekdayNum}" value="${formBusinessHours.isErrBusinessHoursEndTime}">
-				<input type="hidden" id="err-form-business-hours-remarks-${businessHoursWeekdayNum}" value="${formBusinessHours.isErrBusinessHoursRemarks}">
+				<input type="hidden" id="err-length-form-business-hours-remarks-${businessHoursWeekdayNum}" value="${formBusinessHours.isErrLengthBusinessHoursRemarks}">
+				<input type="hidden" id="err-xss-form-business-hours-remarks-${businessHoursWeekdayNum}" value="${formBusinessHours.isErrXSSBusinessHoursRemarks}">
            	</c:forEach>
 
             <div class="form-row form-trimmer">
@@ -358,25 +360,34 @@
 
             <div class="form-group form-owner">
                 <label class="control-label">備考</label>
-                <textarea name="pet-remarks" class="form-control" rows="10" placeholder="トリマーに伝えておきたいことを書いてください"><c:set var="registFormPetRemarks" value="${registForm.petRemarks}" /><c:forEach var="registFormPetRemarksStr" items="${fn:split(registFormPetRemarks, newLine)}" ><c:out value="${registFormPetRemarksStr}"/><br/></c:forEach></textarea>
+                <textarea name="pet-remarks" class="form-control" rows="10" placeholder="トリマーに伝えておきたいことを書いてください"><c:out value="${registForm.petRemarks}"/></textarea>
                 <c:if test="${not empty msgMap['014']}">
 					<p>${msgMap["014"]}</p>
+				</c:if>
+				<c:if test="${not empty msgMap['023']}">
+					<p>${msgMap["023"]}</p>
 				</c:if>
             </div>
 
             <div class="form-group form-trimmer">
                 <label class="control-label">コース・値段</label>
-                <textarea name="course-info" class="form-control" rows="10" placeholder="サービスの詳細を書いてください"><c:set var="registFormCourseInfo" value="${registForm.courseInfo}" /><c:forEach var="registFormCourseInfoStr" items="${fn:split(registFormCourseInfo, newLine)}" ><c:out value="${registFormCourseInfoStr}"/><br/></c:forEach></textarea>
+                <textarea name="course-info" class="form-control" rows="10" placeholder="サービスの詳細を書いてください"><c:out value="${registForm.courseInfo}"/></textarea>
                 <c:if test="${not empty msgMap['020']}">
 					<p>${msgMap["020"]}</p>
+				</c:if>
+				<c:if test="${not empty msgMap['025']}">
+					<p>${msgMap["025"]}</p>
 				</c:if>
             </div>
 
             <div class="form-group form-trimmer">
                 <label class="control-label">こだわりポイント</label>
-                <textarea name="commitment" class="form-control" rows="10" placeholder="セールスポイントを書いてください"><c:set var="registFormCommitment" value="${registForm.commitment}" /><c:forEach var="registFormCommitmentStr" items="${fn:split(registFormCommitment, newLine)}" ><c:out value="${registFormCommitmentStr}"/><br/></c:forEach></textarea>
+                <textarea name="commitment" class="form-control" rows="10" placeholder="セールスポイントを書いてください"><c:out value="${registForm.commitment}"/></textarea>
                 <c:if test="${not empty msgMap['021']}">
 					<p>${msgMap["021"]}</p>
+				</c:if>
+				<c:if test="${not empty msgMap['026']}">
+					<p>${msgMap["026"]}</p>
 				</c:if>
             </div>
 

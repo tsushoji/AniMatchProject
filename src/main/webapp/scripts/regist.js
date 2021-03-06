@@ -93,8 +93,12 @@ $(document).ready(function(){
 				$('#business-hours-end-time-' + value + '-err-msg').removeClass('is-hidden');
 			}
 
-			if($('#err-form-business-hours-remarks-' + value).val() === '1'){
-				$('#business-hours-remarks-' + value + '-err-msg').removeClass('is-hidden');
+			if($('#err-length-form-business-hours-remarks-' + value).val() === '1'){
+				$('#business-hours-remarks-' + value + '-err-length-msg').removeClass('is-hidden');
+			}
+
+			if($('#err-xss-form-business-hours-remarks-' + value).val() === '1'){
+				$('#business-hours-remarks-' + value + '-err-xss-msg').removeClass('is-hidden');
 			}
 		});
 	}

@@ -124,6 +124,14 @@ public class RegistLogic {
 	 * プロパティファイル名
 	 */
 	private static final String PROPERTIES_NAME = "animatch";
+	/**
+	 * textarea開始タグ特殊文字
+	 */
+	private static final String TEXTAREA_INIT_PART_TAG = "<textarea";
+	/**
+	 * textarea終了タグ特殊文字
+	 */
+	private static final String TEXTAREA_END_TAG = "</textarea>";
 
 	/**
 	 * デフォルトコンストラクタ
@@ -365,9 +373,15 @@ public class RegistLogic {
 					}
 				}
 
+				String registFormPetRemarks = registForm.getPetRemarks();
 				//備考200文字以下チェック
-				if(registForm.getPetRemarks().length() > 200) {
+				if(registFormPetRemarks.length() > 200) {
 					this.msgMap.put("014", this.message.getMessage(Message.Type.ERROR, "001", "備考", "200文字以下"));
+				}
+
+				//備考XSS対策
+				if(registFormPetRemarks.contains(TEXTAREA_INIT_PART_TAG) || registFormPetRemarks.contains(TEXTAREA_END_TAG)) {
+					this.msgMap.put("023", this.message.getMessage(Message.Type.ERROR, "007"));
 				}
 
 				break;
@@ -381,6 +395,7 @@ public class RegistLogic {
 
 				int errorTimeCount = 0;
 				int errorRemarksCount = 0;
+				int errorXSSRemarksCount = 0;
 				//営業時間チェック
 				List<FormBusinessHours> formBusinessHoursList = registForm.getFormBusinessHoursList();
 				//Multipickerで選択されている場合
@@ -448,12 +463,23 @@ public class RegistLogic {
 							}
 						}
 
+						String formBusinessHoursRemarks = formBusinessHours.getBusinessHoursRemarks();
 						//補足100文字以下チェック
-						if(formBusinessHours.getBusinessHoursRemarks().length() > 100) {
-							formBusinessHours.setIsErrBusinessHoursRemarks("1");
+						if(formBusinessHoursRemarks.length() > 100) {
+							formBusinessHours.setIsErrLengthBusinessHoursRemarks("1");
 							if(errorRemarksCount == 0) {
 								this.msgMap.put("017", this.message.getMessage(Message.Type.ERROR, "001", "営業時間補足", "100文字以下"));
 								errorRemarksCount++;
+							}
+						}
+
+
+						//補足XSS対策
+						if(formBusinessHoursRemarks.contains(TEXTAREA_INIT_PART_TAG) || formBusinessHoursRemarks.contains(TEXTAREA_END_TAG)) {
+							formBusinessHours.setIsErrXSSBusinessHoursRemarks("1");
+							if(errorXSSRemarksCount == 0) {
+								this.msgMap.put("024", this.message.getMessage(Message.Type.ERROR, "007"));
+								errorXSSRemarksCount++;
 							}
 						}
 					}
@@ -473,14 +499,26 @@ public class RegistLogic {
 					}
 				}
 
+				String registFormCourseInfo = registForm.getCourseInfo();
 				//コース200文字以下チェック
-				if(registForm.getCourseInfo().length() > 200) {
+				if(registFormCourseInfo.length() > 200) {
 					this.msgMap.put("020", this.message.getMessage(Message.Type.ERROR, "001", "コース", "200文字以下"));
 				}
 
+				//コースXSS対策
+				if(registFormCourseInfo.contains(TEXTAREA_INIT_PART_TAG) || registFormCourseInfo.contains(TEXTAREA_END_TAG)) {
+					this.msgMap.put("025", this.message.getMessage(Message.Type.ERROR, "007"));
+				}
+
+				String registFormCommitment = registForm.getCommitment();
 				//こだわり200文字以下チェック
-				if(registForm.getCommitment().length() > 200) {
+				if(registFormCommitment.length() > 200) {
 					this.msgMap.put("021", this.message.getMessage(Message.Type.ERROR, "001", "こだわり", "200文字以下"));
+				}
+
+				//こだわりXSS対策
+				if(registFormCommitment.contains(TEXTAREA_INIT_PART_TAG) || registFormCommitment.contains(TEXTAREA_END_TAG)) {
+					this.msgMap.put("026", this.message.getMessage(Message.Type.ERROR, "007"));
 				}
 
 				break;
