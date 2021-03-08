@@ -567,6 +567,8 @@ public class RegistLogic {
 					user.setPet(pet);
 					setAttributeRegistOwner(request, user);
 					if(this.canRegist) {
+						//DB登録処理前に登録成功失敗リセット
+						this.canRegist = false;
 						this.canRegist = registDao.registOwner(user);
 					}
 					break;
@@ -579,6 +581,8 @@ public class RegistLogic {
 					user.setStore(store);
 					setAttributeRegistTrimmer(request, user);
 					if(this.canRegist) {
+						//DB登録処理前に登録成功失敗リセット
+						this.canRegist = false;
 						this.canRegist = registDao.registTrimmer(user);
 					}
 					break;
@@ -587,7 +591,6 @@ public class RegistLogic {
 					break;
 			}
 		} catch (SQLException | ParseException | IOException | ServletException e) {
-			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
 		}finally {
 			con.close();
@@ -690,17 +693,22 @@ public class RegistLogic {
 	 * @param part パート
 	 * @return バイト配列
 	 */
-	private byte[] convertPartToByteArray(Part part) throws IOException {
-		InputStream inputStream = part.getInputStream();
+	private byte[] convertPartToByteArray(Part part) throws IOException  {
 		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-		byte[] data = new byte[BYTE_ARY_SIZE];
-		int readByteSize;
-		while((readByteSize = inputStream.read(data, 0, data.length)) != -1) {
-			buffer.write(data, 0, readByteSize);
-		}
+		InputStream inputStream = part.getInputStream();
 
-		inputStream.close();
-		buffer.close();
+		try{
+			byte[] data = new byte[BYTE_ARY_SIZE];
+			int readByteSize;
+			while((readByteSize = inputStream.read(data, 0, data.length)) != -1) {
+				buffer.write(data, 0, readByteSize);
+			}
+		}catch(IOException e) {
+			e.printStackTrace();
+		}finally {
+			buffer.close();
+			inputStream.close();
+		}
 
 		return buffer.toByteArray();
 	}

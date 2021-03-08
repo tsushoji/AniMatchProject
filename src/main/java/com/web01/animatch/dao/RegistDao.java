@@ -73,13 +73,16 @@ public class RegistDao {
 		PreparedStatement pstmt = con.prepareStatement(sql);
 		pstmt.setString(1, tableName);
 		ResultSet rs = pstmt.executeQuery();
-
-		if(rs.next()) {
-			id = rs.getInt("AUTO_INCREMENT");
+		try{
+			if(rs.next()) {
+				id = rs.getInt("AUTO_INCREMENT");
+			}
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}finally {
+			rs.close();
+			pstmt.close();
 		}
-
-		rs.close();
-		pstmt.close();
 
 		return id;
 	}
@@ -131,28 +134,33 @@ public class RegistDao {
 		sql += "?)";
 		PreparedStatement pstmt = con.prepareStatement(sql);
 
-		for (int i = 0; i < userDataParamCount; i++) {
-			setSqlParameter(pstmt, (i+1), userDataList.get(i).getRegistData(), userDataList.get(i).getRegistDataType());
+		try {
+			for (int i = 0; i < userDataParamCount; i++) {
+				setSqlParameter(pstmt, (i+1), userDataList.get(i).getRegistData(), userDataList.get(i).getRegistDataType());
+			}
+
+			pstmt.executeUpdate();
+
+			int petDataParamCount = petDataList.size();
+			sql = "INSERT INTO t_pet VALUES(";
+			for(int i = 1; i < petDataParamCount; i++) {
+				sql += "?, ";
+			}
+			sql += "?)";
+			pstmt = con.prepareStatement(sql);
+
+			for (int i = 0; i < petDataParamCount; i++) {
+				setSqlParameter(pstmt, (i+1), petDataList.get(i).getRegistData(), petDataList.get(i).getRegistDataType());
+			}
+
+			pstmt.executeUpdate();
+
+			this.con.commit();
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}finally {
+			pstmt.close();
 		}
-
-		pstmt.executeUpdate();
-
-		int petDataParamCount = petDataList.size();
-		sql = "INSERT INTO t_pet VALUES(";
-		for(int i = 1; i < petDataParamCount; i++) {
-			sql += "?, ";
-		}
-		sql += "?)";
-		pstmt = con.prepareStatement(sql);
-
-		for (int i = 0; i < petDataParamCount; i++) {
-			setSqlParameter(pstmt, (i+1), petDataList.get(i).getRegistData(), petDataList.get(i).getRegistDataType());
-		}
-
-		pstmt.executeUpdate();
-
-		this.con.commit();
-		pstmt.close();
 
 		return true;
 	}
@@ -221,47 +229,52 @@ public class RegistDao {
 		sql += "?)";
 		PreparedStatement pstmt = con.prepareStatement(sql);
 
-		for (int i = 0; i < userDataParamCount; i++) {
-			setSqlParameter(pstmt, (i+1), userDataList.get(i).getRegistData(), userDataList.get(i).getRegistDataType());
-		}
+		try {
+			for (int i = 0; i < userDataParamCount; i++) {
+				setSqlParameter(pstmt, (i+1), userDataList.get(i).getRegistData(), userDataList.get(i).getRegistDataType());
+			}
 
-		pstmt.executeUpdate();
+			pstmt.executeUpdate();
 
-		int storeDataParamCount = storeDataList.size();
-		sql = "INSERT INTO t_store VALUES(";
-		for(int i = 1; i < storeDataParamCount; i++) {
-			sql += "?, ";
-		}
-		sql += "?)";
-		pstmt = con.prepareStatement(sql);
-
-		for (int i = 0; i < storeDataParamCount; i++) {
-			setSqlParameter(pstmt, (i+1), storeDataList.get(i).getRegistData(), storeDataList.get(i).getRegistDataType());
-		}
-
-		pstmt.executeUpdate();
-
-		for(int i = 0; i < businessHoursDataMap.size(); i++) {
-			List<RegistData> businessHoursDataList = businessHoursDataMap.get(i);
-			int businessHoursDataParamCount = businessHoursDataList.size();
-
-			sql = "INSERT INTO t_business_hours VALUES(";
-			for(int j = 1; j < businessHoursDataParamCount; j++) {
+			int storeDataParamCount = storeDataList.size();
+			sql = "INSERT INTO t_store VALUES(";
+			for(int i = 1; i < storeDataParamCount; i++) {
 				sql += "?, ";
 			}
 			sql += "?)";
 			pstmt = con.prepareStatement(sql);
 
-
-			for (int k = 0; k < businessHoursDataParamCount; k++) {
-				setSqlParameter(pstmt, (k+1), businessHoursDataList.get(k).getRegistData(), businessHoursDataList.get(k).getRegistDataType());
+			for (int i = 0; i < storeDataParamCount; i++) {
+				setSqlParameter(pstmt, (i+1), storeDataList.get(i).getRegistData(), storeDataList.get(i).getRegistDataType());
 			}
 
 			pstmt.executeUpdate();
-		}
 
-		this.con.commit();
-		pstmt.close();
+			for(int i = 0; i < businessHoursDataMap.size(); i++) {
+				List<RegistData> businessHoursDataList = businessHoursDataMap.get(i);
+				int businessHoursDataParamCount = businessHoursDataList.size();
+
+				sql = "INSERT INTO t_business_hours VALUES(";
+				for(int j = 1; j < businessHoursDataParamCount; j++) {
+					sql += "?, ";
+				}
+				sql += "?)";
+				pstmt = con.prepareStatement(sql);
+
+
+				for (int k = 0; k < businessHoursDataParamCount; k++) {
+					setSqlParameter(pstmt, (k+1), businessHoursDataList.get(k).getRegistData(), businessHoursDataList.get(k).getRegistDataType());
+				}
+
+				pstmt.executeUpdate();
+			}
+
+			this.con.commit();
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}finally {
+			pstmt.close();
+		}
 
 		return true;
 	}
