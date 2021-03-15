@@ -101,6 +101,14 @@ public class RegistLogic {
 	 */
 	private static final String INIT_ZERO_DECIMAL_FORMAT = "^[+]?([0]{1})[.]?([0-9]{0,})$";
 	/**
+	 * 0の小数フォーマット
+	 */
+	private static final String ZERO_DECIMAL_FORMAT = "^[+]?([0]{1})[.]?([0]{1,})$";
+	/**
+	 * 小数点以下0の整数フォーマット
+	 */
+	private static final String END_ZERO_DECIMAL_FORMAT = "^[+]?([1-9]{1})([0-9]{0,37})[.]?([0]{1,})$";
+	/**
 	 * 営業時間フォーマット
 	 */
 	private static final String BUSINESS_TIME_FORMAT = "^[0-9]{2}:[0-9]{2}$";
@@ -361,11 +369,17 @@ public class RegistLogic {
 				if(!registFormPetWeight.isEmpty()) {
 					if(Pattern.matches(DECIMAL_FORMAT, registFormPetWeight) || Pattern.matches(INIT_ZERO_DECIMAL_FORMAT, registFormPetWeight)) {
 						//ペット体重小数桁数チェック
-						int pointIndex = registFormPetWeight.indexOf(".");
-						if(pointIndex != -1) {
-							BigDecimal registFormPetWeightVal = new BigDecimal(registFormPetWeight);
-							if(registFormPetWeightVal.stripTrailingZeros().toString().substring(pointIndex + 1).length() > 2) {
-								this.msgMap.put("013", this.message.getMessage(Message.Type.ERROR, "001", "ペット体重", "小数第2位まで"));
+						if(registFormPetWeight.equals("0") || Pattern.matches(ZERO_DECIMAL_FORMAT, registFormPetWeight)) {
+							this.msgMap.put("012", this.message.getMessage(Message.Type.ERROR, "001", "ペット体重", "0以上の実数値"));
+						}else {
+							if(!Pattern.matches(END_ZERO_DECIMAL_FORMAT, registFormPetWeight)) {
+								int pointIndex = registFormPetWeight.indexOf(".");
+								if(pointIndex != -1) {
+									BigDecimal registFormPetWeightVal = new BigDecimal(registFormPetWeight);
+									if(registFormPetWeightVal.stripTrailingZeros().toString().substring(pointIndex + 1).length() > 2) {
+										this.msgMap.put("013", this.message.getMessage(Message.Type.ERROR, "001", "ペット体重", "小数第2位まで"));
+									}
+								}
 							}
 						}
 					}else {
