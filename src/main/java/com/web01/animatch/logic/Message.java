@@ -25,7 +25,7 @@ public class Message {
 		/**
 		 * 警告
 		 */
-		WARNING,
+		WARN,
 		/**
 		 * エラー
 		 */
@@ -125,7 +125,7 @@ public class Message {
 				messageInitPropertyKey = INFO_MESSAGE_INIT_PROPERTIES_KEY;
 				break;
 
-			case WARNING:
+			case WARN:
 				messageInitPropertyKey = WARNING_MESSAGE_INIT_PROPERTIES_KEY;
 				break;
 
