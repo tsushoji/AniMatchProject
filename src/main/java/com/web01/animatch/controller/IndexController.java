@@ -1,4 +1,4 @@
-package com.web01.animatch.servlet;
+package com.web01.animatch.controller;
 
 import java.io.IOException;
 
@@ -9,11 +9,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * indexControllerクラス
+ * IndexControllerクラス
  * @author Tsuji
  * @version 1.0
  */
-public class IndexServlet extends HttpServlet {
+public class IndexController extends HttpServlet {
 
 	//定数
 	/**
@@ -24,7 +24,7 @@ public class IndexServlet extends HttpServlet {
 	/**
 	 * デフォルトコンストラクタ
 	 */
-    public IndexServlet() {
+    public IndexController() {
         super();
     }
 

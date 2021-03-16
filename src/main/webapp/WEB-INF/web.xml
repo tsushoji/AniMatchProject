@@ -14,10 +14,10 @@
   	<url-pattern>/*</url-pattern>
   </filter-mapping>
   <servlet>
-    <servlet-name>IndexServlet</servlet-name>
-    <display-name>IndexServlet</display-name>
+    <servlet-name>IndexController</servlet-name>
+    <display-name>IndexController</display-name>
     <description></description>
-  	<servlet-class>com.web01.animatch.servlet.IndexServlet</servlet-class>
+  	<servlet-class>com.web01.animatch.controller.IndexController</servlet-class>
   </servlet>
   <servlet>
   	<servlet-name>LoginServlet</servlet-name>
@@ -74,10 +74,10 @@
   	<servlet-class>com.web01.animatch.servlet.MessageServlet</servlet-class>
   </servlet>
   <servlet>
-  	<servlet-name>ContactServlet</servlet-name>
-  	<display-name>ContactServlet</display-name>
+  	<servlet-name>ContactController</servlet-name>
+  	<display-name>ContactController</display-name>
   	<description></description>
-  	<servlet-class>com.web01.animatch.servlet.ContactServlet</servlet-class>
+  	<servlet-class>com.web01.animatch.controller.ContactController</servlet-class>
   </servlet>
   <servlet>
   	<servlet-name>RegistCompleteServlet</servlet-name>
@@ -86,8 +86,8 @@
   	<servlet-class>com.web01.animatch.servlet.RegistCompleteServlet</servlet-class>
   </servlet>
   <servlet-mapping>
-  	<servlet-name>IndexServlet</servlet-name>
-  	<url-pattern>/index</url-pattern>
+  	<servlet-name>IndexController</servlet-name>
+  	<url-pattern>/</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
   	<servlet-name>LoginServlet</servlet-name>
@@ -126,8 +126,8 @@
   	<url-pattern>/dmessage/message</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
-  	<servlet-name>ContactServlet</servlet-name>
-  	<url-pattern>/contact</url-pattern>
+  	<servlet-name>ContactController</servlet-name>
+  	<url-pattern>/contact/</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
   	<servlet-name>RegistCompleteServlet</servlet-name>
