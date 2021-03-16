@@ -1,19 +1,23 @@
-package com.web01.animatch.servlet;
+package com.web01.animatch.controller;
 
 import java.io.IOException;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.web01.animatch.logic.RegistLogic;
+
 /**
- * loginControllerクラス
+ * SignupControllerクラス
  * @author Tsuji
  * @version 1.0
  */
-public class LoginServlet extends HttpServlet {
+@MultipartConfig
+public class SignupController extends HttpServlet {
 
 	//定数
 	/**
@@ -24,7 +28,7 @@ public class LoginServlet extends HttpServlet {
 	/**
 	 * デフォルトコンストラクタ
 	 */
-    public LoginServlet() {
+    public SignupController() {
         super();
     }
 
@@ -34,7 +38,9 @@ public class LoginServlet extends HttpServlet {
 	 * @param response レスポンスオブジェクト
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String path = "/WEB-INF/jsp/login/login.jsp";
+		RegistLogic registLogic = new RegistLogic();
+		registLogic.setInitPropertiesKey(request);
+		String path = "/WEB-INF/jsp/signup/signup.jsp";
 		RequestDispatcher dispatcher = request.getRequestDispatcher(path);
 		dispatcher.forward(request, response);
 	}
@@ -45,6 +51,16 @@ public class LoginServlet extends HttpServlet {
 	 * @param response レスポンスオブジェクト
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		doGet(request, response);
+		//登録区分取得
+		String registType = request.getParameter("regist-type");
+		RegistLogic registLogic = new RegistLogic(registType);
+		if(registLogic.regist(request)) {
+			String path = "/WEB-INF/jsp/signup/signup_complete.jsp";
+			RequestDispatcher dispatcher = request.getRequestDispatcher(path);
+			dispatcher.forward(request, response);
+		}else {
+			//登録に失敗した場合
+			doGet(request, response);
+		}
 	}
 }

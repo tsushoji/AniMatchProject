@@ -1,4 +1,4 @@
-package com.web01.animatch.servlet;
+package com.web01.animatch.controller;
 
 import java.io.IOException;
 
@@ -9,11 +9,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * search_ownerControllerクラス
+ * MemberDetailOwnerControllerクラス
  * @author Tsuji
  * @version 1.0
  */
-public class SearchOwnerServlet extends HttpServlet {
+public class MemberDetailOwnerController extends HttpServlet {
 
 	//定数
 	/**
@@ -24,7 +24,7 @@ public class SearchOwnerServlet extends HttpServlet {
 	/**
 	 * デフォルトコンストラクタ
 	 */
-    public SearchOwnerServlet() {
+    public MemberDetailOwnerController() {
         super();
     }
 
@@ -34,7 +34,7 @@ public class SearchOwnerServlet extends HttpServlet {
 	 * @param response レスポンスオブジェクト
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String path = "/WEB-INF/jsp/search/search_owner.jsp";
+		String path = "/WEB-INF/jsp/member/detail/detail_owner.jsp";
 		RequestDispatcher dispatcher = request.getRequestDispatcher(path);
 		dispatcher.forward(request, response);
 	}

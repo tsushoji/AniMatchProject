@@ -21,7 +21,7 @@
 <html>
 
 	<head>
-		<title>regist_complete</title>
+		<title>signup_complete</title>
 
 		<%@ include file="/WEB-INF/jsp/head.jsp" %>
 

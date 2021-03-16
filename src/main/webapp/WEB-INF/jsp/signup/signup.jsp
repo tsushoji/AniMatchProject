@@ -20,7 +20,7 @@
 <html>
 
 	<head>
-		<title>regist</title>
+		<title>signup</title>
 
 		<!-- plugin dropify -->
 		<link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
@@ -64,7 +64,7 @@
         </div>
 
         <!--入力フォーム-->
-        <form method="post" enctype="multipart/form-data" action="/animatch/regist/regist">
+        <form method="post" enctype="multipart/form-data" action="/animatch/signup/">
 
 			<div class="form-group">
 	            <label class="required-item" for="regist-type">登録区分</label>

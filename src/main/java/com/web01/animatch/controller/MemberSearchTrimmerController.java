@@ -1,4 +1,4 @@
-package com.web01.animatch.servlet;
+package com.web01.animatch.controller;
 
 import java.io.IOException;
 
@@ -9,11 +9,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * detail_trimmerControllerクラス
+ * MemberSearchTrimmerControllerクラス
  * @author Tsuji
  * @version 1.0
  */
-public class DetailTrimmerServlet extends HttpServlet {
+public class MemberSearchTrimmerController extends HttpServlet {
 
 	//定数
 	/**
@@ -24,7 +24,7 @@ public class DetailTrimmerServlet extends HttpServlet {
 	/**
 	 * デフォルトコンストラクタ
 	 */
-    public DetailTrimmerServlet() {
+    public MemberSearchTrimmerController() {
         super();
     }
 
@@ -34,7 +34,7 @@ public class DetailTrimmerServlet extends HttpServlet {
 	 * @param response レスポンスオブジェクト
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String path = "/WEB-INF/jsp/detail/detail_trimmer.jsp";
+		String path = "/WEB-INF/jsp/member/search/search_trimmer.jsp";
 		RequestDispatcher dispatcher = request.getRequestDispatcher(path);
 		dispatcher.forward(request, response);
 	}
