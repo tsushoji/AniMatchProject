@@ -147,7 +147,7 @@
 
 	                        <div class="col-9">
 
-	                            <h6><a href="../details/details-trimmer.html">新規会員登録した飼い主ニックネーム</a></h6>
+	                            <h6><a href="/animatch/member/detail/trimmer">新規会員登録した飼い主ニックネーム</a></h6>
 
 	                            <div class="row">
 
@@ -179,7 +179,7 @@
 
 	                        <div class="col-9">
 
-	                            <h6><a href="../details/details-trimmer.html">新規会員登録した飼い主ニックネーム</a></h6>
+	                            <h6><a href="/animatch/member/detail/trimmer">新規会員登録した飼い主ニックネーム</a></h6>
 
 	                            <div class="row">
 
@@ -211,7 +211,7 @@
 
 	                        <div class="col-9">
 
-	                            <h6><a href="../details/details-trimmer.html">新規会員登録した飼い主ニックネーム</a></h6>
+	                            <h6><a href="/animatch/member/detail/trimmer">新規会員登録した飼い主ニックネーム</a></h6>
 
 	                            <div class="row">
 
@@ -243,7 +243,7 @@
 
 	                        <div class="col-9">
 
-	                            <h6><a href="../details/details-trimmer.html">新規会員登録した飼い主ニックネーム</a></h6>
+	                            <h6><a href="/animatch/member/detail/trimmer">新規会員登録した飼い主ニックネーム</a></h6>
 
 	                            <div class="row">
 
@@ -275,7 +275,7 @@
 
 	                        <div class="col-9">
 
-	                            <h6><a href="../details/details-trimmer.html">新規会員登録した飼い主ニックネーム</a></h6>
+	                            <h6><a href="/animatch/member/detail/trimmer">新規会員登録した飼い主ニックネーム</a></h6>
 
 	                            <div class="row">
 
@@ -307,7 +307,7 @@
 
 	                        <div class="col-9">
 
-	                            <h6><a href="../details/details-trimmer.html">新規会員登録した飼い主ニックネーム</a></h6>
+	                            <h6><a href="/animatch/member/detail/trimmer">新規会員登録した飼い主ニックネーム</a></h6>
 
 	                            <div class="row">
 

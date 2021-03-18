@@ -12,13 +12,13 @@ $(document).ready(function(){
     //アクション:「main-center-block」の検索ブロックをクリック
     $('.is-show-details-owner').click(function () {
         // 同じタグで表示
-        location.href = '/animatch/detail/owner';
+        location.href = '/animatch/member/detail/owner';
     });
 
     //アクション:「main-center-block」の検索ブロックをクリック
     $('.is-show-details-trimmer').click(function () {
         // 同じタグで表示
-        location.href = '/animatch/detail/trimmer';
+        location.href = '/animatch/member/detail/trimmer';
     });
 
     //アクション:「都道府県」を入力する

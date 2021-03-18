@@ -163,7 +163,7 @@
 
 	                        <div class="col-9">
 
-	                            <h6><a href="../details/details-owner.html">新規会員登録した店名</a></h6>
+	                            <h6><a href="/animatch/member/detail/owner">新規会員登録した店名</a></h6>
 
 	                            <div class="row">
 
@@ -191,7 +191,7 @@
 
 	                        <div class="col-9">
 
-	                            <h6><a href="../details/details-owner.html">新規会員登録した店名</a></h6>
+	                            <h6><a href="/animatch/member/detail/owner">新規会員登録した店名</a></h6>
 
 	                            <div class="row">
 
@@ -219,7 +219,7 @@
 
 	                        <div class="col-9">
 
-	                            <h6><a href="../details/details-owner.html">新規会員登録した店名</a></h6>
+	                            <h6><a href="/animatch/member/detail/owner">新規会員登録した店名</a></h6>
 
 	                            <div class="row">
 
@@ -247,7 +247,7 @@
 
 	                        <div class="col-9">
 
-	                            <h6><a href="../details/details-owner.html">新規会員登録した店名</a></h6>
+	                            <h6><a href="/animatch/member/detail/owner">新規会員登録した店名</a></h6>
 
 	                            <div class="row">
 
@@ -275,7 +275,7 @@
 
 	                        <div class="col-9">
 
-	                            <h6><a href="../details/details-owner.html">新規会員登録した店名</a></h6>
+	                            <h6><a href="/animatch/member/detail/owner">新規会員登録した店名</a></h6>
 
 	                            <div class="row">
 
@@ -303,7 +303,7 @@
 
 	                        <div class="col-9">
 
-	                            <h6><a href="../details/details-owner.html">新規会員登録した店名</a></h6>
+	                            <h6><a href="/animatch/member/detail/owner">新規会員登録した店名</a></h6>
 
 	                            <div class="row">
 
@@ -331,7 +331,7 @@
 
 	                        <div class="col-9">
 
-	                            <h6><a href="../details/details-owner.html">新規会員登録した店名</a></h6>
+	                            <h6><a href="/animatch/member/detail/owner">新規会員登録した店名</a></h6>
 
 	                            <div class="row">
 
