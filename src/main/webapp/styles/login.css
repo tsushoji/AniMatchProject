@@ -1,13 +1,9 @@
 /* 全体 */
 html {
-    overflow-y:scroll;
     height:100%;
 }
 
 body {
-    font-family:fantasy;
-    font-size:80%;
-    color:rgb(0, 0, 0);
     height:100%;
 }
 

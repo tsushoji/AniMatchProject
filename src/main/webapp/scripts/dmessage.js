@@ -4,7 +4,7 @@ $(document).ready(function(){
     //アクション:連絡先のアカウントブロック部分をクリック
     $('.main-center-content-account-block').click(function () {
         // 別タグで表示
-        window.open('/animatch/dmessage/message');
+        window.open('/animatch/member/dmessage/detail/');
 
     });
 

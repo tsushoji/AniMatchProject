@@ -4,6 +4,12 @@
 <!DOCTYPE html>
 <html>
 
+	<head>
+		<title>contact</title>
+
+		<%@ include file="/WEB-INF/jsp/head.jsp" %>
+    </head>
+
 	<body>
 
 	</body>

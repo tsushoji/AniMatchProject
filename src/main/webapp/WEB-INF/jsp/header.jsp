@@ -16,13 +16,13 @@
 
 	         <div class="collapse navbar-collapse collapse-item" id="navbar-supported-content">
 	             <ul class="navbar-nav mr-auto">
-	                 <li class="nav-item"><a class="nav-link" href="/animatch/search/owner">お店を探す<img src="/animatch/images/icon_search.png" alt="検索アイコン"></a></li>
-	                 <li class="nav-item"><a class="nav-link" href="/animatch/search/trimmer">飼い主を探す<img src="/animatch/images/icon_search.png" alt="検索アイコン"></a></li>
+	                 <li class="nav-item"><a class="nav-link" href="/animatch/member/search/owner">お店を探す<img src="/animatch/images/icon_search.png" alt="検索アイコン"></a></li>
+	                 <li class="nav-item"><a class="nav-link" href="/animatch/member/search/trimmer">飼い主を探す<img src="/animatch/images/icon_search.png" alt="検索アイコン"></a></li>
 	             </ul>
 
 	             <ul class="navbar-nav">
-	                 <li class="nav-item ml-auto mr-md-3 collapse-item-btn-search"><a class="nav-link btn btn-outline-info" type="submit" href="/animatch/regist">新規会員登録</a></li>
-	                 <li class="nav-item ml-auto mr-md-2 collapse-item-btn-login"><a class="nav-link btn btn-outline-success" type="submit" target="_blank" href="/animatch/login">ログイン</a></li>
+	                 <li class="nav-item ml-auto mr-md-3 collapse-item-btn-search"><a class="nav-link btn btn-outline-info" type="submit" href="/animatch/signup/">新規会員登録</a></li>
+	                 <li class="nav-item ml-auto mr-md-2 collapse-item-btn-login"><a class="nav-link btn btn-outline-success" type="submit" target="_blank" href="/animatch/login/">ログイン</a></li>
 	             </ul>
 	         </div>
 	    </nav>

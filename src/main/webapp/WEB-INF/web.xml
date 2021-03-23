@@ -3,114 +3,119 @@
  "http://java.sun.com/dtd/web-app_2_3.dtd">
 <web-app>
   <display-name>Archetype Created Web Application</display-name>
+  <filter>
+  	<filter-name>AnimatchFilter</filter-name>
+  	<display-name>AnimatchFilter</display-name>
+  	<description></description>
+  	<filter-class>com.web01.animatch.filter.DefaultFilter</filter-class>
+  </filter>
+  <filter-mapping>
+  	<filter-name>AnimatchFilter</filter-name>
+  	<url-pattern>/*</url-pattern>
+  </filter-mapping>
   <servlet>
-    <servlet-name>IndexServlet</servlet-name>
-    <display-name>IndexServlet</display-name>
+    <servlet-name>IndexController</servlet-name>
+    <display-name>IndexController</display-name>
     <description></description>
-  	<servlet-class>com.web01.animatch.IndexServlet</servlet-class>
+  	<servlet-class>com.web01.animatch.controller.IndexController</servlet-class>
   </servlet>
   <servlet>
-  	<servlet-name>LoginServlet</servlet-name>
-  	<display-name>LoginServlet</display-name>
+  	<servlet-name>LoginController</servlet-name>
+  	<display-name>LoginController</display-name>
   	<description></description>
-  	<servlet-class>com.web01.animatch.LoginServlet</servlet-class>
+  	<servlet-class>com.web01.animatch.controller.LoginController</servlet-class>
   </servlet>
   <servlet>
-  	<servlet-name>LogoutServlet</servlet-name>
-  	<display-name>LogoutServlet</display-name>
+  	<servlet-name>SignupController</servlet-name>
+  	<display-name>SignupController</display-name>
   	<description></description>
-  	<servlet-class>com.web01.animatch.LogoutServlet</servlet-class>
+  	<servlet-class>com.web01.animatch.controller.SignupController</servlet-class>
   </servlet>
   <servlet>
-  	<servlet-name>RegistServlet</servlet-name>
-  	<display-name>RegistServlet</display-name>
+  	<servlet-name>MemberSearchOwnerController</servlet-name>
+  	<display-name>MemberSearchOwnerController</display-name>
   	<description></description>
-  	<servlet-class>com.web01.animatch.RegistServlet</servlet-class>
+  	<servlet-class>com.web01.animatch.controller.MemberSearchOwnerController</servlet-class>
   </servlet>
   <servlet>
-  	<servlet-name>SearchOwnerServlet</servlet-name>
-  	<display-name>SearchOwnerServlet</display-name>
+  	<servlet-name>MemberSearchTrimmerController</servlet-name>
+  	<display-name>MemberSearchTrimmerController</display-name>
   	<description></description>
-  	<servlet-class>com.web01.animatch.SearchOwnerServlet</servlet-class>
+  	<servlet-class>com.web01.animatch.controller.MemberSearchTrimmerController</servlet-class>
   </servlet>
   <servlet>
-  	<servlet-name>SearchTrimmerServlet</servlet-name>
-  	<display-name>SearchTrimmerServlet</display-name>
+  	<servlet-name>MemberDetailOwnerController</servlet-name>
+  	<display-name>MemberDetailOwnerController</display-name>
   	<description></description>
-  	<servlet-class>com.web01.animatch.SearchTrimmerServlet</servlet-class>
+  	<servlet-class>com.web01.animatch.controller.MemberDetailOwnerController</servlet-class>
   </servlet>
   <servlet>
-  	<servlet-name>DetailOwnerServlet</servlet-name>
-  	<display-name>DetailOwnerServlet</display-name>
+  	<servlet-name>MemberDetailTrimmerController</servlet-name>
+  	<display-name>MemberDetailTrimmerController</display-name>
   	<description></description>
-  	<servlet-class>com.web01.animatch.DetailOwnerServlet</servlet-class>
+  	<servlet-class>com.web01.animatch.controller.MemberDetailTrimmerController</servlet-class>
   </servlet>
   <servlet>
-  	<servlet-name>DetailTrimmerServlet</servlet-name>
-  	<display-name>DetailTrimmerServlet</display-name>
+  	<servlet-name>MemberDmessageListController</servlet-name>
+  	<display-name>MemberDmessageListController</display-name>
   	<description></description>
-  	<servlet-class>com.web01.animatch.DetailTrimmerServlet</servlet-class>
+  	<servlet-class>com.web01.animatch.controller.MemberDmessageListController</servlet-class>
   </servlet>
   <servlet>
-  	<servlet-name>ContactInfServlet</servlet-name>
-  	<display-name>ContactInfServlet</display-name>
+  	<servlet-name>MemberDmessageDetailController</servlet-name>
+  	<display-name>MemberDmessageDetailController</display-name>
   	<description></description>
-  	<servlet-class>com.web01.animatch.ContactInfServlet</servlet-class>
+  	<servlet-class>com.web01.animatch.controller.MemberDmessageDetailController</servlet-class>
   </servlet>
   <servlet>
-  	<servlet-name>MessageServlet</servlet-name>
-  	<display-name>MessageServlet</display-name>
+  	<servlet-name>ContactController</servlet-name>
+  	<display-name>ContactController</display-name>
   	<description></description>
-  	<servlet-class>com.web01.animatch.MessageServlet</servlet-class>
-  </servlet>
-  <servlet>
-  	<servlet-name>ContactServlet</servlet-name>
-  	<display-name>ContactServlet</display-name>
-  	<description></description>
-  	<servlet-class>com.web01.animatch.ContactServlet</servlet-class>
+  	<servlet-class>com.web01.animatch.controller.ContactController</servlet-class>
   </servlet>
   <servlet-mapping>
-  	<servlet-name>IndexServlet</servlet-name>
+  	<servlet-name>IndexController</servlet-name>
   	<url-pattern>/index</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
-  	<servlet-name>LoginServlet</servlet-name>
-  	<url-pattern>/login</url-pattern>
+  	<servlet-name>LoginController</servlet-name>
+  	<url-pattern>/login/</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
-  	<servlet-name>LogoutServlet</servlet-name>
-  	<url-pattern>/logout</url-pattern>
+  	<servlet-name>SignupController</servlet-name>
+  	<url-pattern>/signup/</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
-  	<servlet-name>RegistServlet</servlet-name>
-  	<url-pattern>/regist</url-pattern>
+  	<servlet-name>MemberSearchOwnerController</servlet-name>
+  	<url-pattern>/member/search/owner</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
-  	<servlet-name>SearchOwnerServlet</servlet-name>
-  	<url-pattern>/search/owner</url-pattern>
+  	<servlet-name>MemberSearchTrimmerController</servlet-name>
+  	<url-pattern>/member/search/trimmer</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
-  	<servlet-name>SearchTrimmerServlet</servlet-name>
-  	<url-pattern>/search/trimmer</url-pattern>
+  	<servlet-name>MemberDetailOwnerController</servlet-name>
+  	<url-pattern>/member/detail/owner</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
-  	<servlet-name>DetailOwnerServlet</servlet-name>
-  	<url-pattern>/detail/owner</url-pattern>
+  	<servlet-name>MemberDetailTrimmerController</servlet-name>
+  	<url-pattern>/member/detail/trimmer</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
-  	<servlet-name>DetailTrimmerServlet</servlet-name>
-  	<url-pattern>/detail/trimmer</url-pattern>
+  	<servlet-name>MemberDmessageListController</servlet-name>
+  	<url-pattern>/member/dmessage/list</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
-  	<servlet-name>ContactInfServlet</servlet-name>
-  	<url-pattern>/dmessage/contact</url-pattern>
+  	<servlet-name>MemberDmessageDetailController</servlet-name>
+  	<url-pattern>/member/dmessage/detail/</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
-  	<servlet-name>MessageServlet</servlet-name>
-  	<url-pattern>/dmessage/message</url-pattern>
+  	<servlet-name>ContactController</servlet-name>
+  	<url-pattern>/contact/</url-pattern>
   </servlet-mapping>
-  <servlet-mapping>
-  	<servlet-name>ContactServlet</servlet-name>
-  	<url-pattern>/contact</url-pattern>
-  </servlet-mapping>
+
+  <welcome-file-list>
+    <welcome-file>index</welcome-file>
+  </welcome-file-list>
 </web-app>
+

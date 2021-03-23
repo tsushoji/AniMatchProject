@@ -1,19 +1,4 @@
-/* 全体 */
-html {
-    overflow-y:scroll;
-}
-
-body {
-    font-family:fantasy;
-    font-size:80%;
-    color:rgb(0, 0, 0);
-}
-
-a {
-    color:rgb(0, 0, 0);
-    text-decoration:none;
-}
-
+/* 新規登録 */
 /* 入力必須項目の必須マーク */
 .required-item::before {
     content:"必須";
@@ -34,11 +19,35 @@ input:required {
     background:rgb(248, 192, 192);
 }
 
-/* フッター */
-footer {
-    background-color:rgb(255, 255, 200);
+/* 新規登録結果 */
+.regist-complete-block {
+    width:38%;
 }
 
-.footer-top {
-    min-height:30px;
+.regist-complete-item-name {
+    font-weight:bolder;
+}
+
+/*　画面サイズが991pxまではここを読み込む　*/
+@media screen and (max-width:991px) {
+    /* 新規登録結果 */
+    .regist-complete-block {
+        width:50%;
+    }
+}
+
+/*　画面サイズが767pxまではここを読み込む　*/
+@media screen and (max-width:767px) {
+    /* 新規登録結果 */
+    .regist-complete-block {
+        width:60%;
+    }
+}
+
+/*　画面サイズが250pxまではここを読み込む　*/
+@media screen and (max-width:250px) {
+    /* 新規登録結果 */
+    .regist-complete-block {
+        width:100%;
+    }
 }
