@@ -41,25 +41,34 @@ public class RegistDao {
 
 	/**
 	 * ユーザテーブル名
+	 * ★定数を使っていない箇所があると思います
 	 */
 	public static final String USER_TABLE_NAME = "t_user";
 
 	/**
 	 * ペットテーブル名
+	 * ★定数を使っていない箇所があると思います
 	 */
 	public static final String PET_TABLE_NAME = "t_pet";
 
 	/**
 	 * 店舗テーブル名
+	 * ★定数を使っていない箇所があると思います
 	 */
 	public static final String STORE_TABLE_NAME = "t_store";
 
 	/**
 	 * 引数付きコンストラクタ
+	 *
 	 * @param con DBコネクションオブジェクト
 	 */
 	public RegistDao(Connection con) {
 		this.con = con;
+		try {
+			this.con.setAutoCommit(false);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -69,19 +78,20 @@ public class RegistDao {
 	 */
 	public int getMaxId(String tableName) throws SQLException {
 		int id = 0;
+		/*★ColumnにはAUTO_INCREMENT属性は付けない感じなのでしょうか。
+		 * 登録時にIDの最大値を取得しなくてもよいようにAUTO_INCREMENTを使用をすすめたつもりでした。 */
 		String sql = "SELECT AUTO_INCREMENT FROM information_schema.tables WHERE table_name=?";
-		PreparedStatement pstmt = con.prepareStatement(sql);
-		pstmt.setString(1, tableName);
-		ResultSet rs = pstmt.executeQuery();
-		try{
+		try (PreparedStatement pstmt = con.prepareStatement(sql);) {
+			pstmt.setString(1, tableName);
+
+			// ★違和感ありますがResultSetはCloseしなくてもよいらしいです。
+			ResultSet rs = pstmt.executeQuery();
+
 			if(rs.next()) {
 				id = rs.getInt("AUTO_INCREMENT");
 			}
 		}catch(SQLException e) {
 			e.printStackTrace();
-		}finally {
-			rs.close();
-			pstmt.close();
 		}
 
 		return id;
@@ -160,6 +170,54 @@ public class RegistDao {
 			e.printStackTrace();
 		}finally {
 			pstmt.close();
+		}
+
+		return true;
+	}
+
+	public boolean registOwner2(User user) throws SQLException {
+		Pet pet = user.getPet();
+
+		List<HashMap<String, Object>> list = new ArrayList<>();
+		list.add(createSqlParatemerMap(user.getUserId(), Types.INTEGER));
+		list.add(createSqlParatemerMap(user.getUserName(), Types.VARCHAR));
+		list.add(createSqlParatemerMap(user.getPassword(), Types.VARCHAR));
+		list.add(createSqlParatemerMap(user.getSex(), Types.VARCHAR));
+		list.add(createSqlParatemerMap(new Date(user.getBirthday().getTime()), Types.DATE));
+		list.add(createSqlParatemerMap(user.getPostalCode(), Types.VARCHAR));
+		list.add(createSqlParatemerMap(user.getStreetAddress(), Types.VARCHAR));
+		list.add(createSqlParatemerMap(user.getEmailAddress(), Types.VARCHAR));
+		list.add(createSqlParatemerMap(user.getTelephoneNumber(), Types.VARCHAR));
+		list.add(createSqlParatemerMap(pet.getPetId(), Types.INTEGER));
+		list.add(createSqlParatemerMap(Integer.valueOf(DEFAULT_ID), Types.INTEGER));
+		list.add(createSqlParatemerMap(user.getIsDeleted(), Types.INTEGER));
+		list.add(createSqlParatemerMap(Timestamp.valueOf(user.getInsertedTime()), Types.TIMESTAMP));
+		list.add(createSqlParatemerMap(Timestamp.valueOf(user.getUpdatedTime()), Types.TIMESTAMP));
+
+		List<HashMap<String, Object>> list2 = new ArrayList<>();
+		list2.add(createSqlParatemerMap(pet.getPetId(), Types.INTEGER));
+		list2.add(createSqlParatemerMap(pet.getImage(), Types.BLOB));
+		list2.add(createSqlParatemerMap(pet.getNickName(), Types.VARCHAR));
+		list2.add(createSqlParatemerMap(pet.getSex(), Types.VARCHAR));
+		list2.add(createSqlParatemerMap(pet.getType(), Types.VARCHAR));
+		list2.add(createSqlParatemerMap(pet.getWeight(), Types.FLOAT));
+		list2.add(createSqlParatemerMap(pet.getRemarks(), Types.VARCHAR));
+		list2.add(createSqlParatemerMap(pet.getIsDeleted(), Types.INTEGER));
+		list2.add(createSqlParatemerMap(Timestamp.valueOf(pet.getInsertedTime()), Types.TIMESTAMP));
+		list2.add(createSqlParatemerMap(Timestamp.valueOf(pet.getUpdatedTime()), Types.TIMESTAMP));
+
+		try (PreparedStatement pstmt = createInsetStatement("t_user", list);){
+			pstmt.executeUpdate();
+		} catch(SQLException e) {
+			throw e;
+		}
+
+		try (PreparedStatement pstmt = createInsetStatement("t_pet", list2);){
+			pstmt.executeUpdate();
+
+			this.con.commit();
+		} catch(SQLException e) {
+			throw e;
 		}
 
 		return true;
@@ -327,5 +385,64 @@ public class RegistDao {
 		} else if(type == Types.TIMESTAMP) {
 			pstmt.setTimestamp(paramIndex, Timestamp.valueOf(valStr));
 		}
+	}
+
+	/**
+	 * SQLパラメータ設定
+	 * @param pstmt プリコンパイルされたSQL文オブジェクト
+	 * @param paramIndex 引数インデックス
+	 * @param value 値
+	 */
+	private void setSqlParameter2(PreparedStatement pstmt, int paramIndex, Object value, int dataType) throws SQLException {
+
+		if (value == null) {
+			pstmt.setNull(paramIndex, dataType);
+			return;
+		}
+
+		String valStr = String.valueOf(value);
+		if(dataType == Types.INTEGER) {
+			pstmt.setInt(paramIndex, Integer.valueOf(valStr));
+		} else if(dataType == Types.FLOAT) {
+			pstmt.setFloat(paramIndex, Float.valueOf(valStr));
+		} else if(dataType == Types.VARCHAR) {
+			pstmt.setString(paramIndex, valStr);
+		} else if(dataType == Types.DATE) {
+			pstmt.setDate(paramIndex, Date.valueOf(valStr));
+		} else if(dataType == Types.TIME) {
+			pstmt.setTime(paramIndex, Time.valueOf(valStr));
+		} else if(dataType == Types.BLOB) {
+			pstmt.setBinaryStream(paramIndex, new ByteArrayInputStream(valStr.getBytes()));
+		} else if(dataType == Types.TIMESTAMP) {
+			pstmt.setTimestamp(paramIndex, Timestamp.valueOf(valStr));
+		} else {
+			System.out.println("存在しない型です");
+		}
+	}
+
+	private HashMap<String, Object> createSqlParatemerMap(Object value, Integer dataType) {
+		HashMap<String, Object> ret = new HashMap<>();
+		ret.put("value", value);
+		ret.put("dataType", dataType);
+		return ret;
+	}
+
+	private PreparedStatement createInsetStatement(String tableName, List<HashMap<String, Object>> list) throws SQLException {
+		String sql = "INSERT INTO " + tableName + " VALUES";
+
+		ArrayList<String> params = new ArrayList<>();
+		for (int i = 0; i < list.size(); i++) {
+			params.add("?");
+		}
+		sql += "(" + String.join(",", params) + ")";
+
+		PreparedStatement pstmt = this.con.prepareStatement(sql);
+
+		for (int i = 0; i < list.size(); i++) {
+			HashMap<String, Object> data = list.get(i);
+			setSqlParameter2(pstmt, (i+1), data.get("value"), (Integer)data.get("dataType"));
+		}
+
+		return pstmt;
 	}
 }
