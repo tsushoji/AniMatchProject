@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.web01.animatch.logic.RegistLogic;
+import com.web01.animatch.service.SignupService;
 
 /**
  * SignupControllerクラス
@@ -38,8 +38,8 @@ public class SignupController extends HttpServlet {
 	 * @param response レスポンスオブジェクト
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		RegistLogic registLogic = new RegistLogic();
-		registLogic.setInitPropertiesKey(request);
+		SignupService signupService = new SignupService();
+		signupService.setInitPropertiesKey(request);
 		String path = "/WEB-INF/jsp/signup/signup.jsp";
 		RequestDispatcher dispatcher = request.getRequestDispatcher(path);
 		dispatcher.forward(request, response);
@@ -53,8 +53,8 @@ public class SignupController extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		//登録区分取得
 		String registType = request.getParameter("regist-type");
-		RegistLogic registLogic = new RegistLogic(registType);
-		if(registLogic.regist(request)) {
+		SignupService signupService = new SignupService(registType);
+		if(signupService.regist(request)) {
 			String path = "/WEB-INF/jsp/signup/signup_complete.jsp";
 			RequestDispatcher dispatcher = request.getRequestDispatcher(path);
 			dispatcher.forward(request, response);

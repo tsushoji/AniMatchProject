@@ -266,6 +266,7 @@ public class RegistDao {
 	 * INSERTSQLステートメントオブジェクト作成
 	 * @param tableName テーブル名
 	 * @param list SQLパラメータリスト
+	 * @param isRtnGeneratedKeys 生成されたキーを検索可能にするか
 	 * @return SQLステートメントオブジェクト
 	 */
 	private PreparedStatement createInsetStatement(String tableName, List<HashMap<String, Object>> list, boolean isRtnGeneratedKeys) throws SQLException {
