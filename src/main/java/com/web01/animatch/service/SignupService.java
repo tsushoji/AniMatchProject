@@ -1,4 +1,4 @@
-package com.web01.animatch.logic;
+package com.web01.animatch.service;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -39,7 +39,7 @@ import com.web01.animatch.dto.User;
  * @author Tsuji
  * @version 1.0
  */
-public class RegistLogic {
+public class SignupService {
 
 	//メンバー
 	/**
@@ -55,9 +55,9 @@ public class RegistLogic {
 	 */
 	private Map<String, String> msgMap;
 	/**
-	 * メッセージオブジェクト
+	 * メッセージサービスオブジェクト
 	 */
-	private Message message;
+	private MessageService messageService;
 	/**
 	 * 登録成功失敗
 	 */
@@ -144,7 +144,7 @@ public class RegistLogic {
 	/**
 	 * デフォルトコンストラクタ
 	 */
-	public RegistLogic() {
+	public SignupService() {
 		this.resBundle = ResourceBundle.getBundle(PROPERTIES_NAME);
 	}
 
@@ -152,11 +152,11 @@ public class RegistLogic {
 	 * 引数付きコンストラクタ
 	 * @param registType 登録区分
 	 */
-	public RegistLogic(String registType) {
+	public SignupService(String registType) {
 		this.registType = registType;
 		this.resBundle = ResourceBundle.getBundle(PROPERTIES_NAME);
 		this.msgMap = new HashMap<>();
-		this.message = new Message();
+		this.messageService = new MessageService();
 	}
 
 	/**
@@ -307,52 +307,52 @@ public class RegistLogic {
 	private boolean isValidate(HttpServletRequest request, RegistForm registForm) throws ParseException, IOException, ServletException {
 		//ユーザーネーム10文字以下チェック
 		if(registForm.getUserName().length() > 10) {
-			this.msgMap.put("001", this.message.getMessage(Message.Type.ERROR, "001", "ユーザーネーム", "10文字以下"));
+			this.msgMap.put("001", this.messageService.getMessage(MessageService.Type.ERROR, "001", "ユーザーネーム", "10文字以下"));
 		}
 
 		//パスワード欄と再入力欄が一致するかチェック
 		if(!registForm.getPassword().equals(registForm.getRePassword())) {
-			this.msgMap.put("002", this.message.getMessage(Message.Type.ERROR, "002", "再入力欄", "入力したパスワード"));
+			this.msgMap.put("002", this.messageService.getMessage(MessageService.Type.ERROR, "002", "再入力欄", "入力したパスワード"));
 		}
 
 		//パスワード20文字以下チェック
 		if(registForm.getPassword().length() > 20) {
-			this.msgMap.put("003", this.message.getMessage(Message.Type.ERROR, "001", "パスワード", "20文字以下"));
+			this.msgMap.put("003", this.messageService.getMessage(MessageService.Type.ERROR, "001", "パスワード", "20文字以下"));
 		}
 
 		//郵便番号形式チェック
 		if(!Pattern.matches(POSTAL_CODE_FORMAT, registForm.getPostalCode())) {
-			this.msgMap.put("004", this.message.getMessage(Message.Type.ERROR, "003", "郵便番号"));
+			this.msgMap.put("004", this.messageService.getMessage(MessageService.Type.ERROR, "003", "郵便番号"));
 		}
 
 		//都道府県選択チェック
 		if(registForm.getPrefectures().equals("000")) {
-			this.msgMap.put("005", this.message.getMessage(Message.Type.ERROR, "004", "都道府県"));
+			this.msgMap.put("005", this.messageService.getMessage(MessageService.Type.ERROR, "004", "都道府県"));
 		}
 
 		//市区町村形式チェック
 		if(!Pattern.matches(CITIES_FORMAT, registForm.getCities())) {
-			this.msgMap.put("006", this.message.getMessage(Message.Type.ERROR, "003", "市区町村"));
+			this.msgMap.put("006", this.messageService.getMessage(MessageService.Type.ERROR, "003", "市区町村"));
 		}
 
 		//市区町村9文字以下チェック
 		if(registForm.getCities().length() > 9) {
-			this.msgMap.put("007", this.message.getMessage(Message.Type.ERROR, "001", "市区町村", "9文字以下"));
+			this.msgMap.put("007", this.messageService.getMessage(MessageService.Type.ERROR, "001", "市区町村", "9文字以下"));
 		}
 
 		//メールアドレス形式チェック
 		if(!Pattern.matches(EMAIL_ADDRES_FORMAT, registForm.getEmailAddress())) {
-			this.msgMap.put("008", this.message.getMessage(Message.Type.ERROR, "003", "メールアドレス"));
+			this.msgMap.put("008", this.messageService.getMessage(MessageService.Type.ERROR, "003", "メールアドレス"));
 		}
 
 		//メールアドレス254文字以下チェック
 		if(registForm.getEmailAddress().length() > 254) {
-			this.msgMap.put("009", this.message.getMessage(Message.Type.ERROR, "001", "メールアドレス", "254文字以下"));
+			this.msgMap.put("009", this.messageService.getMessage(MessageService.Type.ERROR, "001", "メールアドレス", "254文字以下"));
 		}
 
 		//電話番号形式チェック
 		if(!Pattern.matches(TELEPHONE_NUMBER_FORMAT, registForm.getTelephoneNumber())) {
-			this.msgMap.put("010", this.message.getMessage(Message.Type.ERROR, "003", "電話番号"));
+			this.msgMap.put("010", this.messageService.getMessage(MessageService.Type.ERROR, "003", "電話番号"));
 		}
 
 		switch(this.registType) {
@@ -360,7 +360,7 @@ public class RegistLogic {
 			case "001":
 				//ペットニックネーム20文字以下チェック
 				if(registForm.getPetName().length() > 20) {
-					this.msgMap.put("011", this.message.getMessage(Message.Type.ERROR, "001", "ペットネーム", "20文字以下"));
+					this.msgMap.put("011", this.messageService.getMessage(MessageService.Type.ERROR, "001", "ペットネーム", "20文字以下"));
 				}
 
 				//ペット体重数値チェック
@@ -370,32 +370,32 @@ public class RegistLogic {
 					if(Pattern.matches(DECIMAL_FORMAT, registFormPetWeight) || Pattern.matches(INIT_ZERO_DECIMAL_FORMAT, registFormPetWeight)) {
 						//ペット体重小数桁数チェック
 						if(registFormPetWeight.equals("0") || Pattern.matches(ZERO_DECIMAL_FORMAT, registFormPetWeight)) {
-							this.msgMap.put("012", this.message.getMessage(Message.Type.ERROR, "001", "ペット体重", "0以上の実数値"));
+							this.msgMap.put("012", this.messageService.getMessage(MessageService.Type.ERROR, "001", "ペット体重", "0以上の実数値"));
 						}else {
 							if(!Pattern.matches(END_ZERO_DECIMAL_FORMAT, registFormPetWeight)) {
 								int pointIndex = registFormPetWeight.indexOf(".");
 								if(pointIndex != -1) {
 									BigDecimal registFormPetWeightVal = new BigDecimal(registFormPetWeight);
 									if(registFormPetWeightVal.stripTrailingZeros().toString().substring(pointIndex + 1).length() > 2) {
-										this.msgMap.put("013", this.message.getMessage(Message.Type.ERROR, "001", "ペット体重", "小数第2位まで"));
+										this.msgMap.put("013", this.messageService.getMessage(MessageService.Type.ERROR, "001", "ペット体重", "小数第2位まで"));
 									}
 								}
 							}
 						}
 					}else {
-						this.msgMap.put("012", this.message.getMessage(Message.Type.ERROR, "001", "ペット体重", "0以上の実数値"));
+						this.msgMap.put("012", this.messageService.getMessage(MessageService.Type.ERROR, "001", "ペット体重", "0以上の実数値"));
 					}
 				}
 
 				String registFormPetRemarks = registForm.getPetRemarks();
 				//備考200文字以下チェック
 				if(registFormPetRemarks.length() > 200) {
-					this.msgMap.put("014", this.message.getMessage(Message.Type.ERROR, "001", "備考", "200文字以下"));
+					this.msgMap.put("014", this.messageService.getMessage(MessageService.Type.ERROR, "001", "備考", "200文字以下"));
 				}
 
 				//備考XSS対策
 				if(registFormPetRemarks.contains(TEXTAREA_INIT_PART_TAG) || registFormPetRemarks.contains(TEXTAREA_END_TAG)) {
-					this.msgMap.put("023", this.message.getMessage(Message.Type.ERROR, "007"));
+					this.msgMap.put("023", this.messageService.getMessage(MessageService.Type.ERROR, "007"));
 				}
 
 				break;
@@ -404,7 +404,7 @@ public class RegistLogic {
 			case "002":
 				//店名50文字以下チェック
 				if(registForm.getStoreName().length() > 50) {
-					this.msgMap.put("015", this.message.getMessage(Message.Type.ERROR, "001", "店名", "50文字以下"));
+					this.msgMap.put("015", this.messageService.getMessage(MessageService.Type.ERROR, "001", "店名", "50文字以下"));
 				}
 
 				int errorTimeCount = 0;
@@ -423,7 +423,7 @@ public class RegistLogic {
 								formBusinessHours.setIsErrBusinessHoursStartTime("1");
 								judgeTimeFlg = false;
 								if(errorTimeCount == 0) {
-									this.msgMap.put("016", this.message.getMessage(Message.Type.ERROR, "005", "営業時間"));
+									this.msgMap.put("016", this.messageService.getMessage(MessageService.Type.ERROR, "005", "営業時間"));
 									errorTimeCount++;
 								}
 							}
@@ -435,7 +435,7 @@ public class RegistLogic {
 								formBusinessHours.setIsErrBusinessHoursEndTime("1");
 								judgeTimeFlg = false;
 								if(errorTimeCount == 0) {
-									this.msgMap.put("016", this.message.getMessage(Message.Type.ERROR, "005", "営業時間"));
+									this.msgMap.put("016", this.messageService.getMessage(MessageService.Type.ERROR, "005", "営業時間"));
 									errorTimeCount++;
 								}
 							}
@@ -449,7 +449,7 @@ public class RegistLogic {
 									if(Integer.parseInt(startBusinessTimeAry[1]) >= Integer.parseInt(endBusinessTimeAry[1])) {
 										formBusinessHours.setIsErrBusinessHoursStartTime("1");
 										if(errorTimeCount == 0) {
-											this.msgMap.put("016", this.message.getMessage(Message.Type.ERROR, "005", "営業時間"));
+											this.msgMap.put("016", this.messageService.getMessage(MessageService.Type.ERROR, "005", "営業時間"));
 											errorTimeCount++;
 										}
 									}
@@ -457,7 +457,7 @@ public class RegistLogic {
 									if(Integer.parseInt(startBusinessTimeAry[0]) > Integer.parseInt(endBusinessTimeAry[0])) {
 										formBusinessHours.setIsErrBusinessHoursStartTime("1");
 										if(errorTimeCount == 0) {
-											this.msgMap.put("016", this.message.getMessage(Message.Type.ERROR, "005", "営業時間"));
+											this.msgMap.put("016", this.messageService.getMessage(MessageService.Type.ERROR, "005", "営業時間"));
 											errorTimeCount++;
 										}
 									}
@@ -465,13 +465,13 @@ public class RegistLogic {
 							}else if(formBusinessHoursStartTime.isEmpty() && !formBusinessHoursEndTime.isEmpty()) {
 								formBusinessHours.setIsErrBusinessHoursStartTime("1");
 								if(errorTimeCount == 0) {
-									this.msgMap.put("016", this.message.getMessage(Message.Type.ERROR, "005", "営業時間"));
+									this.msgMap.put("016", this.messageService.getMessage(MessageService.Type.ERROR, "005", "営業時間"));
 									errorTimeCount++;
 								}
 							}else if(!formBusinessHoursStartTime.isEmpty() && formBusinessHoursEndTime.isEmpty()) {
 								formBusinessHours.setIsErrBusinessHoursStartTime("1");
 								if(errorTimeCount == 0) {
-									this.msgMap.put("016", this.message.getMessage(Message.Type.ERROR, "005", "営業時間"));
+									this.msgMap.put("016", this.messageService.getMessage(MessageService.Type.ERROR, "005", "営業時間"));
 									errorTimeCount++;
 								}
 							}
@@ -482,7 +482,7 @@ public class RegistLogic {
 						if(formBusinessHoursRemarks.length() > 100) {
 							formBusinessHours.setIsErrLengthBusinessHoursRemarks("1");
 							if(errorRemarksCount == 0) {
-								this.msgMap.put("017", this.message.getMessage(Message.Type.ERROR, "001", "営業時間補足", "100文字以下"));
+								this.msgMap.put("017", this.messageService.getMessage(MessageService.Type.ERROR, "001", "営業時間補足", "100文字以下"));
 								errorRemarksCount++;
 							}
 						}
@@ -492,7 +492,7 @@ public class RegistLogic {
 						if(formBusinessHoursRemarks.contains(TEXTAREA_INIT_PART_TAG) || formBusinessHoursRemarks.contains(TEXTAREA_END_TAG)) {
 							formBusinessHours.setIsErrXSSBusinessHoursRemarks("1");
 							if(errorXSSRemarksCount == 0) {
-								this.msgMap.put("024", this.message.getMessage(Message.Type.ERROR, "007"));
+								this.msgMap.put("024", this.messageService.getMessage(MessageService.Type.ERROR, "007"));
 								errorXSSRemarksCount++;
 							}
 						}
@@ -506,33 +506,33 @@ public class RegistLogic {
 					if(Pattern.matches(NUMBER_FORMAT, registFormStoreEmployees)) {
 						//従業員数桁数チェック
 						if(registFormStoreEmployees.length() > 8) {
-							this.msgMap.put("019", this.message.getMessage(Message.Type.ERROR, "001", "従業員数", "8桁以下"));
+							this.msgMap.put("019", this.messageService.getMessage(MessageService.Type.ERROR, "001", "従業員数", "8桁以下"));
 						}
 					}else {
-						this.msgMap.put("018", this.message.getMessage(Message.Type.ERROR, "001", "従業員数", "数値"));
+						this.msgMap.put("018", this.messageService.getMessage(MessageService.Type.ERROR, "001", "従業員数", "数値"));
 					}
 				}
 
 				String registFormCourseInfo = registForm.getCourseInfo();
 				//コース200文字以下チェック
 				if(registFormCourseInfo.length() > 200) {
-					this.msgMap.put("020", this.message.getMessage(Message.Type.ERROR, "001", "コース", "200文字以下"));
+					this.msgMap.put("020", this.messageService.getMessage(MessageService.Type.ERROR, "001", "コース", "200文字以下"));
 				}
 
 				//コースXSS対策
 				if(registFormCourseInfo.contains(TEXTAREA_INIT_PART_TAG) || registFormCourseInfo.contains(TEXTAREA_END_TAG)) {
-					this.msgMap.put("025", this.message.getMessage(Message.Type.ERROR, "007"));
+					this.msgMap.put("025", this.messageService.getMessage(MessageService.Type.ERROR, "007"));
 				}
 
 				String registFormCommitment = registForm.getCommitment();
 				//こだわり200文字以下チェック
 				if(registFormCommitment.length() > 200) {
-					this.msgMap.put("021", this.message.getMessage(Message.Type.ERROR, "001", "こだわり", "200文字以下"));
+					this.msgMap.put("021", this.messageService.getMessage(MessageService.Type.ERROR, "001", "こだわり", "200文字以下"));
 				}
 
 				//こだわりXSS対策
 				if(registFormCommitment.contains(TEXTAREA_INIT_PART_TAG) || registFormCommitment.contains(TEXTAREA_END_TAG)) {
-					this.msgMap.put("026", this.message.getMessage(Message.Type.ERROR, "007"));
+					this.msgMap.put("026", this.messageService.getMessage(MessageService.Type.ERROR, "007"));
 				}
 
 				break;
@@ -545,7 +545,7 @@ public class RegistLogic {
 		if(this.msgMap.size() > 0) {
 			//画像添付している場合
 			if(request.getPart("file").getSize() > 0) {
-				this.msgMap.put("022", this.message.getMessage(Message.Type.ERROR, "006", "画像"));
+				this.msgMap.put("022", this.messageService.getMessage(MessageService.Type.ERROR, "006", "画像"));
 			}
 			this.canRegist = false;
 		}

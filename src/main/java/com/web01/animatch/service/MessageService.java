@@ -1,4 +1,4 @@
-package com.web01.animatch.logic;
+package com.web01.animatch.service;
 
 import java.util.Collections;
 import java.util.ResourceBundle;
@@ -10,7 +10,7 @@ import org.apache.commons.lang3.StringUtils;
  * @author Tsuji
  * @version 1.0
  */
-public class Message {
+public class MessageService {
 
 	//列挙型
 	/**
@@ -59,7 +59,7 @@ public class Message {
 	/**
 	 * デフォルトコンストラクタ
 	 */
-	public Message() {
+	public MessageService() {
 		this.resBundle = ResourceBundle.getBundle(PROPERTIES_FILE_NAME);
 	}
 
@@ -69,7 +69,7 @@ public class Message {
 	 * @param messageKey メッセージキー
 	 * @return 失敗した場合、null 成功した場合、取得したメッセージ
 	 */
-	public String getMessage(Message.Type messageType, String messageKey) {
+	public String getMessage(MessageService.Type messageType, String messageKey) {
 
 		String messageInitPropertyKey = getMessageInitPropertyKey(messageType, messageKey);
 		if(StringUtils.isEmpty(messageInitPropertyKey)) {
@@ -91,7 +91,7 @@ public class Message {
 	 * @param replacedStrArgs 置換文字列可変引数
 	 * @return 失敗した場合、null 成功した場合、取得し、置換したメッセージ
 	 */
-	public String getMessage(Message.Type messageType, String messageKey, String ... replacedStr) {
+	public String getMessage(MessageService.Type messageType, String messageKey, String ... replacedStr) {
 
 		String messageInitPropertyKey = getMessageInitPropertyKey(messageType, messageKey);
 		if(StringUtils.isEmpty(messageInitPropertyKey)) {
@@ -118,7 +118,7 @@ public class Message {
 	 * @param messageKey メッセージキー
 	 * @return 失敗した場合、null 成功した場合、メッセージプロパティーキー頭文字列
 	 */
-	private String getMessageInitPropertyKey(Message.Type messageType, String messageKey) {
+	private String getMessageInitPropertyKey(MessageService.Type messageType, String messageKey) {
 		String messageInitPropertyKey = null;
 		switch(messageType) {
 			case INFO:
