@@ -632,7 +632,7 @@ public class SignupService {
 		user.setStreetAddress(address);
 		user.setEmailAddress(registForm.getEmailAddress());
 		user.setTelephoneNumber(registForm.getTelephoneNumber());
-		user.setIsDeleted(1);
+		user.setIsDeleted(0);
 		LocalDateTime now = LocalDateTime.now();
 		user.setInsertedTime(now);
 		user.setUpdatedTime(now);
@@ -663,7 +663,7 @@ public class SignupService {
 			pet.setWeight(Float.parseFloat(petWeight));
 		}
 		pet.setRemarks(getParameterData(registForm.getPetRemarks()));
-		pet.setIsDeleted(1);
+		pet.setIsDeleted(0);
 		LocalDateTime now = LocalDateTime.now();
 		pet.setInsertedTime(now);
 		pet.setUpdatedTime(now);
@@ -693,7 +693,7 @@ public class SignupService {
 		}
 		store.setCourseInfo(getParameterData(registForm.getCourseInfo()));
 		store.setCommitment(getParameterData(registForm.getCommitment()));
-		store.setIsDeleted(1);
+		store.setIsDeleted(0);
 		LocalDateTime now = LocalDateTime.now();
 		store.setInsertedTime(now);
 		store.setUpdatedTime(now);
@@ -760,7 +760,7 @@ public class SignupService {
 				businessHours.setStartBusinessTime(LocalTime.of(Integer.parseInt(startBusinessTimeAry[0]), Integer.parseInt(startBusinessTimeAry[1])));
 				businessHours.setEndBusinessTime(LocalTime.of(Integer.parseInt(endBusinessTimeAry[0]), Integer.parseInt(endBusinessTimeAry[1])));
 				businessHours.setComplement(getParameterData(formBusinessHours.getBusinessHoursRemarks()));
-				businessHours.setIsDeleted(1);
+				businessHours.setIsDeleted(0);
 				LocalDateTime now = LocalDateTime.now();
 				businessHours.setInsertedTime(now);
 				businessHours.setUpdatedTime(now);
