@@ -55,6 +55,7 @@ $(document).ready(function(){
             }
             //処理が成功したとき
             //「都道府県」を表示
+            // JIS X 0401都道府県コード
             $('#prefectures').val(('000' + res.results[0].prefcode).slice(-3));
             console.log(('000' + res.results[0].prefcode).slice(-3));
             console.log(res.results);

@@ -31,6 +31,7 @@
   	<description></description>
   	<servlet-class>com.web01.animatch.controller.SignupController</servlet-class>
   </servlet>
+  <!--
   <servlet>
   	<servlet-name>MemberSearchOwnerController</servlet-name>
   	<display-name>MemberSearchOwnerController</display-name>
@@ -42,6 +43,13 @@
   	<display-name>MemberSearchTrimmerController</display-name>
   	<description></description>
   	<servlet-class>com.web01.animatch.controller.MemberSearchTrimmerController</servlet-class>
+  </servlet>
+  -->
+  <servlet>
+  	<servlet-name>MemberSearchController</servlet-name>
+  	<display-name>MemberSearchController</display-name>
+  	<description></description>
+  	<servlet-class>com.web01.animatch.controller.MemberSearchController</servlet-class>
   </servlet>
   <servlet>
   	<servlet-name>MemberDetailOwnerController</servlet-name>
@@ -85,6 +93,7 @@
   	<servlet-name>SignupController</servlet-name>
   	<url-pattern>/signup/</url-pattern>
   </servlet-mapping>
+  <!--
   <servlet-mapping>
   	<servlet-name>MemberSearchOwnerController</servlet-name>
   	<url-pattern>/member/search/owner</url-pattern>
@@ -92,6 +101,11 @@
   <servlet-mapping>
   	<servlet-name>MemberSearchTrimmerController</servlet-name>
   	<url-pattern>/member/search/trimmer</url-pattern>
+  </servlet-mapping>
+  -->
+  <servlet-mapping>
+  	<servlet-name>MemberSearchController</servlet-name>
+  	<url-pattern>/member/search/*</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
   	<servlet-name>MemberDetailOwnerController</servlet-name>
