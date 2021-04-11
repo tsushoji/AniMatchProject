@@ -44,11 +44,6 @@ public class SearchService {
 	private static final String WEEKDAY_KEY_INIT_STR = "weekday.";
 
 	/**
-	 * デフォルトコンストラクタ
-	 */
-	public SearchService() {}
-
-	/**
 	 * 引数付きコンストラクタ
 	 * @param registType 登録区分
 	 */
