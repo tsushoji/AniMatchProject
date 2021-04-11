@@ -78,7 +78,6 @@ public class RegistDao {
 		petDataList.add(createSqlParatemerMap(Timestamp.valueOf(pet.getUpdatedTime()), Types.TIMESTAMP));
 
 		try (PreparedStatement pstmt = createInsetStatement("t_pet", petDataList, true);){
-			this.con.setAutoCommit(false);
 			pstmt.executeUpdate();
 
 			ResultSet rs = pstmt.getGeneratedKeys();
@@ -146,7 +145,6 @@ public class RegistDao {
 		storeDataList.add(createSqlParatemerMap(Timestamp.valueOf(store.getUpdatedTime()), Types.TIMESTAMP));
 
 		try (PreparedStatement pstmt = createInsetStatement("t_store", storeDataList, true);){
-			this.con.setAutoCommit(false);
 
 			pstmt.executeUpdate();
 
