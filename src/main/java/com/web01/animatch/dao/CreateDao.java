@@ -20,11 +20,11 @@ import com.web01.animatch.dto.Store;
 import com.web01.animatch.dto.User;
 
 /**
- * registDBクラス
+ * CreateDaoクラス
  * @author Tsuji
  * @version 1.0
  */
-public class RegistDao extends BaseDao{
+public class CreateDao extends BaseDao{
 
 	//メンバー
 	/**
@@ -43,7 +43,7 @@ public class RegistDao extends BaseDao{
 	 *
 	 * @param con DBコネクションオブジェクト
 	 */
-	public RegistDao(Connection con) {
+	public CreateDao(Connection con) {
 		this.con = con;
 		try {
 			this.con.setAutoCommit(false);

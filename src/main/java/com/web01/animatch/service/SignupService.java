@@ -25,8 +25,8 @@ import javax.servlet.http.Part;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.web01.animatch.dao.CreateDao;
 import com.web01.animatch.dao.DBConnection;
-import com.web01.animatch.dao.RegistDao;
 import com.web01.animatch.dto.BusinessHours;
 import com.web01.animatch.dto.FormBusinessHours;
 import com.web01.animatch.dto.Pet;
@@ -571,25 +571,25 @@ public class SignupService {
 	 */
 	private void registDao(HttpServletRequest request, RegistForm registForm) {
 		DBConnection con = new DBConnection();
-		RegistDao registDao = new RegistDao(con.getConnection());
+		CreateDao createDao = new CreateDao(con.getConnection());
 		try {
-			User user = getParameterUserDto(registForm, registDao);
+			User user = getParameterUserDto(registForm);
 			switch(this.registType) {
 				//飼い主の場合
 				case "001":
-					Pet pet = getParameterPetDto(request, registForm, registDao);
+					Pet pet = getParameterPetDto(request, registForm);
 					user.setPet(pet);
 					setAttributeRegistOwner(request, user);
 					if(this.canRegist) {
 						//DB登録処理前に登録成功失敗リセット
 						this.canRegist = false;
-						this.canRegist = registDao.registOwner(user);
+						this.canRegist = createDao.registOwner(user);
 					}
 					break;
 
 				//トリマーの場合
 				case "002":
-					Store store = getParameterStoreDto(request, registForm, registDao);
+					Store store = getParameterStoreDto(request, registForm);
 					List<BusinessHours> businessHoursList = getParameterBusinessHoursDto(registForm);
 					store.setBusinessHoursList(businessHoursList);
 					user.setStore(store);
@@ -597,7 +597,7 @@ public class SignupService {
 					if(this.canRegist) {
 						//DB登録処理前に登録成功失敗リセット
 						this.canRegist = false;
-						this.canRegist = registDao.registTrimmer(user);
+						this.canRegist = createDao.registTrimmer(user);
 					}
 					break;
 
@@ -617,7 +617,7 @@ public class SignupService {
 	 * @param RegistDao 登録DB処理オブジェクト
 	 * @return ユーザオブジェクト
 	 */
-	private User getParameterUserDto(RegistForm registForm, RegistDao registDao) throws SQLException, ParseException {
+	private User getParameterUserDto(RegistForm registForm) throws SQLException, ParseException {
 		User user = new User();
 
 		user.setUserName(registForm.getUserName());
@@ -647,7 +647,7 @@ public class SignupService {
 	 * @param request 登録DB処理オブジェクト
 	 * @return ペットオブジェクト
 	 */
-	private Pet getParameterPetDto(HttpServletRequest request, RegistForm registForm, RegistDao registDao) throws SQLException, IOException, ServletException {
+	private Pet getParameterPetDto(HttpServletRequest request, RegistForm registForm) throws SQLException, IOException, ServletException {
 		Pet pet = new Pet();
 
 		Part part = request.getPart("file");
@@ -678,7 +678,7 @@ public class SignupService {
 	 * @param request 登録DB処理オブジェクト
 	 * @return 店舗オブジェクト
 	 */
-	private Store getParameterStoreDto(HttpServletRequest request, RegistForm registForm, RegistDao registDao) throws SQLException, IOException, ServletException {
+	private Store getParameterStoreDto(HttpServletRequest request, RegistForm registForm) throws SQLException, IOException, ServletException {
 		Store store = new Store();
 
 		Part part = request.getPart("file");
