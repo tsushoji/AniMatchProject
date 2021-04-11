@@ -7,6 +7,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
+<c:set var="petSexKeyInitStr" value="pet.sex." />
 <c:set var="firstTypeKeyInitEnd" value="001" />
 <c:set var="secondTypeKeyInitEnd" value="002" />
 
@@ -56,7 +57,7 @@
 	                	<c:if test="${searchType == secondTypeKeyInitEnd}">
 	                		<h1 class="mt-2"><img src="/animatch/images/icon_beauty_salon.png" alt="お店アイコン" class="main-search-header-img">お店専用</h1>
 	                	</c:if>
-	                    <p><span>100</span>件見つかりました。</p>
+	                    <p><span><c:out value="${searchCount}"/></span>件見つかりました。</p>
 	                </div>
 	            </div>
 
@@ -154,201 +155,80 @@
 
 	                    </form>
 
-	                    <div class="row main-search-right-list is-show-details-owner">
+						<c:if test="${not empty trimmerInfoList and searchType == firstTypeKeyInitEnd}">
 
-	                        <div class="col-3">
-	                            <img src="" alt="新規会員登録した画像">
-	                        </div>
+							<c:forEach items="${trimmerInfoList}" var="trimmerInfo">
 
-	                        <div class="col-9">
+	                     		<div class="row main-search-right-list is-show-details-owner">
 
-	                            <h6><a href="/animatch/member/detail/owner">新規会員登録した店名</a></h6>
+			                        <div class="col-3">
+			                        	<c:if test="${not empty trimmerInfo.storeImageBase64}">
+			                            	<img src="data:image/png;base64,${trimmerInfo.storeImageBase64}" class="resize-img-base64">
+			                        	</c:if>
+			                        </div>
 
-	                            <div class="row">
+			                        <div class="col-9">
 
-	                                <div class="col-sm-4 p-0">
-	                                    新規会員登録したお店都道府県
-	                                </div>
+			                            <h6><a href="/animatch/member/detail/owner"><c:out value="${trimmerInfo.storeName}"/></a></h6>
 
-	                                <div class="col-sm-4 p-0">
-	                                    新規会員登録したお店市町村
-	                                </div>
+			                            <div class="row">
 
-	                            </div>
+			                                <div class="col-sm-4 p-0">
+			                                    <c:out value="${trimmerInfo.streetAddress}"/>
+			                                </div>
 
-	                            <p class="mt-2">新規会員登録したこだわりポイント</p>
+			                            </div>
 
-	                        </div>
+			                            <p class="mt-2"><c:out value="${trimmerInfo.storeCommitment}"/></p>
 
-	                    </div>
+			                        </div>
 
-	                    <div class="row main-search-right-list is-show-details-owner">
+			                    </div>
 
-	                        <div class="col-3">
-	                            <img src="" alt="新規会員登録した画像">
-	                        </div>
+	                 		</c:forEach>
 
-	                        <div class="col-9">
+						</c:if>
 
-	                            <h6><a href="/animatch/member/detail/owner">新規会員登録した店名</a></h6>
+						<c:if test="${not empty ownerInfoList and searchType == secondTypeKeyInitEnd}">
 
-	                            <div class="row">
+							<c:forEach items="${ownerInfoList}" var="ownerInfo">
 
-	                                <div class="col-sm-4 p-0">
-	                                    新規会員登録したお店都道府県
-	                                </div>
+								<div class="row main-search-right-list is-show-details-trimmer">
 
-	                                <div class="col-sm-4 p-0">
-	                                    新規会員登録したお店市町村
-	                                </div>
+			                        <div class="col-3">
+			                        	<c:if test="${not empty ownerInfo.petImageBase64}">
+			                            	<img src="data:image/png;base64,${ownerInfo.petImageBase64}" class="resize-img-base64">
+			                        	</c:if>
+			                        </div>
 
-	                            </div>
+			                        <div class="col-9">
 
-	                            <p class="mt-2">新規会員登録したこだわりポイント</p>
+			                            <h6><a href="/animatch/member/detail/trimmer"><c:out value="${ownerInfo.petNickName}"/></a></h6>
 
-	                        </div>
+			                            <div class="row">
 
-	                    </div>
+			                                <div class="col-sm-4 p-0">
+			                                    <c:out value="${ownerInfo.streetAddress}"/>
+			                                </div>
 
-	                    <div class="row main-search-right-list is-show-details-owner">
+			                                <div class="col-sm-4 p-0">
+			                                	<c:if test="${not empty ownerInfo.petType}">
+			                                		<fmt:message bundle="${resource}" key="${petSexKeyInitStr}${ownerInfo.petType}" var="ownerInfoPetTypeVal" />
+			                                    	<c:out value="${ownerInfoPetTypeVal}"/>
+			                                    </c:if>
+			                                </div>
 
-	                        <div class="col-3">
-	                            <img src="" alt="新規会員登録した画像">
-	                        </div>
+			                            </div>
 
-	                        <div class="col-9">
+			                            <p class="mt-2"><c:out value="${ownerInfo.petRemarks}"/></p>
 
-	                            <h6><a href="/animatch/member/detail/owner">新規会員登録した店名</a></h6>
+			                        </div>
 
-	                            <div class="row">
+			                    </div>
 
-	                                <div class="col-sm-4 p-0">
-	                                    新規会員登録したお店都道府県
-	                                </div>
+		                    </c:forEach>
 
-	                                <div class="col-sm-4 p-0">
-	                                    新規会員登録したお店市町村
-	                                </div>
-
-	                            </div>
-
-	                            <p class="mt-2">新規会員登録したこだわりポイント</p>
-
-	                        </div>
-
-	                    </div>
-
-	                    <div class="row main-search-right-list is-show-details-owner">
-
-	                        <div class="col-3">
-	                            <img src="" alt="新規会員登録した画像">
-	                        </div>
-
-	                        <div class="col-9">
-
-	                            <h6><a href="/animatch/member/detail/owner">新規会員登録した店名</a></h6>
-
-	                            <div class="row">
-
-	                                <div class="col-sm-4 p-0">
-	                                    新規会員登録したお店都道府県
-	                                </div>
-
-	                                <div class="col-sm-4 p-0">
-	                                    新規会員登録したお店市町村
-	                                </div>
-
-	                            </div>
-
-	                            <p class="mt-2">新規会員登録したこだわりポイント</p>
-
-	                        </div>
-
-	                    </div>
-
-	                    <div class="row main-search-right-list is-show-details-owner">
-
-	                        <div class="col-3">
-	                            <img src="" alt="新規会員登録した画像">
-	                        </div>
-
-	                        <div class="col-9">
-
-	                            <h6><a href="/animatch/member/detail/owner">新規会員登録した店名</a></h6>
-
-	                            <div class="row">
-
-	                                <div class="col-sm-4 p-0">
-	                                    新規会員登録したお店都道府県
-	                                </div>
-
-	                                <div class="col-sm-4 p-0">
-	                                    新規会員登録したお店市町村
-	                                </div>
-
-	                            </div>
-
-	                            <p class="mt-2">新規会員登録したこだわりポイント</p>
-
-	                        </div>
-
-	                    </div>
-
-	                    <div class="row main-search-right-list is-show-details-owner">
-
-	                        <div class="col-3">
-	                            <img src="" alt="新規会員登録した画像">
-	                        </div>
-
-	                        <div class="col-9">
-
-	                            <h6><a href="/animatch/member/detail/owner">新規会員登録した店名</a></h6>
-
-	                            <div class="row">
-
-	                                <div class="col-sm-4 p-0">
-	                                    新規会員登録したお店都道府県
-	                                </div>
-
-	                                <div class="col-sm-4 p-0">
-	                                    新規会員登録したお店市町村
-	                                </div>
-
-	                            </div>
-
-	                            <p class="mt-2">新規会員登録したこだわりポイント</p>
-
-	                        </div>
-
-	                    </div>
-
-	                    <div class="row main-search-right-list is-show-details-owner">
-
-	                        <div class="col-3">
-	                            <img src="" alt="新規会員登録した画像">
-	                        </div>
-
-	                        <div class="col-9">
-
-	                            <h6><a href="/animatch/member/detail/owner">新規会員登録した店名</a></h6>
-
-	                            <div class="row">
-
-	                                <div class="col-sm-4 p-0">
-	                                    新規会員登録したお店都道府県
-	                                </div>
-
-	                                <div class="col-sm-4 p-0">
-	                                    新規会員登録したお店市町村
-	                                </div>
-
-	                            </div>
-
-	                            <p class="mt-2">新規会員登録したこだわりポイント</p>
-
-	                        </div>
-
-	                    </div>
+						</c:if>
 
 	                </div>
 
@@ -384,8 +264,8 @@
 		<!-- plugin multipicker -->
 	    <script src="/animatch/scripts/plugin/multipicker.min.js"></script>
 
-	    <script src="/animatch/scripts/search.js"></script>
 		<script src="/animatch/scripts/common.js"></script>
+	    <script src="/animatch/scripts/search.js"></script>
 
 	    <script>
 	        $(document).ready(function(){

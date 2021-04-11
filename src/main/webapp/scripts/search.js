@@ -22,34 +22,29 @@ $(document).ready(function(){
     });
 
     //アクション:「都道府県」を入力する
-    //都道府県コード https://www.land.mlit.go.jp/webland/api.html
-    /*
+    //都道府県コード https://postcode.teraren.com/prefectures
     $("#prefectures").change(function(){
-    	const successStatus = 200
-    	let paramPrefectures = $(this).val().slice(-2);
-    	let urlResasCities = 'https://www.land.mlit.go.jp/webland/api/CitySearch?area=';
-    	console.log(urlResasCities + paramPrefectures);
-
-    	$.ajax({
-    		type: 'GET',
-    		cache: false,
-    		url: urlResasCities + paramPrefectures,
-    		dataType: 'json',
-    	}).done(function (res) {
-    		//エラーだった時
-    		if (res.status !== successStatus) {
-    			//エラー内容を表示
-    			console.log(res.message);
-    			return;
-    		}
-    		//処理が成功したとき
-    		//「市区町村」を表示
-    		console.log(res);
-    	}).fail(function (XMLHttpRequest, textStatus, errorThrown) {
-    		console.log(XMLHttpRequest);
-    	});
+    	let paramPrefectures = $(this).val().replace(/^0+/, '');
+    	//追加したDomを削除
+    	$('.api-append-cities').remove();
+    	$.getJSON("https://postcode.teraren.com/prefectures/" + paramPrefectures + ".json", function(json){
+    		console.log('成功');
+    		console.log(json);
+    		targetSelect = $('#cities');
+    		//追加したDomを区別するため、追加したDomに「api-append-cities」クラスを付与
+    		$.each(json, function (index, val) {
+			    appendOption = $('<option>')
+			        			.val(val.city)
+			        			.text(val.city)
+			        			.addClass("api-append-cities")
+			    targetSelect.append(appendOption);
+			});
+	    }).fail(function(jqXHR, textStatus, errorThrown) {
+	    	console.log(XMLHttpRequest);
+	    });
     });
-    */
 
+	//画像サイズを調整
+	adjustImgbase64(80);
 
 });

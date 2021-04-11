@@ -4,12 +4,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.web01.animatch.dto.BusinessHours;
 import com.web01.animatch.dto.OwnerInfo;
 import com.web01.animatch.dto.TrimmerInfo;
 
@@ -45,24 +47,24 @@ public class ReadDao extends BaseDao{
 		try (PreparedStatement pstmt = createSelectStatement(null, "v_owner_info", null, null);){
 			ResultSet rs = pstmt.executeQuery();
 
-			if(rs.next()) {
+			while(rs.next()) {
 				OwnerInfo ownerInfo = new OwnerInfo();
-				ownerInfo.setUserId(rs.getInt(0) == 0?null:rs.getInt(0));
-				ownerInfo.setUserName(rs.getString(1));
-				ownerInfo.setPassword(rs.getString(2));
-				ownerInfo.setSex(rs.getString(3));
-				ownerInfo.setBirthday(rs.getDate(4));
-				ownerInfo.setPostalCode(rs.getString(5));
-				ownerInfo.setStreetAddress(rs.getString(6));
-				ownerInfo.setEmailAddress(rs.getString(7));
-				ownerInfo.setTelephoneNumber(rs.getString(8));
-				ownerInfo.setPetId(rs.getInt(9) == 0?null:rs.getInt(9));
-				ownerInfo.setPetImage(rs.getBytes(10));
-				ownerInfo.setPetNickName(rs.getString(11));
-				ownerInfo.setPetSex(rs.getString(12));
-				ownerInfo.setPetType(rs.getString(13));
-				ownerInfo.setPetWeight(rs.getFloat(14) == 0?null:rs.getFloat(14));
-				ownerInfo.setPetRemarks(rs.getString(15));
+				ownerInfo.setUserId(rs.getInt("user_id") == 0?null:rs.getInt("user_id"));
+				ownerInfo.setUserName(rs.getString("user_name"));
+				ownerInfo.setPassword(rs.getString("password"));
+				ownerInfo.setSex(rs.getString("sex"));
+				ownerInfo.setBirthday(rs.getDate("birthday"));
+				ownerInfo.setPostalCode(rs.getString("postal_code"));
+				ownerInfo.setStreetAddress(rs.getString("street_address"));
+				ownerInfo.setEmailAddress(rs.getString("email_address"));
+				ownerInfo.setTelephoneNumber(rs.getString("telephone_number"));
+				ownerInfo.setPetId(rs.getInt("pet_id") == 0?null:rs.getInt("pet_id"));
+				ownerInfo.setPetImage(rs.getBytes("pet_image"));
+				ownerInfo.setPetNickName(rs.getString("pet_nickname"));
+				ownerInfo.setPetSex(rs.getString("pet_sex"));
+				ownerInfo.setPetType(rs.getString("pet_type"));
+				ownerInfo.setPetWeight(rs.getFloat("pet_weight") == 0?null:rs.getFloat("pet_weight"));
+				ownerInfo.setPetRemarks(rs.getString("pet_remarks"));
 				ownerInfoList.add(ownerInfo);
 			}
 		} catch(SQLException e) {
@@ -81,33 +83,59 @@ public class ReadDao extends BaseDao{
 		try (PreparedStatement pstmt = createSelectStatement(null, "v_trimmer_info", null, null);){
 			ResultSet rs = pstmt.executeQuery();
 
-			if(rs.next()) {
+			while(rs.next()) {
 				TrimmerInfo trimmerInfo = new TrimmerInfo();
-				trimmerInfo.setUserId(rs.getInt(0) == 0?null:rs.getInt(0));
-				trimmerInfo.setUserName(rs.getString(1));
-				trimmerInfo.setPassword(rs.getString(2));
-				trimmerInfo.setSex(rs.getString(3));
-				trimmerInfo.setBirthday(rs.getDate(4));
-				trimmerInfo.setPostalCode(rs.getString(5));
-				trimmerInfo.setStreetAddress(rs.getString(6));
-				trimmerInfo.setEmailAddress(rs.getString(7));
-				trimmerInfo.setTelephoneNumber(rs.getString(8));
-				trimmerInfo.setStoreId(rs.getInt(9) == 0?null:rs.getInt(9));
-				trimmerInfo.setStoreImage(rs.getBytes(10));
-				trimmerInfo.setStoreName(rs.getString(11));
-				trimmerInfo.setStoreEmployeesNumber(rs.getInt(12) == 0?null:rs.getInt(12));
-				trimmerInfo.setStoreCourseInfo(rs.getString(13));
-				trimmerInfo.setStoreCommitment(rs.getString(14));
-				trimmerInfo.setStoreBusinessDay(rs.getString(15));
-				trimmerInfo.setStoreStartBusinessTime(rs.getTimestamp(16)==null?null:rs.getTimestamp(16).toLocalDateTime().toLocalTime());
-				trimmerInfo.setStoreEndBusinessTime(rs.getTimestamp(17)==null?null:rs.getTimestamp(17).toLocalDateTime().toLocalTime());
-				trimmerInfo.setStoreBusinessComplement(rs.getString(18));
+				int storeId = rs.getInt("store_id");
+				trimmerInfo.setUserId(rs.getInt("user_id") == 0?null:rs.getInt("user_id"));
+				trimmerInfo.setUserName(rs.getString("user_name"));
+				trimmerInfo.setPassword(rs.getString("password"));
+				trimmerInfo.setSex(rs.getString("sex"));
+				trimmerInfo.setBirthday(rs.getDate("birthday"));
+				trimmerInfo.setPostalCode(rs.getString("postal_code"));
+				trimmerInfo.setStreetAddress(rs.getString("street_address"));
+				trimmerInfo.setEmailAddress(rs.getString("email_address"));
+				trimmerInfo.setTelephoneNumber(rs.getString("telephone_number"));
+				trimmerInfo.setStoreId(storeId == 0?null:storeId);
+				trimmerInfo.setStoreImage(rs.getBytes("store_image"));
+				trimmerInfo.setStoreName(rs.getString("store_store_name"));
+				trimmerInfo.setStoreEmployeesNumber(rs.getInt("store_employees_number") == 0?null:rs.getInt("store_employees_number"));
+				trimmerInfo.setStoreCourseInfo(rs.getString("store_course_info"));
+				trimmerInfo.setStoreCommitment(rs.getString("store_commitment"));
+				trimmerInfo.setBusinessHoursList(storeId == 0?null:(findBusinessHoursByStoreId(storeId).size() > 0?findBusinessHoursByStoreId(storeId):null));
 				trimmerInfoList.add(trimmerInfo);
 			}
 		} catch(SQLException e) {
 			throw e;
 		}
 		return trimmerInfoList;
+	}
+
+	/**
+	 * 営業時間抽出
+	 * @param storeId 店舗ID
+	 * @return 営業時間オブジェクトリスト
+	 */
+	private List<BusinessHours> findBusinessHoursByStoreId(int storeId) throws SQLException {
+		List<BusinessHours> businessHoursList = new ArrayList<>();
+		List<HashMap<String, Object>> businessHoursDataList = new ArrayList<>();
+
+		businessHoursDataList.add(createSqlParatemerMap(storeId, Types.INTEGER));
+
+		try (PreparedStatement pstmt = createSelectStatement(null, "t_business_hours", "store_id = ?", businessHoursDataList);){
+			ResultSet rs = pstmt.executeQuery();
+
+			if(rs.next()) {
+				BusinessHours businessHours = new BusinessHours();
+				businessHours.setBusinessDay(rs.getString("business_day"));
+				businessHours.setStartBusinessTime(rs.getTimestamp("start_business_time") == null?null:rs.getTimestamp("start_business_time").toLocalDateTime().toLocalTime());
+				businessHours.setEndBusinessTime(rs.getTimestamp("end_business_time") == null?null:rs.getTimestamp("end_business_time").toLocalDateTime().toLocalTime());
+				businessHours.setComplement(rs.getString("complement"));
+				businessHoursList.add(businessHours);
+			}
+		} catch(SQLException e) {
+			throw e;
+		}
+		return businessHoursList;
 	}
 
 	/**

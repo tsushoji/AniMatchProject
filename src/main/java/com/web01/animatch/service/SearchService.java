@@ -1,5 +1,6 @@
 package com.web01.animatch.service;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -8,12 +9,17 @@ import java.util.ResourceBundle;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.web01.animatch.dao.DBConnection;
+import com.web01.animatch.dao.ReadDao;
+import com.web01.animatch.dto.OwnerInfo;
+import com.web01.animatch.dto.TrimmerInfo;
+
 /**
  * 検索サービスクラス
  * @author Tsuji
  * @version 1.0
  */
-public class SearchService {
+public class SearchService extends BaseService{
 
 	//メンバー
 	/**
@@ -98,7 +104,40 @@ public class SearchService {
 	 * @param request リクエストオブジェクト
 	 */
 	private void setInitAttribute(HttpServletRequest request) {
-
-		request.setAttribute("searchType", this.searchType);
+		DBConnection con = new DBConnection();
+		ReadDao readDao = new ReadDao(con.getConnection());
+		int searchCount = 0;
+		try {
+			switch(this.searchType) {
+				//飼い主の場合
+				case "001":
+					List<TrimmerInfo> trimmerInfoList = readDao.findTrimmerInfo();
+					searchCount = trimmerInfoList.size();
+					//画像をBase64化
+					for(TrimmerInfo trimmerInfo:trimmerInfoList) {
+						trimmerInfo.setStoreImageBase64(convertByteAryToBase64(trimmerInfo.getStoreImage()));
+					}
+					request.setAttribute("trimmerInfoList", trimmerInfoList);
+					break;
+				//トリマーの場合
+				case "002":
+					List<OwnerInfo> ownerInfoList = readDao.findOwnerInfo();
+					searchCount = ownerInfoList.size();
+					//画像をBase64化
+					for(OwnerInfo ownerInfo:ownerInfoList) {
+						ownerInfo.setPetImageBase64(convertByteAryToBase64(ownerInfo.getPetImage()));
+					}
+					request.setAttribute("ownerInfoList", ownerInfoList);
+					break;
+				default:
+					break;
+			}
+			request.setAttribute("searchCount", searchCount);
+			request.setAttribute("searchType", this.searchType);
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}finally {
+			con.close();
+		}
 	}
 }

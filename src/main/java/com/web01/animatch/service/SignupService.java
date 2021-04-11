@@ -10,7 +10,6 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -39,7 +38,7 @@ import com.web01.animatch.dto.User;
  * @author Tsuji
  * @version 1.0
  */
-public class SignupService {
+public class SignupService extends BaseService{
 
 	//メンバー
 	/**
@@ -795,11 +794,8 @@ public class SignupService {
 		request.setAttribute("registType", this.registType);
 		request.setAttribute("user", user);
 		request.setAttribute("pet", pet);
-		byte[] petImage = pet.getImage();
-		if(petImage != null) {
-			String base64String = Base64.getEncoder().encodeToString(petImage);
-			request.setAttribute("petImage", base64String);
-		}
+		//画像をBase64化
+		request.setAttribute("petImage", convertByteAryToBase64(pet.getImage()));
 	}
 
 	/**
@@ -812,11 +808,8 @@ public class SignupService {
 		request.setAttribute("registType", this.registType);
 		request.setAttribute("user", user);
 		request.setAttribute("store", store);
-		byte[] storeImage = store.getImage();
-		if(storeImage != null) {
-			String base64String = Base64.getEncoder().encodeToString(storeImage);
-			request.setAttribute("storeImage", base64String);
-		}
+		//画像をBase64化
+		request.setAttribute("storeImage", convertByteAryToBase64(store.getImage()));
 		request.setAttribute("businessHoursList", store.getBusinessHoursList());
 	}
 

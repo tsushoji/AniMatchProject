@@ -472,7 +472,7 @@
         });
     </script>
 
-    <script src="/animatch/scripts/regist.js"></script>
 	<script src="/animatch/scripts/common.js"></script>
+    <script src="/animatch/scripts/regist.js"></script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 package com.web01.animatch.dto;
 
-import java.time.LocalTime;
 import java.util.Date;
+import java.util.List;
 
 import lombok.Data;
 
@@ -59,6 +59,10 @@ public class TrimmerInfo {
 	 */
 	private byte[] storeImage;
 	/**
+	 * 店舗画像base64
+	 */
+	private String storeImageBase64;
+	/**
 	 * 店名
 	 */
 	private String storeName;
@@ -75,19 +79,7 @@ public class TrimmerInfo {
 	 */
 	private String storeCommitment;
 	/**
-	 * 営業時間曜日
+	 * 営業時間リスト
 	 */
-	private String storeBusinessDay;
-	/**
-	 * 営業開始時間
-	 */
-	private LocalTime storeStartBusinessTime;
-	/**
-	 * 営業終了時間
-	 */
-	private LocalTime storeEndBusinessTime;
-	/**
-	 * 営業時間補足
-	 */
-	private String storeBusinessComplement;
+	private List<BusinessHours> businessHoursList;
 }

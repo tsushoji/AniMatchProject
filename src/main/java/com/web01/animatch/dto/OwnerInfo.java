@@ -58,6 +58,10 @@ public class OwnerInfo {
 	 */
 	private byte[] petImage;
 	/**
+	 * ペット画像base64
+	 */
+	private String petImageBase64;
+	/**
 	 * ペットニックネーム
 	 */
 	private String petNickName;
