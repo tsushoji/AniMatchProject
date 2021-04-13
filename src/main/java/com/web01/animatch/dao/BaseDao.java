@@ -1,6 +1,5 @@
 package com.web01.animatch.dao;
 
-import java.io.ByteArrayInputStream;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -46,7 +45,8 @@ public class BaseDao {
 		} else if(dataType == Types.TIME) {
 			pstmt.setTime(paramIndex, Time.valueOf(valStr));
 		} else if(dataType == Types.BLOB) {
-			pstmt.setBinaryStream(paramIndex, new ByteArrayInputStream(valStr.getBytes()));
+			// 「new ByteArrayInputStream(valStr.getBytes())」で渡すと、画像ファイルを復元できない
+			pstmt.setBytes(paramIndex, (byte[])value);
 		} else if(dataType == Types.TIMESTAMP) {
 			pstmt.setTimestamp(paramIndex, Timestamp.valueOf(valStr));
 		} else {
