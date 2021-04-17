@@ -45,6 +45,6 @@ $(document).ready(function(){
     });
 
 	//画像サイズを調整
-	adjustImgbase64(80);
+	adjustImgbase64(40);
 
 });
