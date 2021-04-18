@@ -3,7 +3,7 @@ main {
     background-color:rgb(233, 233, 66);
 }
 
-.main-search-left,.main-search-right,.main-search-right-form, .main-search-right-list {
+.main-search-left,.main-search-right,.main-search-right-form,.main-search-right-list {
     border:solid 1px rgb(163, 161, 161);
     background-color:rgb(255, 255, 255);
     font-size:85%;
@@ -16,6 +16,17 @@ main {
 
 .plugin-multipicker li {
     color:rgb(0, 0, 0);
+}
+
+.main-search-right-list-img {
+    /*検索画像対応*/
+    /*jsで縦横比を維持し、最大サイズを200pxに調整*/
+    height:130px;
+    width:130px;
+}
+
+.main-search-right-list-img img {
+	display: block;
 }
 
 .page-link {
@@ -35,7 +46,7 @@ main {
 }
 
 
-/*　画面サイズが1023pxまではここを読み込む　*/
+/*画面サイズが1023pxまではここを読み込む*/
 @media screen and (max-width:1023px) {
     /* ヘッダー */
     .main-search-header-img {

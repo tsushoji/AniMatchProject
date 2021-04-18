@@ -7,6 +7,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
+<c:set var="petTypeKeyInitStr" value="pet.type." />
 <c:set var="petSexKeyInitStr" value="pet.sex." />
 <c:set var="firstTypeKeyInitEnd" value="001" />
 <c:set var="secondTypeKeyInitEnd" value="002" />
@@ -161,7 +162,7 @@
 
 	                     		<div class="row main-search-right-list is-show-details-owner">
 
-			                        <div class="col-3">
+			                        <div class="col-3 main-search-right-list-img">
 			                        	<c:if test="${not empty trimmerInfo.storeImageBase64}">
 			                            	<img src="data:image/png;base64,${trimmerInfo.storeImageBase64}" class="resize-img-base64">
 			                        	</c:if>
@@ -169,9 +170,9 @@
 
 			                        <div class="col-9">
 
-			                            <h6><a href="/animatch/member/detail/owner"><c:out value="${trimmerInfo.storeName}"/></a></h6>
+			                            <h6 class="mt-2"><a href="/animatch/member/detail/owner"><c:out value="${trimmerInfo.storeName}"/></a></h6>
 
-			                            <div class="row">
+			                            <div class="row mt-2">
 
 			                                <div class="col-sm-4 p-0">
 			                                    <c:out value="${trimmerInfo.streetAddress}"/>
@@ -195,7 +196,7 @@
 
 								<div class="row main-search-right-list is-show-details-trimmer">
 
-			                        <div class="col-3">
+			                        <div class="col-3 main-search-right-list-img">
 			                        	<c:if test="${not empty ownerInfo.petImageBase64}">
 			                            	<img src="data:image/png;base64,${ownerInfo.petImageBase64}" class="resize-img-base64">
 			                        	</c:if>
@@ -203,18 +204,25 @@
 
 			                        <div class="col-9">
 
-			                            <h6><a href="/animatch/member/detail/trimmer"><c:out value="${ownerInfo.petNickName}"/></a></h6>
+			                            <h6 class="mt-2"><a href="/animatch/member/detail/trimmer"><c:out value="${ownerInfo.petNickName}"/></a></h6>
 
-			                            <div class="row">
+			                            <div class="row mt-2">
 
 			                                <div class="col-sm-4 p-0">
 			                                    <c:out value="${ownerInfo.streetAddress}"/>
 			                                </div>
 
-			                                <div class="col-sm-4 p-0">
+											<div class="col-sm-3 p-0">
 			                                	<c:if test="${not empty ownerInfo.petType}">
-			                                		<fmt:message bundle="${resource}" key="${petSexKeyInitStr}${ownerInfo.petType}" var="ownerInfoPetTypeVal" />
+			                                		<fmt:message bundle="${resource}" key="${petTypeKeyInitStr}${ownerInfo.petType}" var="ownerInfoPetTypeVal" />
 			                                    	<c:out value="${ownerInfoPetTypeVal}"/>
+			                                    </c:if>
+			                                </div>
+
+			                                <div class="col-sm-3 p-0">
+			                                	<c:if test="${not empty ownerInfo.petSex}">
+			                                		<fmt:message bundle="${resource}" key="${petSexKeyInitStr}${ownerInfo.petSex}" var="ownerInfoPetSexVal" />
+			                                    	<c:out value="${ownerInfoPetSexVal}"/>
 			                                    </c:if>
 			                                </div>
 
