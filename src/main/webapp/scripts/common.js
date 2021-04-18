@@ -34,7 +34,7 @@ const adjustImgbase64 = function(imgSize) {
 	    //画像読み込み
 	    image.src = targetImgbase64;
     });
-}
+};
 
 $(document).ready(function(){
     //アクション:「上部へ戻る」をクリック

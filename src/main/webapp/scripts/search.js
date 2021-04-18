@@ -1,3 +1,21 @@
+const getSearchDataAjax = function(searchType, tarPage){
+    let param = '?searchType=' + searchType + '&tarPage=' + tarPage;
+    let url = '';
+    url = '/animatch/member/search/common';
+
+    $.ajax({
+        type: 'POST',
+        cache: false,
+        url: url + param,
+        dataType: 'json',
+    }).done(function (json) {
+        //処理が成功したとき
+        console.log(json);
+    }).fail(function (XMLHttpRequest, textStatus, errorThrown) {
+        console.log(XMLHttpRequest);
+    });
+};
+
 $(document).ready(function(){
     //アクション:「絞り込みクリア」ボタン押下
     $('.main-search-left-clear').click(function() {
@@ -47,4 +65,15 @@ $(document).ready(function(){
 	//画像サイズを調整
 	adjustImgbase64(130);
 
+	//ページリンクDOM作成
+	let displayDataCount = 5;
+	let pageCount = 1;
+	$('.pagination').append('<li class="page-item"><a class="page-link" href="#">前へ</a></li>');
+	$('.pagination').append('<li class="page-item active"><a class="page-link" href="#">1</a></li>');
+	for(let i = 2; i <= pageCount; i++){
+		$('.pagination').append('<li class="page-item"><a class="page-link" href="#">' + i + '</a></li>');
+	}
+	$('.pagination').append('<li class="page-item"><a class="page-link" href="#">次へ</a></li>');
+
+	getSearchDataAjax('002', 1);
 });

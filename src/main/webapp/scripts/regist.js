@@ -37,7 +37,7 @@ $(document).ready(function(){
 
     //アクション:「郵便番号」を入力する
     $("#postal-code").change(function(){
-        const successStatus = 200
+        const successStatus = 200;
         let paramPostalCode = $(this).val();
         let urlZipCloud = 'https://zip-cloud.appspot.com/api/search?zipcode=';
 

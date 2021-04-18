@@ -12,6 +12,8 @@
 <c:set var="firstTypeKeyInitEnd" value="001" />
 <c:set var="secondTypeKeyInitEnd" value="002" />
 
+<c:set var="newLine" value="${System.lineSeparator()}" />
+
 <c:if test="${searchType == firstTypeKeyInitEnd}">
 	<c:set var="labelTitlePart" value="お店" />
 </c:if>
@@ -58,6 +60,7 @@
 	                	<c:if test="${searchType == secondTypeKeyInitEnd}">
 	                		<h1 class="mt-2"><img src="/animatch/images/icon_beauty_salon.png" alt="お店アイコン" class="main-search-header-img">お店専用</h1>
 	                	</c:if>
+	                    <!--<p><span><c:out value="${searchCount}"/></span>件見つかりました。</p>-->
 	                    <p><span><c:out value="${searchCount}"/></span>件見つかりました。</p>
 	                </div>
 	            </div>
@@ -156,7 +159,7 @@
 
 	                    </form>
 
-						<c:if test="${not empty trimmerInfoList and searchType == firstTypeKeyInitEnd}">
+						<!--<c:if test="${not empty trimmerInfoList and searchType == firstTypeKeyInitEnd}">
 
 							<c:forEach items="${trimmerInfoList}" var="trimmerInfo">
 
@@ -180,7 +183,12 @@
 
 			                            </div>
 
-			                            <p class="mt-2"><c:out value="${trimmerInfo.storeCommitment}"/></p>
+			                            <p class="mt-2 line-break">
+			                            	<c:set var="storeCommitment" value="${trimmerInfo.storeCommitment}" />
+					                    	<c:forEach var="storeCommitmentStr" items="${fn:split(storeCommitment, newLine)}" >
+												<c:out value="${storeCommitmentStr}"/><br/>
+											</c:forEach>
+			                            </p>
 
 			                        </div>
 
@@ -228,7 +236,12 @@
 
 			                            </div>
 
-			                            <p class="mt-2"><c:out value="${ownerInfo.petRemarks}"/></p>
+			                            <p class="mt-2 line-break">
+			                            	<c:set var="petRemarks" value="${ownerInfo.petRemarks}" />
+					                    	<c:forEach var="petRemarksStr" items="${fn:split(petRemarks, newLine)}" >
+												<c:out value="${petRemarksStr}"/><br/>
+											</c:forEach>
+			                            </p>
 
 			                        </div>
 
@@ -236,7 +249,7 @@
 
 		                    </c:forEach>
 
-						</c:if>
+						</c:if>-->
 
 	                </div>
 
@@ -244,11 +257,11 @@
 
 	            <nav aria-label="ページ送りの実例">
 	                <ul class="pagination justify-content-center pb-3 mb-0">
+	                  <!--
 	                  <li class="page-item"><a class="page-link" href="#">前へ</a></li>
 	                  <li class="page-item"><a class="page-link" href="#">1</a></li>
-	                  <li class="page-item"><a class="page-link" href="#">2</a></li>
-	                  <li class="page-item"><a class="page-link" href="#">3</a></li>
 	                  <li class="page-item"><a class="page-link" href="#">次へ</a></li>
+	                  -->
 	                </ul>
 	            </nav>
 

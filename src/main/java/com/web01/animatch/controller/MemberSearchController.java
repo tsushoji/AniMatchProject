@@ -1,6 +1,11 @@
 package com.web01.animatch.controller;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.regex.Pattern;
 
 import javax.servlet.RequestDispatcher;
@@ -9,6 +14,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import com.web01.animatch.service.SearchService;
 
 /**
@@ -27,6 +35,18 @@ public class MemberSearchController extends HttpServlet {
 	 * 検索URLフォーマット
 	 */
 	private static final String URL_SEARCH_FORMAT = "^/animatch/member/search/(owner|trimmer)$";
+	/**
+	 * 検索パラメータURLフォーマット
+	 */
+	private static final String URL_PARAM_SEARCH_FORMAT = "^/animatch/member/search/(owner|trimmer)\\?*$";
+	/**
+	 * 日付フォーマット
+	 */
+	private static final String DATE_FORMAT = "yyyy/MM/dd";
+	/**
+	 * 日付フォーマット
+	 */
+	private static final String TIME_FORMAT = "kk:mm";
 
 	/**
 	 * デフォルトコンストラクタ
@@ -62,6 +82,30 @@ public class MemberSearchController extends HttpServlet {
 	 * @param response レスポンスオブジェクト
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		doGet(request, response);
+		String reqURL = request.getRequestURI();
+
+		//if(Pattern.matches(URL_PARAM_SEARCH_FORMAT, reqURL)) {
+		if(true) {
+			SearchService searchService = new SearchService(reqURL.substring(reqURL.lastIndexOf("/") + 1, reqURL.length()));
+			String searchType = request.getParameter("searchType");
+			int tarPage = Integer.parseInt(request.getParameter("tarPage"));
+
+			ObjectMapper mapper = new ObjectMapper();
+			DateFormat df = new SimpleDateFormat(DATE_FORMAT);
+			mapper.setDateFormat(df);
+			mapper.registerModule(new JavaTimeModule().addSerializer(LocalTime.class, new LocalTimeSerializer(DateTimeFormatter.ofPattern(TIME_FORMAT))));
+
+			// オブジェクトをJson文字列に変更
+			String resJson = mapper.writeValueAsString(searchService.getSearchData(request, searchType, tarPage));
+
+			// ヘッダ情報などセット
+			response.setContentType("application/json");
+			response.setHeader("Cache-Control", "nocache");
+			response.setCharacterEncoding("utf-8");
+
+			// JSONを戻す
+			PrintWriter out = response.getWriter();
+			out.print(resJson);
+		}
 	}
 }

@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.web01.animatch.dto.BusinessHours;
 import com.web01.animatch.dto.OwnerInfo;
 import com.web01.animatch.dto.TrimmerInfo;
+import com.web01.animatch.service.SearchService;
 
 /**
  * ReadDaoクラス
@@ -38,35 +39,45 @@ public class ReadDao extends BaseDao{
 	}
 
 	/**
-	 * 飼い主情報抽出
+	 * ページング用飼い主情報抽出
+	 * @param searchService 検索サービスオブジェクト
+	 * @param startDataRowNum 検索開始行数
+	 * @param endDataRowNum 検索終了行数
 	 * @return 飼い主情報オブジェクトリスト
 	 */
-	public List<OwnerInfo> findOwnerInfo() throws SQLException {
+	public List<OwnerInfo> findOwnerInfoByPaging(SearchService searchService, int startDataRowNum, int endDataRowNum) throws SQLException {
 		List<OwnerInfo> ownerInfoList = new ArrayList<>();
 
-		try (PreparedStatement pstmt = createSelectStatement(null, "v_owner_info", null, null);){
+		try (PreparedStatement pstmt = createSelectStatement(null, "v_owner_info", null, null, null);){
 			ResultSet rs = pstmt.executeQuery();
 
+			int count = 0;
 			while(rs.next()) {
-				OwnerInfo ownerInfo = new OwnerInfo();
-				ownerInfo.setUserId(rs.getInt("user_id") == 0?null:rs.getInt("user_id"));
-				ownerInfo.setUserName(rs.getString("user_name"));
-				ownerInfo.setPassword(rs.getString("password"));
-				ownerInfo.setSex(rs.getString("sex"));
-				ownerInfo.setBirthday(rs.getDate("birthday"));
-				ownerInfo.setPostalCode(rs.getString("postal_code"));
-				ownerInfo.setStreetAddress(rs.getString("street_address"));
-				ownerInfo.setEmailAddress(rs.getString("email_address"));
-				ownerInfo.setTelephoneNumber(rs.getString("telephone_number"));
-				ownerInfo.setPetId(rs.getInt("pet_id") == 0?null:rs.getInt("pet_id"));
-				ownerInfo.setPetImage(rs.getBytes("pet_image"));
-				ownerInfo.setPetNickName(rs.getString("pet_nickname"));
-				ownerInfo.setPetSex(rs.getString("pet_sex"));
-				ownerInfo.setPetType(rs.getString("pet_type"));
-				ownerInfo.setPetWeight(rs.getFloat("pet_weight") == 0?null:rs.getFloat("pet_weight"));
-				ownerInfo.setPetRemarks(rs.getString("pet_remarks"));
-				ownerInfoList.add(ownerInfo);
+
+				int culRow = rs.getRow();
+				if(culRow >= startDataRowNum && culRow <= endDataRowNum) {
+					OwnerInfo ownerInfo = new OwnerInfo();
+					ownerInfo.setUserId(rs.getInt("user_id") == 0?null:rs.getInt("user_id"));
+					ownerInfo.setUserName(rs.getString("user_name"));
+					ownerInfo.setPassword(rs.getString("password"));
+					ownerInfo.setSex(rs.getString("sex"));
+					ownerInfo.setBirthday(rs.getDate("birthday"));
+					ownerInfo.setPostalCode(rs.getString("postal_code"));
+					ownerInfo.setStreetAddress(rs.getString("street_address"));
+					ownerInfo.setEmailAddress(rs.getString("email_address"));
+					ownerInfo.setTelephoneNumber(rs.getString("telephone_number"));
+					ownerInfo.setPetId(rs.getInt("pet_id") == 0?null:rs.getInt("pet_id"));
+					ownerInfo.setPetImage(rs.getBytes("pet_image"));
+					ownerInfo.setPetNickName(rs.getString("pet_nickname"));
+					ownerInfo.setPetSex(rs.getString("pet_sex"));
+					ownerInfo.setPetType(rs.getString("pet_type"));
+					ownerInfo.setPetWeight(rs.getFloat("pet_weight") == 0?null:rs.getFloat("pet_weight"));
+					ownerInfo.setPetRemarks(rs.getString("pet_remarks"));
+					ownerInfoList.add(ownerInfo);
+				}
+				count++;
 			}
+			searchService.setSearchCount(count);
 		} catch(SQLException e) {
 			throw e;
 		}
@@ -74,36 +85,45 @@ public class ReadDao extends BaseDao{
 	}
 
 	/**
-	 * トリマー情報抽出
+	 * ページング用トリマー情報抽出
+	 * @param searchService 検索サービスオブジェクト
+	 * @param startDataRowNum 検索開始行数
+	 * @param endDataRowNum 検索終了行数
 	 * @return トリマー情報オブジェクトリスト
 	 */
-	public List<TrimmerInfo> findTrimmerInfo() throws SQLException {
+	public List<TrimmerInfo> findTrimmerInfoByPaging(SearchService searchService, int startDataRowNum, int endDataRowNum) throws SQLException {
 		List<TrimmerInfo> trimmerInfoList = new ArrayList<>();
 
-		try (PreparedStatement pstmt = createSelectStatement(null, "v_trimmer_info", null, null);){
+		try (PreparedStatement pstmt = createSelectStatement(null, "v_trimmer_info", null, null, null);){
 			ResultSet rs = pstmt.executeQuery();
 
+			int count = 0;
 			while(rs.next()) {
-				TrimmerInfo trimmerInfo = new TrimmerInfo();
-				int storeId = rs.getInt("store_id");
-				trimmerInfo.setUserId(rs.getInt("user_id") == 0?null:rs.getInt("user_id"));
-				trimmerInfo.setUserName(rs.getString("user_name"));
-				trimmerInfo.setPassword(rs.getString("password"));
-				trimmerInfo.setSex(rs.getString("sex"));
-				trimmerInfo.setBirthday(rs.getDate("birthday"));
-				trimmerInfo.setPostalCode(rs.getString("postal_code"));
-				trimmerInfo.setStreetAddress(rs.getString("street_address"));
-				trimmerInfo.setEmailAddress(rs.getString("email_address"));
-				trimmerInfo.setTelephoneNumber(rs.getString("telephone_number"));
-				trimmerInfo.setStoreId(storeId == 0?null:storeId);
-				trimmerInfo.setStoreImage(rs.getBytes("store_image"));
-				trimmerInfo.setStoreName(rs.getString("store_store_name"));
-				trimmerInfo.setStoreEmployeesNumber(rs.getInt("store_employees_number") == 0?null:rs.getInt("store_employees_number"));
-				trimmerInfo.setStoreCourseInfo(rs.getString("store_course_info"));
-				trimmerInfo.setStoreCommitment(rs.getString("store_commitment"));
-				trimmerInfo.setBusinessHoursList(storeId == 0?null:(findBusinessHoursByStoreId(storeId).size() > 0?findBusinessHoursByStoreId(storeId):null));
-				trimmerInfoList.add(trimmerInfo);
+				int culRow = rs.getRow();
+				if(culRow >= startDataRowNum && culRow <= endDataRowNum) {
+					TrimmerInfo trimmerInfo = new TrimmerInfo();
+					int storeId = rs.getInt("store_id");
+					trimmerInfo.setUserId(rs.getInt("user_id") == 0?null:rs.getInt("user_id"));
+					trimmerInfo.setUserName(rs.getString("user_name"));
+					trimmerInfo.setPassword(rs.getString("password"));
+					trimmerInfo.setSex(rs.getString("sex"));
+					trimmerInfo.setBirthday(rs.getDate("birthday"));
+					trimmerInfo.setPostalCode(rs.getString("postal_code"));
+					trimmerInfo.setStreetAddress(rs.getString("street_address"));
+					trimmerInfo.setEmailAddress(rs.getString("email_address"));
+					trimmerInfo.setTelephoneNumber(rs.getString("telephone_number"));
+					trimmerInfo.setStoreId(storeId == 0?null:storeId);
+					trimmerInfo.setStoreImage(rs.getBytes("store_image"));
+					trimmerInfo.setStoreName(rs.getString("store_store_name"));
+					trimmerInfo.setStoreEmployeesNumber(rs.getInt("store_employees_number") == 0?null:rs.getInt("store_employees_number"));
+					trimmerInfo.setStoreCourseInfo(rs.getString("store_course_info"));
+					trimmerInfo.setStoreCommitment(rs.getString("store_commitment"));
+					trimmerInfo.setBusinessHoursList(storeId == 0?null:(findBusinessHoursByStoreId(storeId).size() > 0?findBusinessHoursByStoreId(storeId):null));
+					trimmerInfoList.add(trimmerInfo);
+				}
+				count++;
 			}
+			searchService.setSearchCount(count);
 		} catch(SQLException e) {
 			throw e;
 		}
@@ -121,7 +141,7 @@ public class ReadDao extends BaseDao{
 
 		businessHoursDataList.add(createSqlParatemerMap(storeId, Types.INTEGER));
 
-		try (PreparedStatement pstmt = createSelectStatement(null, "t_business_hours", "store_id = ?", businessHoursDataList);){
+		try (PreparedStatement pstmt = createSelectStatement(null, "t_business_hours", "store_id = ?", null, businessHoursDataList);){
 			ResultSet rs = pstmt.executeQuery();
 
 			if(rs.next()) {
@@ -146,7 +166,7 @@ public class ReadDao extends BaseDao{
 	 * @param list SQLパラメータリスト
 	 * @return SQLステートメントオブジェクト
 	 */
-	private PreparedStatement createSelectStatement(String columnStr, String tableName, String whereStr, List<HashMap<String, Object>> list) throws SQLException {
+	private PreparedStatement createSelectStatement(String columnStr, String tableName, String whereStr, String limitStr, List<HashMap<String, Object>> list) throws SQLException {
 		String col = "*";
 		if(!StringUtils.isEmpty(columnStr)) {
 			col = columnStr;
@@ -156,6 +176,10 @@ public class ReadDao extends BaseDao{
 
 		if(!StringUtils.isEmpty(whereStr)) {
 			sql += " WHERE " + whereStr;
+		}
+
+		if(!StringUtils.isEmpty(limitStr)) {
+			sql += " LIMIT " + limitStr;
 		}
 
 		PreparedStatement pstmt = this.con.prepareStatement(sql);
