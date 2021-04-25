@@ -4,9 +4,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.ResourceBundle;
 
 import javax.servlet.http.HttpServletRequest;
@@ -36,6 +34,10 @@ public class SearchService extends BaseService{
 	 * 検索件数
 	 */
 	private Integer searchCount = 0;
+	/**
+	 * ページング成功可否
+	 */
+	private boolean isPaging = true;
 
 	//定数
 	/**
@@ -58,6 +60,11 @@ public class SearchService extends BaseService{
 	 * ページ表示検索データ数
 	 */
 	private static final int DISPLAY_DATA_NUM = 5;
+	/**
+	 * 表示ページ数
+	 */
+	// 1より大きい値設定
+	private static final int DISPLAY_PAGE_COUNT = 5;
 
 	/**
 	 * 検索件数setter
@@ -81,12 +88,18 @@ public class SearchService extends BaseService{
 	}
 
 	/**
-	 * 初期設定
+	 * ページング属性設定
 	 * @param request リクエストオブジェクト
+	 * @return ページング成功可否
 	 */
-	public void setInit(HttpServletRequest request) {
+	public boolean setPageAttribute(HttpServletRequest request, int tarPage, int startPageIndex) {
 		setInitPropertiesKey(request);
 		request.setAttribute("searchType", this.searchType);
+		setSearchData(request, tarPage);
+		if(this.isPaging) {
+			setPageLink(request, tarPage, startPageIndex);
+		}
+		return this.isPaging;
 	}
 
 	/**
@@ -111,6 +124,8 @@ public class SearchService extends BaseService{
 	       }
 	    });
 		prefecturesKeyList.sort(Comparator.comparingInt(key -> Integer.parseInt(key.substring(key.length() - 3))));
+		petTypeKeyList.sort(Comparator.comparingInt(key -> Integer.parseInt(key.substring(key.length() - 3))));
+		weekdayKeyList.sort(Comparator.comparingInt(key -> Integer.parseInt(key.substring(key.length() - 3))));
 
 		request.setAttribute("prefecturesKeyList", prefecturesKeyList);
 		request.setAttribute("petTypeKeyList", petTypeKeyList);
@@ -118,17 +133,19 @@ public class SearchService extends BaseService{
 	}
 
 	/**
-	 * 検索データ取得
+	 * 検索データ設定
 	 * @param request リクエストオブジェクト
-	 * @param searchType 検索区分
 	 * @param tarPage 遷移するページ番号
-	 * @return 検索データMap
 	 */
-	public Map<String, Object> getSearchData(HttpServletRequest request, String searchType, int tarPage) {
+	private void setSearchData(HttpServletRequest request, int tarPage) {
 		DBConnection con = new DBConnection();
 		ReadDao readDao = new ReadDao(con.getConnection());
-		Map<String, Object> searchDataMap = new HashMap<>();
+		// 初期ページ番号より小さいパラメータページ番号が渡されたときの対策
 		int searchStartDataPos = 1;
+		if(searchStartDataPos > tarPage) {
+			this.isPaging = false;
+			return;
+		}
 		int searchEndDataPos = tarPage * DISPLAY_DATA_NUM;
 		if(tarPage > 1) {
 			searchStartDataPos = (tarPage - 1) * DISPLAY_DATA_NUM + 1;
@@ -142,7 +159,7 @@ public class SearchService extends BaseService{
 					for(TrimmerInfo trimmerInfo:trimmerInfoList) {
 						trimmerInfo.setStoreImageBase64(convertByteAryToBase64(trimmerInfo.getStoreImage()));
 					}
-					searchDataMap.put("searchData", trimmerInfoList);
+					request.setAttribute("trimmerInfoList", trimmerInfoList);
 					break;
 				//トリマーの場合
 				case "002":
@@ -151,18 +168,46 @@ public class SearchService extends BaseService{
 					for(OwnerInfo ownerInfo:ownerInfoList) {
 						ownerInfo.setPetImageBase64(convertByteAryToBase64(ownerInfo.getPetImage()));
 					}
-					searchDataMap.put("searchData", ownerInfoList);
+					request.setAttribute("ownerInfoList", ownerInfoList);
 					break;
 				default:
 					break;
 			}
-			searchDataMap.put("searchCount", this.searchCount);
+			request.setAttribute("searchCount", this.searchCount);
 		}catch(SQLException e) {
 			e.printStackTrace();
 		}finally {
 			con.close();
 		}
+	}
 
-		return searchDataMap;
+	/**
+	 * ページリンク設定
+	 * @param request リクエストオブジェクト
+	 * @param tarPage 遷移するページ番号
+	 */
+	private void setPageLink(HttpServletRequest request, int tarPage, int startPageIndex) {
+		int endPage = this.searchCount == 0?1:(this.searchCount%DISPLAY_DATA_NUM == 0?this.searchCount/DISPLAY_DATA_NUM:this.searchCount/DISPLAY_DATA_NUM+1);
+		// 最終ページ番号より大きいパラメータページ番号が渡されたときの対策
+		if(endPage < tarPage) {
+			this.isPaging = false;
+			return;
+		}
+		// 最終ページ番号以上のパラメータ開始ページインデックス番号が渡されたまたは1より小さい開始ページインデックス番号が渡されたときの対策
+		if(endPage < startPageIndex || startPageIndex < 1) {
+			this.isPaging = false;
+			return;
+		}
+		int displayStartPageIndex = startPageIndex;
+		int displayEndPageIndex = displayStartPageIndex + DISPLAY_PAGE_COUNT - 1;
+		if(displayEndPageIndex > endPage) {
+			int diffIndex = displayEndPageIndex - endPage;
+			displayEndPageIndex -= diffIndex;
+		}
+		// ページリンクに使用
+		request.setAttribute("displayStartPageIndex", displayStartPageIndex);
+		request.setAttribute("displayEndPageIndex", displayEndPageIndex);
+		request.setAttribute("currentPage", tarPage);
+		request.setAttribute("endPage", endPage);
 	}
 }

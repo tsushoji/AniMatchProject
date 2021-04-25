@@ -11,6 +11,7 @@
 <c:set var="petSexKeyInitStr" value="pet.sex." />
 <c:set var="firstTypeKeyInitEnd" value="001" />
 <c:set var="secondTypeKeyInitEnd" value="002" />
+<c:set var="oneStr" value="1" />
 
 <c:set var="newLine" value="${System.lineSeparator()}" />
 
@@ -20,6 +21,9 @@
 <c:if test="${searchType == secondTypeKeyInitEnd}">
 	<c:set var="labelTitlePart" value="お住まい" />
 </c:if>
+<c:set var="paramTarPage" value="?tarPage=" />
+<c:set var="paramStartPage" value="&startPage=" />
+<c:set var="requestURLWithParam" value="${requestURL}${paramTarPage}" />
 
 <!DOCTYPE html>
 <html>
@@ -60,7 +64,6 @@
 	                	<c:if test="${searchType == secondTypeKeyInitEnd}">
 	                		<h1 class="mt-2"><img src="/animatch/images/icon_beauty_salon.png" alt="お店アイコン" class="main-search-header-img">お店専用</h1>
 	                	</c:if>
-	                    <!--<p><span><c:out value="${searchCount}"/></span>件見つかりました。</p>-->
 	                    <p><span><c:out value="${searchCount}"/></span>件見つかりました。</p>
 	                </div>
 	            </div>
@@ -159,7 +162,7 @@
 
 	                    </form>
 
-						<!--<c:if test="${not empty trimmerInfoList and searchType == firstTypeKeyInitEnd}">
+						<c:if test="${not empty trimmerInfoList and searchType == firstTypeKeyInitEnd}">
 
 							<c:forEach items="${trimmerInfoList}" var="trimmerInfo">
 
@@ -249,7 +252,7 @@
 
 		                    </c:forEach>
 
-						</c:if>-->
+						</c:if>
 
 	                </div>
 
@@ -257,13 +260,30 @@
 
 	            <nav aria-label="ページ送りの実例">
 	                <ul class="pagination justify-content-center pb-3 mb-0">
-	                  <!--
-	                  <li class="page-item"><a class="page-link" href="#">前へ</a></li>
-	                  <li class="page-item"><a class="page-link" href="#">1</a></li>
-	                  <li class="page-item"><a class="page-link" href="#">次へ</a></li>
-	                  -->
+	                  <li id="page-item-pre" class="page-item"><a class="page-link">前へ</a></li>
+	                  <fmt:formatNumber var="endPageNum" value="${endPage}"/>
+	                  <c:choose>
+						  <c:when test="endPageNum < 2">
+						    <li class="page-item"><a class="page-link" href="${requestURLWithParam}${oneStr}${paramStartPage}${oneStr}">${oneStr}</a></li>
+						  </c:when>
+						  <c:otherwise>
+						  	<fmt:formatNumber var="displayStartPageIndexNum" value="${displayStartPageIndex}"/>
+							<fmt:formatNumber var="displayEndPageIndexNum" value="${displayEndPageIndex}"/>
+							<c:set var="pageItemIDInitName" value="page-item-" />
+			                <c:forEach begin="${displayStartPageIndexNum}" end="${displayEndPageIndexNum}" varStatus="status">
+			                	<fmt:parseNumber var="pageLinkNumStr" value="${status.index}" />
+			                	<li id="${pageItemIDInitName}${pageLinkNumStr}" class="page-item"><a class="page-link" href="${requestURLWithParam}${pageLinkNumStr}${paramStartPage}${displayStartPageIndexNum}">${status.index}</a></li>
+			                 </c:forEach>
+						  </c:otherwise>
+					  </c:choose>
+	                  <li id="page-item-next" class="page-item"><a class="page-link">次へ</a></li>
 	                </ul>
 	            </nav>
+	            <input type="hidden" id="current-page" value="${currentPage}">
+	            <input type="hidden" id="display-start-page-index" value="${displayStartPageIndexNum}">
+	            <input type="hidden" id="display-end-page-index" value="${displayEndPageIndexNum}">
+	            <input type="hidden" id="end-page" value="${endPage}">
+	            <input type="hidden" id="request-url" value="${requestURL}">
 
 	        </div>
 

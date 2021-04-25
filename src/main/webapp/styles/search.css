@@ -33,6 +33,10 @@ main {
     color:rgb(0, 0, 0);
 }
 
+#page-item-pre a,#page-item-next a {
+	cursor:pointer;
+}
+
 .main-search-left-clear {
     font-size:150%;
 }

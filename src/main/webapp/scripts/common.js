@@ -5,7 +5,7 @@ const adjustImgbase64 = function(imgSize) {
 		let targetImgbase64 = tarDom.attr('src');
 		//デバッグ用
 		console.log(targetImgbase64);
-	    if(targetImgbase64 == undefined){
+	    if(targetImgbase64 === undefined){
 	    	return;
 	    }
 	    //調整画像サイズ

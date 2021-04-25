@@ -1,21 +1,3 @@
-const getSearchDataAjax = function(searchType, tarPage){
-    let param = '?searchType=' + searchType + '&tarPage=' + tarPage;
-    let url = '';
-    url = '/animatch/member/search/common';
-
-    $.ajax({
-        type: 'POST',
-        cache: false,
-        url: url + param,
-        dataType: 'json',
-    }).done(function (json) {
-        //処理が成功したとき
-        console.log(json);
-    }).fail(function (XMLHttpRequest, textStatus, errorThrown) {
-        console.log(XMLHttpRequest);
-    });
-};
-
 $(document).ready(function(){
     //アクション:「絞り込みクリア」ボタン押下
     $('.main-search-left-clear').click(function() {
@@ -65,15 +47,61 @@ $(document).ready(function(){
 	//画像サイズを調整
 	adjustImgbase64(130);
 
-	//ページリンクDOM作成
-	let displayDataCount = 5;
-	let pageCount = 1;
-	$('.pagination').append('<li class="page-item"><a class="page-link" href="#">前へ</a></li>');
-	$('.pagination').append('<li class="page-item active"><a class="page-link" href="#">1</a></li>');
-	for(let i = 2; i <= pageCount; i++){
-		$('.pagination').append('<li class="page-item"><a class="page-link" href="#">' + i + '</a></li>');
-	}
-	$('.pagination').append('<li class="page-item"><a class="page-link" href="#">次へ</a></li>');
+	const tarPageParamName = '?tarPage=';
+	const startPageParamName = '&startPage=';
+	let tarPageParamVal = 1;
+	let startPageParamVal = 1;
 
-	getSearchDataAjax('002', 1);
+	let currentPage = Number($("#current-page").val());
+
+	let startPageIndex = Number($("#display-start-page-index").val());
+	let endPageIndex = Number($("#display-end-page-index").val());
+	let endPage = Number($("#end-page").val());
+
+	//アクション:ページリンク前へボタンをクリック
+    $('#page-item-pre').click(function () {
+    	let pageItemPreURL = $("#request-url").val();
+    	if(currentPage > 0){
+    		tarPageParamVal = currentPage;
+    		startPageParamVal = startPageIndex;
+    		if(currentPage > 1){
+	    		tarPageParamVal = currentPage - 1;
+	    	}
+    		if(startPageIndex > tarPageParamVal){
+	    		startPageParamVal = startPageIndex - 1;
+	    	}
+    		pageItemPreURL += tarPageParamName + tarPageParamVal + startPageParamName + startPageParamVal;
+    		console.log(pageItemPreURL);
+	        // 同じタグで表示
+	        location.href = pageItemPreURL;
+    	}
+    });
+
+	//アクション:ページリンク次へボタンをクリック
+    $('#page-item-next').click(function () {
+    	let pageItemNextURL = $("#request-url").val();
+    	if(currentPage < endPage){
+    		tarPageParamVal = currentPage + 1;
+    		startPageParamVal = startPageIndex;
+    		if(endPageIndex < tarPageParamVal){
+    			startPageParamVal = startPageIndex + 1;
+    		}
+    		pageItemNextURL += tarPageParamName + tarPageParamVal + startPageParamName + startPageParamVal;
+    		console.log(pageItemNextURL);
+	        // 同じタグで表示
+	        location.href = pageItemNextURL;
+    	}
+    });
+
+	//ページリンクactive状態設定
+	$('#page-item-' + currentPage).addClass('active');
+
+	//ページリンクdisable状態設定
+	if(currentPage === 1){
+		$('#page-item-pre').addClass('disabled');
+	}
+	if(currentPage === endPage){
+		$('#page-item-next').addClass('disabled');
+	}
+
 });

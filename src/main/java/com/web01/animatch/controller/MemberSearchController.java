@@ -1,11 +1,6 @@
 package com.web01.animatch.controller;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.regex.Pattern;
 
 import javax.servlet.RequestDispatcher;
@@ -14,9 +9,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
+import org.apache.commons.lang3.StringUtils;
+
 import com.web01.animatch.service.SearchService;
 
 /**
@@ -36,17 +30,13 @@ public class MemberSearchController extends HttpServlet {
 	 */
 	private static final String URL_SEARCH_FORMAT = "^/animatch/member/search/(owner|trimmer)$";
 	/**
-	 * 検索パラメータURLフォーマット
+	 * 画面遷移ページ番号パラメータ名
 	 */
-	private static final String URL_PARAM_SEARCH_FORMAT = "^/animatch/member/search/(owner|trimmer)\\?*$";
+	private static final String URLPARAM_NAME_TARGET_PAGE = "tarPage";
 	/**
-	 * 日付フォーマット
+	 * 画面遷移ページ番号パラメータ名
 	 */
-	private static final String DATE_FORMAT = "yyyy/MM/dd";
-	/**
-	 * 日付フォーマット
-	 */
-	private static final String TIME_FORMAT = "kk:mm";
+	private static final String URLPARAM_NAME_START_PAGE = "startPage";
 
 	/**
 	 * デフォルトコンストラクタ
@@ -64,16 +54,24 @@ public class MemberSearchController extends HttpServlet {
 		String reqURL = request.getRequestURI();
 
 		if(Pattern.matches(URL_SEARCH_FORMAT, reqURL)) {
-			String path = "/WEB-INF/jsp/member/search/search.jsp";
-			SearchService searchService = new SearchService(reqURL.substring(reqURL.lastIndexOf("/") + 1, reqURL.length()));
-			searchService.setInit(request);
-			RequestDispatcher dispatcher = request.getRequestDispatcher(path);
-			dispatcher.forward(request, response);
-		}else {
-			//URLが誤っている場合、トップページへリダイレクト
-			String redURL = "/animatch/index";
-			response.sendRedirect(redURL);
+			String searchTypeStr = reqURL.substring(reqURL.lastIndexOf("/") + 1, reqURL.length());
+			String tarPageStr = request.getParameter(URLPARAM_NAME_TARGET_PAGE);
+			String startPageStr = request.getParameter(URLPARAM_NAME_START_PAGE);
+			if((searchTypeStr.equals("owner") || searchTypeStr.equals("trimmer")) && !tarPageStr.equals("") && StringUtils.isNumeric(tarPageStr) && StringUtils.isNumeric(startPageStr)) {
+				SearchService searchService = new SearchService(searchTypeStr);
+				if(searchService.setPageAttribute(request, Integer.parseInt(tarPageStr), Integer.parseInt(startPageStr))) {
+					// ページリンクに使用
+					request.setAttribute("requestURL", reqURL);
+					String path = "/WEB-INF/jsp/member/search/search.jsp";
+					RequestDispatcher dispatcher = request.getRequestDispatcher(path);
+					dispatcher.forward(request, response);
+					return;
+				}
+			}
 		}
+		//URLが誤っている場合、トップページへリダイレクト
+		String redURL = "/animatch/index";
+		response.sendRedirect(redURL);
 	}
 
 	/**
@@ -82,30 +80,6 @@ public class MemberSearchController extends HttpServlet {
 	 * @param response レスポンスオブジェクト
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String reqURL = request.getRequestURI();
-
-		//if(Pattern.matches(URL_PARAM_SEARCH_FORMAT, reqURL)) {
-		if(true) {
-			SearchService searchService = new SearchService(reqURL.substring(reqURL.lastIndexOf("/") + 1, reqURL.length()));
-			String searchType = request.getParameter("searchType");
-			int tarPage = Integer.parseInt(request.getParameter("tarPage"));
-
-			ObjectMapper mapper = new ObjectMapper();
-			DateFormat df = new SimpleDateFormat(DATE_FORMAT);
-			mapper.setDateFormat(df);
-			mapper.registerModule(new JavaTimeModule().addSerializer(LocalTime.class, new LocalTimeSerializer(DateTimeFormatter.ofPattern(TIME_FORMAT))));
-
-			// オブジェクトをJson文字列に変更
-			String resJson = mapper.writeValueAsString(searchService.getSearchData(request, searchType, tarPage));
-
-			// ヘッダ情報などセット
-			response.setContentType("application/json");
-			response.setHeader("Cache-Control", "nocache");
-			response.setCharacterEncoding("utf-8");
-
-			// JSONを戻す
-			PrintWriter out = response.getWriter();
-			out.print(resJson);
-		}
+		doGet(request, response);
 	}
 }
