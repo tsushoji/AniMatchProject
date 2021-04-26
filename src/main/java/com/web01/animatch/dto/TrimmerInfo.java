@@ -79,7 +79,7 @@ public class TrimmerInfo {
 	 */
 	private String storeCommitment;
 	/**
-	 * 営業時間リスト
+	 * トリマー情報営業時間リスト
 	 */
-	private List<BusinessHours> businessHoursList;
+	private List<TrimmerInfoBusinessHours> trimmerInfoBusinessHoursList;
 }

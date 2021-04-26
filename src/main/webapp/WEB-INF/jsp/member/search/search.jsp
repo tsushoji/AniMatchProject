@@ -178,11 +178,19 @@
 
 			                            <h6 class="mt-2"><a href="/animatch/member/detail/owner"><c:out value="${trimmerInfo.storeName}"/></a></h6>
 
-			                            <div class="row mt-2">
+			                            <div class="row mt-2 main-search-right-list-private-info-contents">
 
-			                                <div class="col-sm-4 p-0">
+			                                <div class="col-sm-3 p-0">
 			                                    <c:out value="${trimmerInfo.streetAddress}"/>
 			                                </div>
+
+											<c:if test="${not empty trimmerInfo.trimmerInfoBusinessHoursList}">
+												<c:forEach items="${trimmerInfo.trimmerInfoBusinessHoursList}" var="trimmerInfoBusinessHours">
+													<div class="col-sm-1 p-0">
+					                                    <span class="mr-1"><c:out value="${trimmerInfoBusinessHours.displayBusinessHours}"/></span><c:out value="${trimmerInfoBusinessHours.displayStartBusinessTime}"/>&sim;<c:out value="${trimmerInfoBusinessHours.displayEndBusinessTime}"/>
+					                                </div>
+				                                </c:forEach>
+			                                </c:if>
 
 			                            </div>
 
@@ -217,20 +225,20 @@
 
 			                            <h6 class="mt-2"><a href="/animatch/member/detail/trimmer"><c:out value="${ownerInfo.petNickName}"/></a></h6>
 
-			                            <div class="row mt-2">
+			                            <div class="row mt-2 main-search-right-list-private-info-contents">
 
-			                                <div class="col-sm-4 p-0">
+			                                <div class="col-sm-3 p-0">
 			                                    <c:out value="${ownerInfo.streetAddress}"/>
 			                                </div>
 
-											<div class="col-sm-3 p-0">
+											<div class="col-sm-1 p-0">
 			                                	<c:if test="${not empty ownerInfo.petType}">
 			                                		<fmt:message bundle="${resource}" key="${petTypeKeyInitStr}${ownerInfo.petType}" var="ownerInfoPetTypeVal" />
 			                                    	<c:out value="${ownerInfoPetTypeVal}"/>
 			                                    </c:if>
 			                                </div>
 
-			                                <div class="col-sm-3 p-0">
+			                                <div class="col-sm-1 p-0">
 			                                	<c:if test="${not empty ownerInfo.petSex}">
 			                                		<fmt:message bundle="${resource}" key="${petSexKeyInitStr}${ownerInfo.petSex}" var="ownerInfoPetSexVal" />
 			                                    	<c:out value="${ownerInfoPetSexVal}"/>
@@ -292,7 +300,7 @@
 	    <!--フッター-->
 	    <footer>
 	        <div class="d-flex justify-content-end pr-3 footer-top">
-	            <a class="move-page-top" href="#">
+	            <a class="move-page-top" href="/animatch/index">
 	                <img src="/animatch/images/icon_upmove.png" alt="トップへ戻るアイコン"> <strong>AniMatchの上部へ戻る</strong>
 	            </a>
 	        </div>

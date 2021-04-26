@@ -19,14 +19,18 @@ main {
 }
 
 .main-search-right-list-img {
-    /*検索画像対応*/
-    /*jsで縦横比を維持し、最大サイズを200pxに調整*/
-    height:130px;
-    width:130px;
+	height:100px;
 }
 
-.main-search-right-list-img img {
-	display: block;
+.main-search-right-list-img img{
+    height:100px;
+    width:130px;
+    padding:2px;
+    display: block;
+}
+
+.main-search-right-list-private-info-contents {
+	font-weight: bold;
 }
 
 .page-link {
@@ -57,5 +61,12 @@ main {
         height:50px;
         width:50px;
     }
+
+/*画面サイズが575pxまではここを読み込む*/
+@media screen and (max-width:575px) {
+    .main-search-right-list-img img{
+    	width:100px;
+    }
+}
 
 }

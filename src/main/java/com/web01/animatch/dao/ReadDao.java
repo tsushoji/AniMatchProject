@@ -11,9 +11,9 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.web01.animatch.dto.BusinessHours;
 import com.web01.animatch.dto.OwnerInfo;
 import com.web01.animatch.dto.TrimmerInfo;
+import com.web01.animatch.dto.TrimmerInfoBusinessHours;
 import com.web01.animatch.service.SearchService;
 
 /**
@@ -48,7 +48,7 @@ public class ReadDao extends BaseDao{
 	public List<OwnerInfo> findOwnerInfoByPaging(SearchService searchService, int startDataRowNum, int endDataRowNum) throws SQLException {
 		List<OwnerInfo> ownerInfoList = new ArrayList<>();
 
-		try (PreparedStatement pstmt = createSelectStatement(null, "v_owner_info", null, null, null);){
+		try (PreparedStatement pstmt = createSelectStatement(null, "v_owner_info", null, null, null, null);){
 			ResultSet rs = pstmt.executeQuery();
 
 			int count = 0;
@@ -94,7 +94,7 @@ public class ReadDao extends BaseDao{
 	public List<TrimmerInfo> findTrimmerInfoByPaging(SearchService searchService, int startDataRowNum, int endDataRowNum) throws SQLException {
 		List<TrimmerInfo> trimmerInfoList = new ArrayList<>();
 
-		try (PreparedStatement pstmt = createSelectStatement(null, "v_trimmer_info", null, null, null);){
+		try (PreparedStatement pstmt = createSelectStatement(null, "v_trimmer_info", null, null, null, null);){
 			ResultSet rs = pstmt.executeQuery();
 
 			int count = 0;
@@ -118,7 +118,7 @@ public class ReadDao extends BaseDao{
 					trimmerInfo.setStoreEmployeesNumber(rs.getInt("store_employees_number") == 0?null:rs.getInt("store_employees_number"));
 					trimmerInfo.setStoreCourseInfo(rs.getString("store_course_info"));
 					trimmerInfo.setStoreCommitment(rs.getString("store_commitment"));
-					trimmerInfo.setBusinessHoursList(storeId == 0?null:(findBusinessHoursByStoreId(storeId).size() > 0?findBusinessHoursByStoreId(storeId):null));
+					trimmerInfo.setTrimmerInfoBusinessHoursList(storeId == 0?null:(findBusinessHoursByStoreId(storeId).size() > 0?findBusinessHoursByStoreId(storeId):null));
 					trimmerInfoList.add(trimmerInfo);
 				}
 				count++;
@@ -135,27 +135,28 @@ public class ReadDao extends BaseDao{
 	 * @param storeId 店舗ID
 	 * @return 営業時間オブジェクトリスト
 	 */
-	private List<BusinessHours> findBusinessHoursByStoreId(int storeId) throws SQLException {
-		List<BusinessHours> businessHoursList = new ArrayList<>();
-		List<HashMap<String, Object>> businessHoursDataList = new ArrayList<>();
+	private List<TrimmerInfoBusinessHours> findBusinessHoursByStoreId(int storeId) throws SQLException {
+		List<TrimmerInfoBusinessHours> trimmerInfoBusinessHoursList = new ArrayList<>();
+		List<HashMap<String, Object>> trimmerInfoBusinessHoursDataList = new ArrayList<>();
 
-		businessHoursDataList.add(createSqlParatemerMap(storeId, Types.INTEGER));
+		trimmerInfoBusinessHoursDataList.add(createSqlParatemerMap(storeId, Types.INTEGER));
 
-		try (PreparedStatement pstmt = createSelectStatement(null, "t_business_hours", "store_id = ?", null, businessHoursDataList);){
+		try (PreparedStatement pstmt = createSelectStatement(null, "t_business_hours", "store_id = ?", "business_day", null, trimmerInfoBusinessHoursDataList);){
 			ResultSet rs = pstmt.executeQuery();
 
-			if(rs.next()) {
-				BusinessHours businessHours = new BusinessHours();
-				businessHours.setBusinessDay(rs.getString("business_day"));
-				businessHours.setStartBusinessTime(rs.getTimestamp("start_business_time") == null?null:rs.getTimestamp("start_business_time").toLocalDateTime().toLocalTime());
-				businessHours.setEndBusinessTime(rs.getTimestamp("end_business_time") == null?null:rs.getTimestamp("end_business_time").toLocalDateTime().toLocalTime());
-				businessHours.setComplement(rs.getString("complement"));
-				businessHoursList.add(businessHours);
+			while(rs.next()) {
+				TrimmerInfoBusinessHours trimmerInfoBusinessHours = new TrimmerInfoBusinessHours();
+				trimmerInfoBusinessHours.setBusinessDay(rs.getString("business_day"));
+				trimmerInfoBusinessHours.setStartBusinessTime(rs.getTimestamp("start_business_time") == null?null:rs.getTimestamp("start_business_time").toLocalDateTime().toLocalTime());
+				trimmerInfoBusinessHours.setEndBusinessTime(rs.getTimestamp("end_business_time") == null?null:rs.getTimestamp("end_business_time").toLocalDateTime().toLocalTime());
+				trimmerInfoBusinessHours.setComplement(rs.getString("complement"));
+				trimmerInfoBusinessHoursList.add(trimmerInfoBusinessHours);
 			}
 		} catch(SQLException e) {
 			throw e;
 		}
-		return businessHoursList;
+
+		return trimmerInfoBusinessHoursList;
 	}
 
 	/**
@@ -166,7 +167,7 @@ public class ReadDao extends BaseDao{
 	 * @param list SQLパラメータリスト
 	 * @return SQLステートメントオブジェクト
 	 */
-	private PreparedStatement createSelectStatement(String columnStr, String tableName, String whereStr, String limitStr, List<HashMap<String, Object>> list) throws SQLException {
+	private PreparedStatement createSelectStatement(String columnStr, String tableName, String whereStr, String orderStr, String limitStr, List<HashMap<String, Object>> list) throws SQLException {
 		String col = "*";
 		if(!StringUtils.isEmpty(columnStr)) {
 			col = columnStr;
@@ -176,6 +177,10 @@ public class ReadDao extends BaseDao{
 
 		if(!StringUtils.isEmpty(whereStr)) {
 			sql += " WHERE " + whereStr;
+		}
+
+		if(!StringUtils.isEmpty(orderStr)) {
+			sql += " ORDER BY " + orderStr;
 		}
 
 		if(!StringUtils.isEmpty(limitStr)) {

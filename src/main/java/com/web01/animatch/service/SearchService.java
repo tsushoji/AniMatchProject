@@ -1,6 +1,8 @@
 package com.web01.animatch.service;
 
 import java.sql.SQLException;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -9,10 +11,12 @@ import java.util.ResourceBundle;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.mysql.cj.util.StringUtils;
 import com.web01.animatch.dao.DBConnection;
 import com.web01.animatch.dao.ReadDao;
 import com.web01.animatch.dto.OwnerInfo;
 import com.web01.animatch.dto.TrimmerInfo;
+import com.web01.animatch.dto.TrimmerInfoBusinessHours;
 
 /**
  * 検索サービスクラス
@@ -155,16 +159,34 @@ public class SearchService extends BaseService{
 				//飼い主の場合
 				case "001":
 					List<TrimmerInfo> trimmerInfoList = readDao.findTrimmerInfoByPaging(this, searchStartDataPos, searchEndDataPos);
-					//画像をBase64化し、map
+
 					for(TrimmerInfo trimmerInfo:trimmerInfoList) {
+						//画像をBase64化
 						trimmerInfo.setStoreImageBase64(convertByteAryToBase64(trimmerInfo.getStoreImage()));
+
+						//表示する営業時間文字列作成
+						List<TrimmerInfoBusinessHours> trimmerInfoBusinessHoursList = trimmerInfo.getTrimmerInfoBusinessHoursList();
+						if(trimmerInfoBusinessHoursList != null) {
+							for(TrimmerInfoBusinessHours trimmerInfoBusinessHours:trimmerInfoBusinessHoursList) {
+								//曜日、時間が設定されているデータのみ文字列結合
+								String businessDay = trimmerInfoBusinessHours.getBusinessDay();
+								LocalTime startBusinessTime = trimmerInfoBusinessHours.getStartBusinessTime();
+								LocalTime endBusinessTime = trimmerInfoBusinessHours.getEndBusinessTime();
+								if(!StringUtils.isNullOrEmpty(businessDay) && startBusinessTime != null && endBusinessTime != null) {
+									trimmerInfoBusinessHours.setDisplayBusinessHours(this.resBundle.getString(WEEKDAY_KEY_INIT_STR + businessDay));
+									trimmerInfoBusinessHours.setDisplayStartBusinessTime(startBusinessTime.format(DateTimeFormatter.ofPattern("HH:mm")));
+									trimmerInfoBusinessHours.setDisplayEndBusinessTime(endBusinessTime.format(DateTimeFormatter.ofPattern("HH:mm")));
+								}
+							}
+						}
 					}
 					request.setAttribute("trimmerInfoList", trimmerInfoList);
 					break;
 				//トリマーの場合
 				case "002":
 					List<OwnerInfo> ownerInfoList = readDao.findOwnerInfoByPaging(this, searchStartDataPos, searchEndDataPos);
-					//画像をBase64化し、map
+
+					//画像をBase64化
 					for(OwnerInfo ownerInfo:ownerInfoList) {
 						ownerInfo.setPetImageBase64(convertByteAryToBase64(ownerInfo.getPetImage()));
 					}

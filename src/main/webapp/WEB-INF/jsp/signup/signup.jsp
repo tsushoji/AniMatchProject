@@ -402,7 +402,7 @@
     <!--フッター-->
     <footer>
         <div class="d-flex justify-content-end pr-3 footer-top">
-            <a class="footer-top-content move-page-top" href="#">
+            <a class="footer-top-content move-page-top" href="/animatch/index">
                 <img src="/animatch/images/icon_upmove.png" alt="トップへ戻るアイコン"> <strong>新規会員登録の上部へ戻る</strong>
             </a>
         </div>

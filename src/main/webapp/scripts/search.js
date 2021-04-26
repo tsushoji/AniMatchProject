@@ -44,9 +44,6 @@ $(document).ready(function(){
 	    });
     });
 
-	//画像サイズを調整
-	adjustImgbase64(130);
-
 	const tarPageParamName = '?tarPage=';
 	const startPageParamName = '&startPage=';
 	let tarPageParamVal = 1;
