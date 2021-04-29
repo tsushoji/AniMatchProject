@@ -54,12 +54,12 @@ public class MemberSearchController extends HttpServlet {
 		String reqURL = request.getRequestURI();
 
 		if(Pattern.matches(URL_SEARCH_FORMAT, reqURL)) {
-			String searchTypeStr = reqURL.substring(reqURL.lastIndexOf("/") + 1, reqURL.length());
-			String targetPageStr = request.getParameter(URLPARAM_NAME_TARGET_PAGE);
-			String startPageStr = request.getParameter(URLPARAM_NAME_START_PAGE);
-			if((searchTypeStr.equals("owner") || searchTypeStr.equals("trimmer")) && !targetPageStr.equals("") && StringUtils.isNumeric(targetPageStr) && StringUtils.isNumeric(startPageStr)) {
-				SearchService searchService = new SearchService(searchTypeStr);
-				if(searchService.setPageAttribute(request, Integer.parseInt(targetPageStr), Integer.parseInt(startPageStr))) {
+			String searchType = reqURL.substring(reqURL.lastIndexOf("/") + 1, reqURL.length());
+			String tmpTargetPage = request.getParameter(URLPARAM_NAME_TARGET_PAGE);
+			String tmpStartPage = request.getParameter(URLPARAM_NAME_START_PAGE);
+			if((searchType.equals("owner") || searchType.equals("trimmer")) && !tmpTargetPage.equals("") && StringUtils.isNumeric(tmpTargetPage) && StringUtils.isNumeric(tmpStartPage)) {
+				SearchService searchService = new SearchService(searchType);
+				if(searchService.setPageAttribute(request, Integer.parseInt(tmpTargetPage), Integer.parseInt(tmpStartPage))) {
 					// ページリンクに使用
 					request.setAttribute("requestURL", reqURL);
 					String path = "/WEB-INF/jsp/member/search/search.jsp";
