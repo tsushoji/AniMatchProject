@@ -10,11 +10,6 @@ import java.util.Base64;
 public class BaseService {
 
 	/**
-	 * デフォルトコンストラクタ
-	 */
-	public BaseService() {}
-
-	/**
 	 * 飼い主用登録オブジェクト属性設定
 	 * @param request リクエストオブジェクト
 	 * @param user ユーザオブジェクト
