@@ -57,7 +57,7 @@ public class MemberSearchController extends HttpServlet {
 			String searchType = reqURL.substring(reqURL.lastIndexOf("/") + 1, reqURL.length());
 			String tmpTargetPage = request.getParameter(URLPARAM_NAME_TARGET_PAGE);
 			String tmpStartPage = request.getParameter(URLPARAM_NAME_START_PAGE);
-			if((searchType.equals("owner") || searchType.equals("trimmer")) && !tmpTargetPage.equals("") && StringUtils.isNumeric(tmpTargetPage) && StringUtils.isNumeric(tmpStartPage)) {
+			if((searchType.equals("owner") || searchType.equals("trimmer")) && StringUtils.isNotEmpty(tmpTargetPage) && StringUtils.isNumeric(tmpTargetPage) && StringUtils.isNumeric(tmpStartPage)) {
 				SearchService searchService = new SearchService(searchType);
 				if(searchService.setPageAttribute(request, Integer.parseInt(tmpTargetPage), Integer.parseInt(tmpStartPage))) {
 					// ページリンクに使用
