@@ -62,7 +62,7 @@
 	                            <div class="row">
 	                                <div class="col-md text-center">
 	                                    <figure>
-	                                        <a class="btn btn-primary btn-sm" href="/animatch/member/search/trimmer?targetPage=1&startPage=1" role="button">飼い主を探す<img src="/animatch/images/icon_search.png" alt="検索アイコン"></a>
+	                                        <a class="btn btn-primary btn-sm" href="/animatch/member/search/trimmer" role="button">飼い主を探す<img src="/animatch/images/icon_search.png" alt="検索アイコン"></a>
 	                                    </figure>
 	                                </div>
 	                            </div>
@@ -131,7 +131,7 @@
 	                            <div class="row">
 	                                <div class="col-md text-center">
 	                                    <figure>
-	                                        <a class="btn btn-primary btn-sm" href="/animatch/member/search/owner?targetPage=1&startPage=1" role="button">お店を探す<img src="/animatch/images/icon_search.png" alt="検索アイコン"></a>
+	                                        <a class="btn btn-primary btn-sm" href="/animatch/member/search/owner" role="button">お店を探す<img src="/animatch/images/icon_search.png" alt="検索アイコン"></a>
 	                                    </figure>
 	                                </div>
 	                            </div>

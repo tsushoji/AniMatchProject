@@ -55,23 +55,25 @@ public class MemberSearchController extends HttpServlet {
 
 		if(Pattern.matches(URL_SEARCH_FORMAT, reqURL)) {
 			String searchType = reqURL.substring(reqURL.lastIndexOf("/") + 1, reqURL.length());
-			String tmpTargetPage = request.getParameter(URLPARAM_NAME_TARGET_PAGE);
-			String tmpStartPage = request.getParameter(URLPARAM_NAME_START_PAGE);
-			if((searchType.equals("owner") || searchType.equals("trimmer")) && StringUtils.isNotEmpty(tmpTargetPage) && StringUtils.isNumeric(tmpTargetPage) && StringUtils.isNumeric(tmpStartPage)) {
+			if(searchType.equals("owner") || searchType.equals("trimmer")) {
 				SearchService searchService = new SearchService(searchType);
-				if(searchService.setPageAttribute(request, Integer.parseInt(tmpTargetPage), Integer.parseInt(tmpStartPage))) {
+				int targetPage = 1;
+				int startPage = 1;
+				String tmpTargetPage = request.getParameter(URLPARAM_NAME_TARGET_PAGE);
+				String tmpStartPage = request.getParameter(URLPARAM_NAME_START_PAGE);
+				if(StringUtils.isNotEmpty(tmpTargetPage) && StringUtils.isNotEmpty(tmpStartPage) && StringUtils.isNumeric(tmpTargetPage) && StringUtils.isNumeric(tmpStartPage)) {
+					targetPage = Integer.parseInt(tmpTargetPage);
+					startPage = Integer.parseInt(tmpStartPage);
+				}
+				if(searchService.setPageAttribute(request, targetPage, startPage)) {
 					// ページリンクに使用
 					request.setAttribute("requestURL", reqURL);
 					String path = "/WEB-INF/jsp/member/search/search.jsp";
 					RequestDispatcher dispatcher = request.getRequestDispatcher(path);
 					dispatcher.forward(request, response);
-					return;
 				}
 			}
 		}
-		//URLが誤っている場合、トップページへリダイレクト
-		String redURL = "/animatch/index";
-		response.sendRedirect(redURL);
 	}
 
 	/**

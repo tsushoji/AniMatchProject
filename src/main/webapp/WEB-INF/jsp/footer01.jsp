@@ -22,7 +22,7 @@
 		            <div class="col-md-3 mb-md-0 mb-3">
 		                <h5 class="text-uppercase">お店専用</h5>
 		                <ul class="list-unstyled">
-		                    <li><a href="/animatch/member/search/trimmer?targetPage=1&startPage=1">飼い主を探す</a></li>
+		                    <li><a href="/animatch/member/search/trimmer">飼い主を探す</a></li>
 		                    <li><a href="/animatch/member/dmessage/list" target="_blank">飼い主へダイレクトメッセージ</a></li>
 		                </ul>
 		            </div>
@@ -30,7 +30,7 @@
 		            <div class="col-md-3 mb-md-0 mb-3">
 		                <h5 class="text-uppercase">飼い主専用</h5>
 		                <ul class="list-unstyled">
-		                    <li><a href="/animatch/member/search/owner?targetPage=1&startPage=1">お店を探す</a></li>
+		                    <li><a href="/animatch/member/search/owner">お店を探す</a></li>
 		                    <li><a href="/animatch/member/dmessage/list" target="_blank">お店へダイレクトメッセージ</a></li>
 		                </ul>
 		            </div>
