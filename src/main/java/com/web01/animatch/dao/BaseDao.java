@@ -16,11 +16,6 @@ import java.util.HashMap;
 public class BaseDao {
 
 	/**
-	 * デフォルトコンストラクタ
-	 */
-	public BaseDao() {}
-
-	/**
 	 * SQLパラメータ設定
 	 * @param pstmt プリコンパイルされたSQL文オブジェクト
 	 * @param paramIndex 引数インデックス
