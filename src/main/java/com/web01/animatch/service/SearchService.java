@@ -29,7 +29,7 @@ public class SearchService extends BaseService{
 	/**
 	 * 検索区分
 	 */
-	private String searchType;
+	private UserType searchType;
 	/**
 	 * リソース・バンドルオブジェクト
 	 */
@@ -84,10 +84,15 @@ public class SearchService extends BaseService{
 	 */
 	public SearchService(String searchType) {
 		this.resBundle = ResourceBundle.getBundle(PROPERTIES_NAME);
-		if(searchType.equals("owner")) {
-			this.searchType = "001";
-		}else if(searchType.equals("trimmer")) {
-			this.searchType = "002";
+		switch(UserType.getEnumName(searchType.toUpperCase())) {
+			case OWNER:
+				this.searchType = UserType.OWNER;
+				break;
+			case TRIMMER:
+				this.searchType = UserType.TRIMMER;
+				break;
+			default:
+				break;
 		}
 	}
 
@@ -100,7 +105,18 @@ public class SearchService extends BaseService{
 	 */
 	public boolean setPageAttribute(HttpServletRequest request, int targetPage, int startPageIndex) {
 		setInitPropertiesKey(request);
-		request.setAttribute("searchType", this.searchType);
+		String searchTypeId = null;
+		switch(this.searchType) {
+		case OWNER:
+			searchTypeId = UserType.OWNER.getId();
+			break;
+		case TRIMMER:
+			searchTypeId = UserType.TRIMMER.getId();
+			break;
+		default:
+			break;
+		}
+		request.setAttribute("searchType", searchTypeId);
 		setSearchData(request, targetPage);
 		if(this.isPaging) {
 			setPageLink(request, targetPage, startPageIndex);
@@ -157,9 +173,9 @@ public class SearchService extends BaseService{
 			searchStartDataPos = (targetPage - 1) * DISPLAY_DATA_NUM + 1;
 		}
 		try {
-			switch(searchType) {
+			switch(this.searchType) {
 				//飼い主の場合
-				case "001":
+				case OWNER:
 					List<TrimmerInfo> trimmerInfoList = readDao.findTrimmerInfoByPaging(this, searchStartDataPos, searchEndDataPos);
 
 					for(TrimmerInfo trimmerInfo:trimmerInfoList) {
@@ -183,7 +199,7 @@ public class SearchService extends BaseService{
 					request.setAttribute("trimmerInfoList", trimmerInfoList);
 					break;
 				//トリマーの場合
-				case "002":
+				case TRIMMER:
 					List<OwnerInfo> ownerInfoList = readDao.findOwnerInfoByPaging(this, searchStartDataPos, searchEndDataPos);
 
 					//画像をBase64化
