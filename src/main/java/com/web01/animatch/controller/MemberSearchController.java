@@ -32,7 +32,7 @@ public class MemberSearchController extends HttpServlet {
 	/**
 	 * 画面遷移ページ番号パラメータ名
 	 */
-	private static final String URLPARAM_NAME_TARGET_PAGE = "tarPage";
+	private static final String URLPARAM_NAME_TARGET_PAGE = "targetPage";
 	/**
 	 * 画面遷移ページ番号パラメータ名
 	 */
@@ -55,11 +55,11 @@ public class MemberSearchController extends HttpServlet {
 
 		if(Pattern.matches(URL_SEARCH_FORMAT, reqURL)) {
 			String searchTypeStr = reqURL.substring(reqURL.lastIndexOf("/") + 1, reqURL.length());
-			String tarPageStr = request.getParameter(URLPARAM_NAME_TARGET_PAGE);
+			String targetPageStr = request.getParameter(URLPARAM_NAME_TARGET_PAGE);
 			String startPageStr = request.getParameter(URLPARAM_NAME_START_PAGE);
-			if((searchTypeStr.equals("owner") || searchTypeStr.equals("trimmer")) && !tarPageStr.equals("") && StringUtils.isNumeric(tarPageStr) && StringUtils.isNumeric(startPageStr)) {
+			if((searchTypeStr.equals("owner") || searchTypeStr.equals("trimmer")) && !targetPageStr.equals("") && StringUtils.isNumeric(targetPageStr) && StringUtils.isNumeric(startPageStr)) {
 				SearchService searchService = new SearchService(searchTypeStr);
-				if(searchService.setPageAttribute(request, Integer.parseInt(tarPageStr), Integer.parseInt(startPageStr))) {
+				if(searchService.setPageAttribute(request, Integer.parseInt(targetPageStr), Integer.parseInt(startPageStr))) {
 					// ページリンクに使用
 					request.setAttribute("requestURL", reqURL);
 					String path = "/WEB-INF/jsp/member/search/search.jsp";

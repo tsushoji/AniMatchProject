@@ -44,9 +44,9 @@ $(document).ready(function(){
 	    });
     });
 
-	const tarPageParamName = '?tarPage=';
+	const targetPageParamName = '?targetPage=';
 	const startPageParamName = '&startPage=';
-	let tarPageParamVal = 1;
+	let targetPageParamVal = 1;
 	let startPageParamVal = 1;
 
 	let currentPage = Number($("#current-page").val());
@@ -59,15 +59,15 @@ $(document).ready(function(){
     $('#page-item-pre').click(function () {
     	let pageItemPreURL = $("#request-url").val();
     	if(currentPage > 0){
-    		tarPageParamVal = currentPage;
+    		targetPageParamVal = currentPage;
     		startPageParamVal = startPageIndex;
     		if(currentPage > 1){
-	    		tarPageParamVal = currentPage - 1;
+	    		targetPageParamVal = currentPage - 1;
 	    	}
-    		if(startPageIndex > tarPageParamVal){
+    		if(startPageIndex > targetPageParamVal){
 	    		startPageParamVal = startPageIndex - 1;
 	    	}
-    		pageItemPreURL += tarPageParamName + tarPageParamVal + startPageParamName + startPageParamVal;
+    		pageItemPreURL += targetPageParamName + targetPageParamVal + startPageParamName + startPageParamVal;
     		console.log(pageItemPreURL);
 	        // 同じタグで表示
 	        location.href = pageItemPreURL;
@@ -78,12 +78,12 @@ $(document).ready(function(){
     $('#page-item-next').click(function () {
     	let pageItemNextURL = $("#request-url").val();
     	if(currentPage < endPage){
-    		tarPageParamVal = currentPage + 1;
+    		targetPageParamVal = currentPage + 1;
     		startPageParamVal = startPageIndex;
-    		if(endPageIndex < tarPageParamVal){
+    		if(endPageIndex < targetPageParamVal){
     			startPageParamVal = startPageIndex + 1;
     		}
-    		pageItemNextURL += tarPageParamName + tarPageParamVal + startPageParamName + startPageParamVal;
+    		pageItemNextURL += targetPageParamName + targetPageParamVal + startPageParamName + startPageParamVal;
     		console.log(pageItemNextURL);
 	        // 同じタグで表示
 	        location.href = pageItemNextURL;

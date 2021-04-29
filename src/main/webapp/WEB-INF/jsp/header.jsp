@@ -16,8 +16,8 @@
 
 	         <div class="collapse navbar-collapse collapse-item" id="navbar-supported-content">
 	             <ul class="navbar-nav mr-auto">
-	                 <li class="nav-item"><a class="nav-link" href="/animatch/member/search/owner?tarPage=1&startPage=1">お店を探す<img src="/animatch/images/icon_search.png" alt="検索アイコン"></a></li>
-	                 <li class="nav-item"><a class="nav-link" href="/animatch/member/search/trimmer?tarPage=1&startPage=1">飼い主を探す<img src="/animatch/images/icon_search.png" alt="検索アイコン"></a></li>
+	                 <li class="nav-item"><a class="nav-link" href="/animatch/member/search/owner?targetPage=1&startPage=1">お店を探す<img src="/animatch/images/icon_search.png" alt="検索アイコン"></a></li>
+	                 <li class="nav-item"><a class="nav-link" href="/animatch/member/search/trimmer?targetPage=1&startPage=1">飼い主を探す<img src="/animatch/images/icon_search.png" alt="検索アイコン"></a></li>
 	             </ul>
 
 	             <ul class="navbar-nav">

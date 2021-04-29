@@ -94,14 +94,16 @@ public class SearchService extends BaseService{
 	/**
 	 * ページング属性設定
 	 * @param request リクエストオブジェクト
+	 * @param targetPage 遷移するページ番号
+	 * @param startPageIndex ページリンク開始番号
 	 * @return ページング成功可否
 	 */
-	public boolean setPageAttribute(HttpServletRequest request, int tarPage, int startPageIndex) {
+	public boolean setPageAttribute(HttpServletRequest request, int targetPage, int startPageIndex) {
 		setInitPropertiesKey(request);
 		request.setAttribute("searchType", this.searchType);
-		setSearchData(request, tarPage);
+		setSearchData(request, targetPage);
 		if(this.isPaging) {
-			setPageLink(request, tarPage, startPageIndex);
+			setPageLink(request, targetPage, startPageIndex);
 		}
 		return this.isPaging;
 	}
@@ -139,20 +141,20 @@ public class SearchService extends BaseService{
 	/**
 	 * 検索データ設定
 	 * @param request リクエストオブジェクト
-	 * @param tarPage 遷移するページ番号
+	 * @param targetPage 遷移するページ番号
 	 */
-	private void setSearchData(HttpServletRequest request, int tarPage) {
+	private void setSearchData(HttpServletRequest request, int targetPage) {
 		DBConnection con = new DBConnection();
 		ReadDao readDao = new ReadDao(con.getConnection());
 		// 初期ページ番号より小さいパラメータページ番号が渡されたときの対策
 		int searchStartDataPos = 1;
-		if(searchStartDataPos > tarPage) {
+		if(searchStartDataPos > targetPage) {
 			this.isPaging = false;
 			return;
 		}
-		int searchEndDataPos = tarPage * DISPLAY_DATA_NUM;
-		if(tarPage > 1) {
-			searchStartDataPos = (tarPage - 1) * DISPLAY_DATA_NUM + 1;
+		int searchEndDataPos = targetPage * DISPLAY_DATA_NUM;
+		if(targetPage > 1) {
+			searchStartDataPos = (targetPage - 1) * DISPLAY_DATA_NUM + 1;
 		}
 		try {
 			switch(searchType) {
@@ -206,12 +208,12 @@ public class SearchService extends BaseService{
 	/**
 	 * ページリンク設定
 	 * @param request リクエストオブジェクト
-	 * @param tarPage 遷移するページ番号
+	 * @param targetPage 遷移するページ番号
 	 */
-	private void setPageLink(HttpServletRequest request, int tarPage, int startPageIndex) {
+	private void setPageLink(HttpServletRequest request, int targetPage, int startPageIndex) {
 		int endPage = this.searchCount == 0?1:(this.searchCount%DISPLAY_DATA_NUM == 0?this.searchCount/DISPLAY_DATA_NUM:this.searchCount/DISPLAY_DATA_NUM+1);
 		// 最終ページ番号より大きいパラメータページ番号が渡されたときの対策
-		if(endPage < tarPage) {
+		if(endPage < targetPage) {
 			this.isPaging = false;
 			return;
 		}
@@ -229,7 +231,7 @@ public class SearchService extends BaseService{
 		// ページリンクに使用
 		request.setAttribute("displayStartPageIndex", displayStartPageIndex);
 		request.setAttribute("displayEndPageIndex", displayEndPageIndex);
-		request.setAttribute("currentPage", tarPage);
+		request.setAttribute("currentPage", targetPage);
 		request.setAttribute("endPage", endPage);
 	}
 }

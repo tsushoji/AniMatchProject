@@ -21,9 +21,9 @@
 <c:if test="${searchType == secondTypeKeyInitEnd}">
 	<c:set var="labelTitlePart" value="お住まい" />
 </c:if>
-<c:set var="paramTarPage" value="?tarPage=" />
+<c:set var="paramTargetPage" value="?targetPage=" />
 <c:set var="paramStartPage" value="&startPage=" />
-<c:set var="requestURLWithParam" value="${requestURL}${paramTarPage}" />
+<c:set var="requestURLWithParam" value="${requestURL}${paramTargetPage}" />
 
 <!DOCTYPE html>
 <html>
