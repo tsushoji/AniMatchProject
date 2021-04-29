@@ -168,17 +168,15 @@ public class SearchService extends BaseService{
 
 						//表示する営業時間文字列作成
 						List<TrimmerInfoBusinessHours> trimmerInfoBusinessHoursList = trimmerInfo.getTrimmerInfoBusinessHoursList();
-						if(trimmerInfoBusinessHoursList != null) {
-							for(TrimmerInfoBusinessHours trimmerInfoBusinessHours:trimmerInfoBusinessHoursList) {
-								//曜日、時間が設定されているデータのみ文字列結合
-								String businessDay = trimmerInfoBusinessHours.getBusinessDay();
-								LocalTime startBusinessTime = trimmerInfoBusinessHours.getStartBusinessTime();
-								LocalTime endBusinessTime = trimmerInfoBusinessHours.getEndBusinessTime();
-								if(!StringUtils.isNullOrEmpty(businessDay) && startBusinessTime != null && endBusinessTime != null) {
-									trimmerInfoBusinessHours.setDisplayBusinessHours(this.resBundle.getString(WEEKDAY_KEY_INIT_STR + businessDay));
-									trimmerInfoBusinessHours.setDisplayStartBusinessTime(startBusinessTime.format(DateTimeFormatter.ofPattern("HH:mm")));
-									trimmerInfoBusinessHours.setDisplayEndBusinessTime(endBusinessTime.format(DateTimeFormatter.ofPattern("HH:mm")));
-								}
+						for(TrimmerInfoBusinessHours trimmerInfoBusinessHours:trimmerInfoBusinessHoursList) {
+							//曜日、時間が設定されているデータのみ文字列結合
+							String businessDay = trimmerInfoBusinessHours.getBusinessDay();
+							LocalTime startBusinessTime = trimmerInfoBusinessHours.getStartBusinessTime();
+							LocalTime endBusinessTime = trimmerInfoBusinessHours.getEndBusinessTime();
+							if(!StringUtils.isNullOrEmpty(businessDay) && startBusinessTime != null && endBusinessTime != null) {
+								trimmerInfoBusinessHours.setDisplayBusinessHours(this.resBundle.getString(WEEKDAY_KEY_INIT_STR + businessDay));
+								trimmerInfoBusinessHours.setDisplayStartBusinessTime(startBusinessTime.format(DateTimeFormatter.ofPattern("HH:mm")));
+								trimmerInfoBusinessHours.setDisplayEndBusinessTime(endBusinessTime.format(DateTimeFormatter.ofPattern("HH:mm")));
 							}
 						}
 					}

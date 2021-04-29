@@ -118,7 +118,7 @@ public class ReadDao extends BaseDao{
 					trimmerInfo.setStoreEmployeesNumber(rs.getInt("store_employees_number") == 0?null:rs.getInt("store_employees_number"));
 					trimmerInfo.setStoreCourseInfo(rs.getString("store_course_info"));
 					trimmerInfo.setStoreCommitment(rs.getString("store_commitment"));
-					trimmerInfo.setTrimmerInfoBusinessHoursList(storeId == 0?null:(findBusinessHoursByStoreId(storeId).size() > 0?findBusinessHoursByStoreId(storeId):null));
+					trimmerInfo.setTrimmerInfoBusinessHoursList(findBusinessHoursByStoreId(storeId));
 					trimmerInfoList.add(trimmerInfo);
 				}
 				count++;
