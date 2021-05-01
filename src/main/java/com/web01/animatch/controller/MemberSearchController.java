@@ -1,7 +1,6 @@
 package com.web01.animatch.controller;
 
 import java.io.IOException;
-import java.util.regex.Pattern;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -26,10 +25,6 @@ public class MemberSearchController extends HttpServlet {
 	 */
 	private static final long serialVersionUID = 1L;
 	/**
-	 * 検索URLフォーマット
-	 */
-	private static final String URL_SEARCH_FORMAT = "^/animatch/member/search/(owner|trimmer)$";
-	/**
 	 * 画面遷移ページ番号パラメータ名
 	 */
 	private static final String URLPARAM_NAME_TARGET_PAGE = "targetPage";
@@ -52,27 +47,21 @@ public class MemberSearchController extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String reqURL = request.getRequestURI();
-
-		if(Pattern.matches(URL_SEARCH_FORMAT, reqURL)) {
-			String searchType = reqURL.substring(reqURL.lastIndexOf("/") + 1, reqURL.length());
-			if(searchType.equals("owner") || searchType.equals("trimmer")) {
-				SearchService searchService = new SearchService(searchType);
-				int targetPage = 1;
-				int startPage = 1;
-				String tmpTargetPage = request.getParameter(URLPARAM_NAME_TARGET_PAGE);
-				String tmpStartPage = request.getParameter(URLPARAM_NAME_START_PAGE);
-				if(StringUtils.isNotEmpty(tmpTargetPage) && StringUtils.isNotEmpty(tmpStartPage) && StringUtils.isNumeric(tmpTargetPage) && StringUtils.isNumeric(tmpStartPage)) {
-					targetPage = Integer.parseInt(tmpTargetPage);
-					startPage = Integer.parseInt(tmpStartPage);
-				}
-				if(searchService.setPageAttribute(request, targetPage, startPage)) {
-					// ページリンクに使用
-					request.setAttribute("requestURL", reqURL);
-					String path = "/WEB-INF/jsp/member/search/search.jsp";
-					RequestDispatcher dispatcher = request.getRequestDispatcher(path);
-					dispatcher.forward(request, response);
-				}
-			}
+		SearchService searchService = new SearchService(reqURL.substring(reqURL.lastIndexOf("/") + 1, reqURL.length()));
+		int targetPage = 1;
+		int startPage = 1;
+		String tmpTargetPage = request.getParameter(URLPARAM_NAME_TARGET_PAGE);
+		String tmpStartPage = request.getParameter(URLPARAM_NAME_START_PAGE);
+		if(StringUtils.isNotEmpty(tmpTargetPage) && StringUtils.isNotEmpty(tmpStartPage) && StringUtils.isNumeric(tmpTargetPage) && StringUtils.isNumeric(tmpStartPage)) {
+			targetPage = Integer.parseInt(tmpTargetPage);
+			startPage = Integer.parseInt(tmpStartPage);
+		}
+		if(searchService.setPageAttribute(request, targetPage, startPage)) {
+			// ページリンクに使用
+			request.setAttribute("requestURL", reqURL);
+			String path = "/WEB-INF/jsp/member/search/search.jsp";
+			RequestDispatcher dispatcher = request.getRequestDispatcher(path);
+			dispatcher.forward(request, response);
 		}
 	}
 
