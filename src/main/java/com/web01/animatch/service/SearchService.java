@@ -1,5 +1,7 @@
 package com.web01.animatch.service;
 
+import static com.web01.animatch.constant.PropertiesConstant.*;
+
 import java.sql.SQLException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -45,22 +47,6 @@ public class SearchService extends BaseService{
 
 	//定数
 	/**
-	 * プロパティファイル名
-	 */
-	private static final String PROPERTIES_NAME = "animatch";
-	/**
-	 * プロパティ都道府県キー先頭文字列
-	 */
-	private static final String PREFECTURES_KEY_INIT_STR = "prefectures.";
-	/**
-	 * プロパティ動物区分キー先頭文字列
-	 */
-	private static final String PET_TYPE_KEY_INIT_STR = "pet.type.";
-	/**
-	 * プロパティ曜日キー先頭文字列
-	 */
-	private static final String WEEKDAY_KEY_INIT_STR = "weekday.";
-	/**
 	 * ページ表示検索データ数
 	 */
 	private static final int DISPLAY_DATA_NUM = 5;
@@ -83,7 +69,7 @@ public class SearchService extends BaseService{
 	 * @param registType 登録区分
 	 */
 	public SearchService(String searchType) {
-		this.resBundle = ResourceBundle.getBundle(PROPERTIES_NAME);
+		this.resBundle = ResourceBundle.getBundle(ANIMATCH_PROPERTIES_NAME);
 		switch(UserType.getEnumName(searchType.toUpperCase())) {
 			case OWNER:
 				this.searchType = UserType.OWNER;

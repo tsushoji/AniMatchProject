@@ -1,5 +1,7 @@
 package com.web01.animatch.service;
 
+import static com.web01.animatch.constant.PropertiesConstant.*;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -112,26 +114,6 @@ public class SignupService extends BaseService{
 	 */
 	private static final String BUSINESS_TIME_FORMAT = "^[0-9]{2}:[0-9]{2}$";
 	/**
-	 * プロパティ登録区分キー先頭文字列
-	 */
-	private static final String REGIST_TYPE_KEY_INIT_STR = "regist.type.";
-	/**
-	 * プロパティ都道府県キー先頭文字列
-	 */
-	private static final String PREFECTURES_KEY_INIT_STR = "prefectures.";
-	/**
-	 * プロパティ動物区分キー先頭文字列
-	 */
-	private static final String PET_TYPE_KEY_INIT_STR = "pet.type.";
-	/**
-	 * プロパティ曜日キー先頭文字列
-	 */
-	private static final String WEEKDAY_KEY_INIT_STR = "weekday.";
-	/**
-	 * プロパティファイル名
-	 */
-	private static final String PROPERTIES_NAME = "animatch";
-	/**
 	 * textarea開始タグ特殊文字
 	 */
 	private static final String TEXTAREA_INIT_PART_TAG = "<textarea";
@@ -144,7 +126,7 @@ public class SignupService extends BaseService{
 	 * デフォルトコンストラクタ
 	 */
 	public SignupService() {
-		this.resBundle = ResourceBundle.getBundle(PROPERTIES_NAME);
+		this.resBundle = ResourceBundle.getBundle(ANIMATCH_PROPERTIES_NAME);
 	}
 
 	/**
@@ -153,7 +135,7 @@ public class SignupService extends BaseService{
 	 */
 	public SignupService(String registType) {
 		this.registType = registType;
-		this.resBundle = ResourceBundle.getBundle(PROPERTIES_NAME);
+		this.resBundle = ResourceBundle.getBundle(ANIMATCH_PROPERTIES_NAME);
 		this.msgMap = new HashMap<>();
 		this.messageService = new MessageService();
 	}
