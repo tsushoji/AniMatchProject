@@ -5,11 +5,9 @@ import static com.web01.animatch.constant.PropertiesConstant.*;
 import java.sql.SQLException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
-import java.util.ResourceBundle;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -33,9 +31,9 @@ public class SearchService extends BaseService{
 	 */
 	private UserType searchType;
 	/**
-	 * リソース・バンドルオブジェクト
+	 * プロパティーサービスオブジェクト
 	 */
-	private ResourceBundle resBundle;
+	private PropertiesService propertiesService;
 	/**
 	 * 検索件数
 	 */
@@ -69,7 +67,7 @@ public class SearchService extends BaseService{
 	 * @param registType 登録区分
 	 */
 	public SearchService(String searchType) {
-		this.resBundle = ResourceBundle.getBundle(ANIMATCH_PROPERTIES_NAME);
+		this.propertiesService = new PropertiesService();
 		switch(UserType.getEnumName(searchType.toUpperCase())) {
 			case OWNER:
 				this.searchType = UserType.OWNER;
@@ -115,29 +113,16 @@ public class SearchService extends BaseService{
 	 * @param request リクエストオブジェクト
 	 */
 	private void setInitPropertiesKey(HttpServletRequest request) {
-		List<String> prefecturesKeyList = new ArrayList<>();
-		List<String> petTypeKeyList = new ArrayList<>();
-		List<String> weekdayKeyList = new ArrayList<>();
-		Collections.list(this.resBundle.getKeys()).forEach(key -> {
-	       if(key.startsWith(PREFECTURES_KEY_INIT_STR)){
-	    	   prefecturesKeyList.add(key);
-		   }
+		Map<String, String> prefecturesMap = new HashMap<>();
+		Map<String, String> petTypeMap = new HashMap<>();
+		Map<String, String> weekdayMap = new HashMap<>();
+		prefecturesMap = this.propertiesService.getValues("prefectures.");
+		petTypeMap = this.propertiesService.getValues("pet.type.");
+		weekdayMap = this.propertiesService.getValues("weekday.");
 
-	       if(key.startsWith(PET_TYPE_KEY_INIT_STR)){
-	    	   petTypeKeyList.add(key);
-	       }
-
-	       if(key.startsWith(WEEKDAY_KEY_INIT_STR)){
-	    	   weekdayKeyList.add(key);
-	       }
-	    });
-		prefecturesKeyList.sort(Comparator.comparingInt(key -> Integer.parseInt(key.substring(key.length() - 3))));
-		petTypeKeyList.sort(Comparator.comparingInt(key -> Integer.parseInt(key.substring(key.length() - 3))));
-		weekdayKeyList.sort(Comparator.comparingInt(key -> Integer.parseInt(key.substring(key.length() - 3))));
-
-		request.setAttribute("prefecturesKeyList", prefecturesKeyList);
-		request.setAttribute("petTypeKeyList", petTypeKeyList);
-		request.setAttribute("weekdayKeyList", weekdayKeyList);
+		request.setAttribute("prefecturesMap", prefecturesMap);
+		request.setAttribute("petTypeMap", petTypeMap);
+		request.setAttribute("weekdayMap", weekdayMap);
 	}
 
 	/**
@@ -176,7 +161,7 @@ public class SearchService extends BaseService{
 							LocalTime startBusinessTime = trimmerInfoBusinessHours.getStartBusinessTime();
 							LocalTime endBusinessTime = trimmerInfoBusinessHours.getEndBusinessTime();
 							if(!StringUtils.isNullOrEmpty(businessDay) && startBusinessTime != null && endBusinessTime != null) {
-								trimmerInfoBusinessHours.setDisplayBusinessHours(this.resBundle.getString(WEEKDAY_KEY_INIT_STR + businessDay));
+								trimmerInfoBusinessHours.setDisplayBusinessHours(this.propertiesService.getValue(WEEKDAY_KEY_INIT_STR + businessDay));
 								trimmerInfoBusinessHours.setDisplayStartBusinessTime(startBusinessTime.format(DateTimeFormatter.ofPattern("HH:mm")));
 								trimmerInfoBusinessHours.setDisplayEndBusinessTime(endBusinessTime.format(DateTimeFormatter.ofPattern("HH:mm")));
 							}

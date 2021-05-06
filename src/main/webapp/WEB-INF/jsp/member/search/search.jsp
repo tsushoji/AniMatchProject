@@ -80,11 +80,9 @@
 	                            <label class="control-label" for="prefectures">${labelTitlePart}&ndash;都道府県</label>
 	                            <select name="prefectures" id="prefectures" class="custom-select form-control">
 	                                <option value="000">未選択</option>
-	                                <c:forEach items="${prefecturesKeyList}" var="prefecturesKey" varStatus="status">
-	                       				<fmt:formatNumber var="prefecturesKeyNum" value="${status.index + 1}" minIntegerDigits="3" />
-										<fmt:message bundle="${resource}" key="${prefecturesKey}" var="prefecturesVal" />
-	                       				<option value="${prefecturesKeyNum}">
-	                       					${prefecturesVal}
+	                                <c:forEach items="${prefecturesMap}" var="prefecture">
+	                       				<option value="${prefecture.key}">
+	                       					${prefecture.value}
 	                       				</option>
 	                   				</c:forEach>
 	                            </select>
@@ -102,8 +100,8 @@
 	                            	<label class="control-label">営業日</label>
 	                            	<div>
 	                                	<ul class="plugin-multipicker">
-	                                    	<c:forEach items="${weekdayKeyList}" var="weekdayKey">
-												<fmt:message bundle="${resource}" key="${weekdayKey}" var="weekdayVal" />
+	                                    	<c:forEach items="${weekdayMap}" var="weekday">
+	                                    		<c:set var="weekdayVal" value="${weekday.value}" />
 					                       		<li>${fn:substringBefore(weekdayVal, '曜日')}</li>
 					                   		</c:forEach>
 	                                	</ul>
@@ -126,11 +124,9 @@
 	                            	<label class="control-label">動物&ndash;種別</label>
 	                            	<select name="type-pet" class="custom-select form-control">
 	                                	<option value="000">未選択</option>
-	                                	<c:forEach items="${petTypeKeyList}" var="petTypeKey" varStatus="status">
-                        					<fmt:formatNumber var="petTypeKeyNum" value="${status.index + 1}" minIntegerDigits="3" />
-											<fmt:message bundle="${resource}" key="${petTypeKey}" var="petTypeVal" />
-                        					<option value="${petTypeKeyNum}">
-                        						${petTypeVal}
+	                                	<c:forEach items="${petTypeMap}" var="petType">
+                        					<option value="${petType.key}">
+                        						${petType.value}
                         					</option>
                     					</c:forEach>
 	                            	</select>
