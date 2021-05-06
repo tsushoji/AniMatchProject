@@ -116,9 +116,9 @@ public class SearchService extends BaseService{
 		Map<String, String> prefecturesMap = new HashMap<>();
 		Map<String, String> petTypeMap = new HashMap<>();
 		Map<String, String> weekdayMap = new HashMap<>();
-		prefecturesMap = this.propertiesService.getValues("prefectures.");
-		petTypeMap = this.propertiesService.getValues("pet.type.");
-		weekdayMap = this.propertiesService.getValues("weekday.");
+		prefecturesMap = this.propertiesService.getPrefecturesValues();
+		petTypeMap = this.propertiesService.getPetTypeValues();
+		weekdayMap = this.propertiesService.getWeekdayValues();
 
 		request.setAttribute("prefecturesMap", prefecturesMap);
 		request.setAttribute("petTypeMap", petTypeMap);
@@ -161,7 +161,7 @@ public class SearchService extends BaseService{
 							LocalTime startBusinessTime = trimmerInfoBusinessHours.getStartBusinessTime();
 							LocalTime endBusinessTime = trimmerInfoBusinessHours.getEndBusinessTime();
 							if(!StringUtils.isNullOrEmpty(businessDay) && startBusinessTime != null && endBusinessTime != null) {
-								trimmerInfoBusinessHours.setDisplayBusinessHours(this.propertiesService.getValue(WEEKDAY_KEY_INIT_STR + businessDay));
+								trimmerInfoBusinessHours.setDisplayBusinessHours(this.propertiesService.getWeekdayValue(WEEKDAY_KEY_INIT_STR + businessDay));
 								trimmerInfoBusinessHours.setDisplayStartBusinessTime(startBusinessTime.format(DateTimeFormatter.ofPattern("HH:mm")));
 								trimmerInfoBusinessHours.setDisplayEndBusinessTime(endBusinessTime.format(DateTimeFormatter.ofPattern("HH:mm")));
 							}
