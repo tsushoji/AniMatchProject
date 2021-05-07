@@ -102,7 +102,7 @@
 
 				<div>
 	                <label class="regist-complete-item-name">&lt;イメージ画像&gt;</label>
-	                <p>
+	                <p class="regist-complete-item-image">
 	                	<c:if test="${registType == '001'}">
 	                		<c:if test="${not empty petImage}">
 								<img src="data:image/png;base64,${petImage}" class="resize-img-base64">
