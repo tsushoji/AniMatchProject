@@ -36,7 +36,7 @@ import com.web01.animatch.dto.Store;
 import com.web01.animatch.dto.User;
 
 /**
- * registロジッククラス
+ * サインアップサービスクラス
  * @author Tsuji
  * @version 1.0
  */

@@ -6,7 +6,7 @@ import java.util.ResourceBundle;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * メッセージロジッククラス
+ * メッセージサービスクラス
  * @author Tsuji
  * @version 1.0
  */
