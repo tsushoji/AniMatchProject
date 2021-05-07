@@ -1,7 +1,5 @@
 package com.web01.animatch.service;
 
-import static com.web01.animatch.constant.PropertiesConstant.*;
-
 import java.sql.SQLException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -116,9 +114,9 @@ public class SearchService extends BaseService{
 		Map<String, String> prefecturesMap = new HashMap<>();
 		Map<String, String> petTypeMap = new HashMap<>();
 		Map<String, String> weekdayMap = new HashMap<>();
-		prefecturesMap = this.propertiesService.getPrefecturesValues();
-		petTypeMap = this.propertiesService.getPetTypeValues();
-		weekdayMap = this.propertiesService.getWeekdayValues();
+		prefecturesMap = this.propertiesService.getValues(PropertiesService.PREFECTURES_KEY_INIT_STR);
+		petTypeMap = this.propertiesService.getValues(PropertiesService.PET_TYPE_KEY_INIT_STR);
+		weekdayMap = this.propertiesService.getValues(PropertiesService.WEEKDAY_KEY_INIT_STR);
 
 		request.setAttribute("prefecturesMap", prefecturesMap);
 		request.setAttribute("petTypeMap", petTypeMap);
@@ -161,7 +159,7 @@ public class SearchService extends BaseService{
 							LocalTime startBusinessTime = trimmerInfoBusinessHours.getStartBusinessTime();
 							LocalTime endBusinessTime = trimmerInfoBusinessHours.getEndBusinessTime();
 							if(!StringUtils.isNullOrEmpty(businessDay) && startBusinessTime != null && endBusinessTime != null) {
-								trimmerInfoBusinessHours.setDisplayBusinessHours(this.propertiesService.getWeekdayValue(WEEKDAY_KEY_INIT_STR + businessDay));
+								trimmerInfoBusinessHours.setDisplayBusinessHours(this.propertiesService.getValue(PropertiesService.WEEKDAY_KEY_INIT_STR + businessDay));
 								trimmerInfoBusinessHours.setDisplayStartBusinessTime(startBusinessTime.format(DateTimeFormatter.ofPattern("HH:mm")));
 								trimmerInfoBusinessHours.setDisplayEndBusinessTime(endBusinessTime.format(DateTimeFormatter.ofPattern("HH:mm")));
 							}
