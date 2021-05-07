@@ -12,6 +12,7 @@ import lombok.Data;
 @Data
 public class BaseDto {
 
+	//メンバー
 	/**
 	 * 削除ステータス
 	 */

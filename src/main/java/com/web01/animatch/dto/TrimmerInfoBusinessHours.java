@@ -13,6 +13,8 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper=true)
 @ToString(callSuper = true)
 public class TrimmerInfoBusinessHours extends BusinessHours{
+
+	//メンバー
 	/**
 	 * 表示営業日
 	 */
