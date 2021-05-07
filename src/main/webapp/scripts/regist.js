@@ -37,7 +37,7 @@ $(document).ready(function(){
 
     //アクション:「郵便番号」を入力する
     $("#postal-code").change(function(){
-        const successStatus = 200
+        const successStatus = 200;
         let paramPostalCode = $(this).val();
         let urlZipCloud = 'https://zip-cloud.appspot.com/api/search?zipcode=';
 
@@ -55,6 +55,7 @@ $(document).ready(function(){
             }
             //処理が成功したとき
             //「都道府県」を表示
+            // JIS X 0401都道府県コード
             $('#prefectures').val(('000' + res.results[0].prefcode).slice(-3));
             console.log(('000' + res.results[0].prefcode).slice(-3));
             console.log(res.results);
@@ -103,40 +104,7 @@ $(document).ready(function(){
 		});
 	}
 
-
-});
-
-$(document).ready(function(){
 	//画像サイズを調整
-    let targetImgbase64 = $('.resize-img-base64').attr('src');
-    if(targetImgbase64 == undefined){
-    	return;
-    }
-    //調整画像サイズ
-    const minSize = 300;
-    //CanvasAPI
-    let canvas = document.createElement('canvas');
-    let ctx = canvas.getContext('2d');
-    let image = new Image();
-    image.crossOrigin = 'Anonymous';
-    //画像読み込み後、実行
-    image.onload = function() {
-    	let dstWidth, dstHeight;
-    	if (this.width > this.height) {
-		    dstWidth = minSize;
-		    dstHeight = this.height * minSize / this.width;
-		} else {
-		    dstHeight = minSize;
-		    dstWidth = this.width * minSize / this.height;
-		}
-		canvas.width = dstWidth;
-		canvas.height = dstHeight;
-		ctx.drawImage(this, 0, 0, this.width, this.height, 0, 0, dstWidth, dstHeight);
-		//画像サイズ調整済みbase64文字列に更新
-		$('.resize-img-base64').attr('src', canvas.toDataURL());
-    };
-    //画像読み込み
-    image.src = targetImgbase64;
-
+	adjustImgbase64(300);
 
 });

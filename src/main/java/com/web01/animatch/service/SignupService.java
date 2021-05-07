@@ -1,5 +1,7 @@
 package com.web01.animatch.service;
 
+import static com.web01.animatch.constant.PropertiesConstant.*;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,7 +12,6 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -25,8 +26,8 @@ import javax.servlet.http.Part;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.web01.animatch.dao.CreateDao;
 import com.web01.animatch.dao.DBConnection;
-import com.web01.animatch.dao.RegistDao;
 import com.web01.animatch.dto.BusinessHours;
 import com.web01.animatch.dto.FormBusinessHours;
 import com.web01.animatch.dto.Pet;
@@ -39,7 +40,7 @@ import com.web01.animatch.dto.User;
  * @author Tsuji
  * @version 1.0
  */
-public class SignupService {
+public class SignupService extends BaseService{
 
 	//メンバー
 	/**
@@ -113,26 +114,6 @@ public class SignupService {
 	 */
 	private static final String BUSINESS_TIME_FORMAT = "^[0-9]{2}:[0-9]{2}$";
 	/**
-	 * プロパティ登録区分キー先頭文字列
-	 */
-	private static final String REGIST_TYPE_KEY_INIT_STR = "regist.type.";
-	/**
-	 * プロパティ都道府県キー先頭文字列
-	 */
-	private static final String PREFECTURES_KEY_INIT_STR = "prefectures.";
-	/**
-	 * プロパティ動物区分キー先頭文字列
-	 */
-	private static final String PET_TYPE_KEY_INIT_STR = "pet.type.";
-	/**
-	 * プロパティ曜日キー先頭文字列
-	 */
-	private static final String WEEKDAY_KEY_INIT_STR = "weekday.";
-	/**
-	 * プロパティファイル名
-	 */
-	private static final String PROPERTIES_NAME = "animatch";
-	/**
 	 * textarea開始タグ特殊文字
 	 */
 	private static final String TEXTAREA_INIT_PART_TAG = "<textarea";
@@ -145,7 +126,7 @@ public class SignupService {
 	 * デフォルトコンストラクタ
 	 */
 	public SignupService() {
-		this.resBundle = ResourceBundle.getBundle(PROPERTIES_NAME);
+		this.resBundle = ResourceBundle.getBundle(ANIMATCH_PROPERTIES_NAME);
 	}
 
 	/**
@@ -154,7 +135,7 @@ public class SignupService {
 	 */
 	public SignupService(String registType) {
 		this.registType = registType;
-		this.resBundle = ResourceBundle.getBundle(PROPERTIES_NAME);
+		this.resBundle = ResourceBundle.getBundle(ANIMATCH_PROPERTIES_NAME);
 		this.msgMap = new HashMap<>();
 		this.messageService = new MessageService();
 	}
@@ -571,25 +552,25 @@ public class SignupService {
 	 */
 	private void registDao(HttpServletRequest request, RegistForm registForm) {
 		DBConnection con = new DBConnection();
-		RegistDao registDao = new RegistDao(con.getConnection());
+		CreateDao createDao = new CreateDao(con.getConnection());
 		try {
-			User user = getParameterUserDto(registForm, registDao);
+			User user = getParameterUserDto(registForm);
 			switch(this.registType) {
 				//飼い主の場合
 				case "001":
-					Pet pet = getParameterPetDto(request, registForm, registDao);
+					Pet pet = getParameterPetDto(request, registForm);
 					user.setPet(pet);
 					setAttributeRegistOwner(request, user);
 					if(this.canRegist) {
 						//DB登録処理前に登録成功失敗リセット
 						this.canRegist = false;
-						this.canRegist = registDao.registOwner(user);
+						this.canRegist = createDao.registOwner(user);
 					}
 					break;
 
 				//トリマーの場合
 				case "002":
-					Store store = getParameterStoreDto(request, registForm, registDao);
+					Store store = getParameterStoreDto(request, registForm);
 					List<BusinessHours> businessHoursList = getParameterBusinessHoursDto(registForm);
 					store.setBusinessHoursList(businessHoursList);
 					user.setStore(store);
@@ -597,7 +578,7 @@ public class SignupService {
 					if(this.canRegist) {
 						//DB登録処理前に登録成功失敗リセット
 						this.canRegist = false;
-						this.canRegist = registDao.registTrimmer(user);
+						this.canRegist = createDao.registTrimmer(user);
 					}
 					break;
 
@@ -617,7 +598,7 @@ public class SignupService {
 	 * @param RegistDao 登録DB処理オブジェクト
 	 * @return ユーザオブジェクト
 	 */
-	private User getParameterUserDto(RegistForm registForm, RegistDao registDao) throws SQLException, ParseException {
+	private User getParameterUserDto(RegistForm registForm) throws SQLException, ParseException {
 		User user = new User();
 
 		user.setUserName(registForm.getUserName());
@@ -632,7 +613,7 @@ public class SignupService {
 		user.setStreetAddress(address);
 		user.setEmailAddress(registForm.getEmailAddress());
 		user.setTelephoneNumber(registForm.getTelephoneNumber());
-		user.setIsDeleted(1);
+		user.setIsDeleted(0);
 		LocalDateTime now = LocalDateTime.now();
 		user.setInsertedTime(now);
 		user.setUpdatedTime(now);
@@ -647,7 +628,7 @@ public class SignupService {
 	 * @param request 登録DB処理オブジェクト
 	 * @return ペットオブジェクト
 	 */
-	private Pet getParameterPetDto(HttpServletRequest request, RegistForm registForm, RegistDao registDao) throws SQLException, IOException, ServletException {
+	private Pet getParameterPetDto(HttpServletRequest request, RegistForm registForm) throws SQLException, IOException, ServletException {
 		Pet pet = new Pet();
 
 		Part part = request.getPart("file");
@@ -663,7 +644,7 @@ public class SignupService {
 			pet.setWeight(Float.parseFloat(petWeight));
 		}
 		pet.setRemarks(getParameterData(registForm.getPetRemarks()));
-		pet.setIsDeleted(1);
+		pet.setIsDeleted(0);
 		LocalDateTime now = LocalDateTime.now();
 		pet.setInsertedTime(now);
 		pet.setUpdatedTime(now);
@@ -678,7 +659,7 @@ public class SignupService {
 	 * @param request 登録DB処理オブジェクト
 	 * @return 店舗オブジェクト
 	 */
-	private Store getParameterStoreDto(HttpServletRequest request, RegistForm registForm, RegistDao registDao) throws SQLException, IOException, ServletException {
+	private Store getParameterStoreDto(HttpServletRequest request, RegistForm registForm) throws SQLException, IOException, ServletException {
 		Store store = new Store();
 
 		Part part = request.getPart("file");
@@ -693,7 +674,7 @@ public class SignupService {
 		}
 		store.setCourseInfo(getParameterData(registForm.getCourseInfo()));
 		store.setCommitment(getParameterData(registForm.getCommitment()));
-		store.setIsDeleted(1);
+		store.setIsDeleted(0);
 		LocalDateTime now = LocalDateTime.now();
 		store.setInsertedTime(now);
 		store.setUpdatedTime(now);
@@ -760,7 +741,7 @@ public class SignupService {
 				businessHours.setStartBusinessTime(LocalTime.of(Integer.parseInt(startBusinessTimeAry[0]), Integer.parseInt(startBusinessTimeAry[1])));
 				businessHours.setEndBusinessTime(LocalTime.of(Integer.parseInt(endBusinessTimeAry[0]), Integer.parseInt(endBusinessTimeAry[1])));
 				businessHours.setComplement(getParameterData(formBusinessHours.getBusinessHoursRemarks()));
-				businessHours.setIsDeleted(1);
+				businessHours.setIsDeleted(0);
 				LocalDateTime now = LocalDateTime.now();
 				businessHours.setInsertedTime(now);
 				businessHours.setUpdatedTime(now);
@@ -795,11 +776,8 @@ public class SignupService {
 		request.setAttribute("registType", this.registType);
 		request.setAttribute("user", user);
 		request.setAttribute("pet", pet);
-		byte[] petImage = pet.getImage();
-		if(petImage != null) {
-			String base64String = Base64.getEncoder().encodeToString(petImage);
-			request.setAttribute("petImage", base64String);
-		}
+		//画像をBase64化
+		request.setAttribute("petImage", convertByteAryToBase64(pet.getImage()));
 	}
 
 	/**
@@ -812,11 +790,8 @@ public class SignupService {
 		request.setAttribute("registType", this.registType);
 		request.setAttribute("user", user);
 		request.setAttribute("store", store);
-		byte[] storeImage = store.getImage();
-		if(storeImage != null) {
-			String base64String = Base64.getEncoder().encodeToString(storeImage);
-			request.setAttribute("storeImage", base64String);
-		}
+		//画像をBase64化
+		request.setAttribute("storeImage", convertByteAryToBase64(store.getImage()));
 		request.setAttribute("businessHoursList", store.getBusinessHoursList());
 	}
 

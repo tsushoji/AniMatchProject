@@ -2,7 +2,7 @@ $(document).ready(function(){
     //アクション:「絞り込みクリア」ボタン押下
     $('.main-search-left-clear').click(function() {
         let $form = $(this).parents('.container-fluid').find('.main-search-left-form');
-        $form.find('select').val('');
+        $form.find('select').val('000');
 
         $form.find('input[name="form-start-time"],input[name="form-end-time"]').val('');
 
@@ -22,31 +22,83 @@ $(document).ready(function(){
     });
 
     //アクション:「都道府県」を入力する
-    //後日課題
-    // $("#prefectures").change(function(){
-    //     const successStatus = 200
-    //     let paramPrefectures = $(this).val();
-    //     let urlResasCities = 'https://opendata.resas-portal.go.jp/api/v1/cities?prefCode=';
+    //都道府県コード https://postcode.teraren.com/prefectures
+    $("#prefectures").change(function(){
+    	let paramPrefectures = $(this).val().replace(/^0+/, '');
+    	//追加したDomを削除
+    	$('.api-append-cities').remove();
+    	$.getJSON("https://postcode.teraren.com/prefectures/" + paramPrefectures + ".json", function(json){
+    		console.log('成功');
+    		console.log(json);
+    		targetSelect = $('#cities');
+    		//追加したDomを区別するため、追加したDomに「api-append-cities」クラスを付与
+    		$.each(json, function (index, val) {
+			    appendOption = $('<option>')
+			        			.val(val.city)
+			        			.text(val.city)
+			        			.addClass("api-append-cities")
+			    targetSelect.append(appendOption);
+			});
+	    }).fail(function(jqXHR, textStatus, errorThrown) {
+	    	console.log(XMLHttpRequest);
+	    });
+    });
 
-    //     $.ajax({
-    //         type: 'GET',
-    //         cache: false,
-    //         url: urlResasCities + paramPrefectures,
-    //         dataType: 'json',
-    //     }).done(function (res) {
-    //         //エラーだった時
-    //         if (res.status !== successStatus) {
-    //             //エラー内容を表示
-    //             console.log(res.message);
-    //             return;
-    //         }
-    //         //処理が成功したとき
-    //         //「市区町村」を表示
-    //         console.log(res);
-    //     }).fail(function (XMLHttpRequest, textStatus, errorThrown) {
-    //         console.log(XMLHttpRequest);
-    //     });
-    // });
+	const targetPageParamName = '?targetPage=';
+	const startPageParamName = '&startPage=';
+	let targetPageParamVal = 1;
+	let startPageParamVal = 1;
 
+	let currentPage = Number($("#current-page").val());
+
+	let startPageIndex = Number($("#display-start-page-index").val());
+	let endPageIndex = Number($("#display-end-page-index").val());
+	let endPage = Number($("#end-page").val());
+
+	//アクション:ページリンク前へボタンをクリック
+    $('#page-item-pre').click(function () {
+    	let pageItemPreURL = $("#request-url").val();
+    	if(currentPage > 0){
+    		targetPageParamVal = currentPage;
+    		startPageParamVal = startPageIndex;
+    		if(currentPage > 1){
+	    		targetPageParamVal = currentPage - 1;
+	    	}
+    		if(startPageIndex > targetPageParamVal){
+	    		startPageParamVal = startPageIndex - 1;
+	    	}
+    		pageItemPreURL += targetPageParamName + targetPageParamVal + startPageParamName + startPageParamVal;
+    		console.log(pageItemPreURL);
+	        // 同じタグで表示
+	        location.href = pageItemPreURL;
+    	}
+    });
+
+	//アクション:ページリンク次へボタンをクリック
+    $('#page-item-next').click(function () {
+    	let pageItemNextURL = $("#request-url").val();
+    	if(currentPage < endPage){
+    		targetPageParamVal = currentPage + 1;
+    		startPageParamVal = startPageIndex;
+    		if(endPageIndex < targetPageParamVal){
+    			startPageParamVal = startPageIndex + 1;
+    		}
+    		pageItemNextURL += targetPageParamName + targetPageParamVal + startPageParamName + startPageParamVal;
+    		console.log(pageItemNextURL);
+	        // 同じタグで表示
+	        location.href = pageItemNextURL;
+    	}
+    });
+
+	//ページリンクactive状態設定
+	$('#page-item-' + currentPage).addClass('active');
+
+	//ページリンクdisable状態設定
+	if(currentPage === 1){
+		$('#page-item-pre').addClass('disabled');
+	}
+	if(currentPage === endPage){
+		$('#page-item-next').addClass('disabled');
+	}
 
 });

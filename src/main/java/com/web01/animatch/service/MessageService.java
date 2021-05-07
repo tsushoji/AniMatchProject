@@ -42,7 +42,7 @@ public class MessageService {
 	/**
 	 * プロパティファイル名
 	 */
-	private static final String PROPERTIES_FILE_NAME = "animatch";
+	private static final String PROPERTIES_FILE_NAME = "message";
 	/**
 	 * 通常メッセージプロパティキー
 	 */

@@ -35,13 +35,13 @@
   	<servlet-name>MemberSearchOwnerController</servlet-name>
   	<display-name>MemberSearchOwnerController</display-name>
   	<description></description>
-  	<servlet-class>com.web01.animatch.controller.MemberSearchOwnerController</servlet-class>
+  	<servlet-class>com.web01.animatch.controller.MemberSearchController</servlet-class>
   </servlet>
   <servlet>
   	<servlet-name>MemberSearchTrimmerController</servlet-name>
   	<display-name>MemberSearchTrimmerController</display-name>
   	<description></description>
-  	<servlet-class>com.web01.animatch.controller.MemberSearchTrimmerController</servlet-class>
+  	<servlet-class>com.web01.animatch.controller.MemberSearchController</servlet-class>
   </servlet>
   <servlet>
   	<servlet-name>MemberDetailOwnerController</servlet-name>
@@ -117,5 +117,10 @@
   <welcome-file-list>
     <welcome-file>index</welcome-file>
   </welcome-file-list>
+
+  <error-page>
+    <error-code>404</error-code>
+    <location>/index</location>
+  </error-page>
 </web-app>
 

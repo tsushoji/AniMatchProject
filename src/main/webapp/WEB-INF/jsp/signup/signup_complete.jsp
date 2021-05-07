@@ -104,13 +104,13 @@
 	                <label class="regist-complete-item-name">&lt;イメージ画像&gt;</label>
 	                <p>
 	                	<c:if test="${registType == '001'}">
-	                		<c:if test="${petImage != null}">
+	                		<c:if test="${not empty petImage}">
 								<img src="data:image/png;base64,${petImage}" class="resize-img-base64">
 							</c:if>
 						</c:if>
 
 						<c:if test="${registType == '002'}">
-							<c:if test="${storeImage != null}">
+							<c:if test="${not empty storeImage}">
 								<img src="data:image/png;base64,${storeImage}" class="resize-img-base64">
 							</c:if>
 						</c:if>
@@ -251,8 +251,8 @@
 	    	<%@ include file="/WEB-INF/jsp/footer02.jsp" %>
 	    </footer>
 
+		<script src="/animatch/scripts/common.js"></script>
 		<script src="/animatch/scripts/regist.js"></script>
-	    <script src="/animatch/scripts/common.js"></script>
 	</body>
 
 </html>
