@@ -48,21 +48,39 @@ public class BaseService {
 		}
 
 		/**
-		 * Enum名取得
+		 * Enum名からEnum取得
 		 * @param str 取得文字列
 		 * @return Enum名文字列
 		 */
-		public static UserType getEnumName(String str)
+		public static UserType getEnumFromEnumName(String enumName)
 	    {
 	        for(UserType val : values())
 	        {
-	            if(val.toString().equals(str))
+	            if(val.toString().equals(enumName))
 	            {
 	                return val;
 	            }
 
 	        }
-	        throw new IllegalArgumentException("undefined : " + str);
+	        throw new IllegalArgumentException("undefined : " + enumName);
+	    }
+
+		/**
+		 * IDEnum名取得
+		 * @param str 取得文字列
+		 * @return Enum名文字列
+		 */
+		public static UserType getEnumFromId(String Id)
+	    {
+	        for(UserType val : values())
+	        {
+	            if(val.getId().equals(Id))
+	            {
+	                return val;
+	            }
+
+	        }
+	        throw new IllegalArgumentException("undefined : " + Id);
 	    }
 	}
 

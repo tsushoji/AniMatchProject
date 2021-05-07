@@ -46,7 +46,7 @@ public class SignupService extends BaseService{
 	/**
 	 * 登録区分
 	 */
-	private String registType;
+	private UserType registType;
 	/**
 	 * リソース・バンドルオブジェクト
 	 */
@@ -134,18 +134,43 @@ public class SignupService extends BaseService{
 	 * @param registType 登録区分
 	 */
 	public SignupService(String registType) {
-		this.registType = registType;
+		switch(UserType.getEnumFromId(registType)) {
+			//飼い主の場合
+			case OWNER:
+				this.registType = UserType.OWNER;
+				break;
+			//トリマーの場合
+			case TRIMMER:
+				this.registType = UserType.TRIMMER;
+				break;
+			default:
+				break;
+		}
+		//this.registType = registType;
 		this.resBundle = ResourceBundle.getBundle(ANIMATCH_PROPERTIES_NAME);
 		this.msgMap = new HashMap<>();
 		this.messageService = new MessageService();
 	}
 
 	/**
-	 * 登録区分getter
+	 * 登録区分ID取得
 	 * @return 登録区分
 	 */
-	public String getRegistType() {
-		return this.registType;
+	private String getRegistTypeId() {
+		String registType = null;
+		switch(this.registType) {
+			//飼い主の場合
+			case OWNER:
+				registType = "001";
+				break;
+			//トリマーの場合
+			case TRIMMER:
+				registType = "002";
+				break;
+			default:
+				break;
+		}
+		return registType;
 	}
 
 	/**
@@ -232,7 +257,7 @@ public class SignupService extends BaseService{
 		registForm.setTelephoneNumber(request.getParameter("telephone-number"));
 		switch(this.registType) {
 			//飼い主の場合
-			case "001":
+			case OWNER:
 				registForm.setPetName(request.getParameter("pet-name"));
 				registForm.setPetSex(request.getParameter("radio-pet-sex"));
 				registForm.setPetType(request.getParameter("pet-type"));
@@ -240,7 +265,7 @@ public class SignupService extends BaseService{
 				registForm.setPetRemarks(request.getParameter("pet-remarks"));
 				break;
 			//トリマーの場合
-			case "002":
+			case TRIMMER:
 				registForm.setStoreName(request.getParameter("store-name"));
 				registForm.setFormBusinessHoursInputValue(request.getParameter("business-hours"));
 				registForm.setFormBusinessHoursList(getFormParameterBusinessHoursDto(request));
@@ -338,7 +363,7 @@ public class SignupService extends BaseService{
 
 		switch(this.registType) {
 			//飼い主の場合
-			case "001":
+			case OWNER:
 				//ペットニックネーム20文字以下チェック
 				if(registForm.getPetName().length() > 20) {
 					this.msgMap.put("011", this.messageService.getMessage(MessageService.MessageType.ERROR, "001", "ペットネーム", "20文字以下"));
@@ -382,7 +407,7 @@ public class SignupService extends BaseService{
 				break;
 
 			//トリマーの場合
-			case "002":
+			case TRIMMER:
 				//店名50文字以下チェック
 				if(registForm.getStoreName().length() > 50) {
 					this.msgMap.put("015", this.messageService.getMessage(MessageService.MessageType.ERROR, "001", "店名", "50文字以下"));
@@ -541,7 +566,7 @@ public class SignupService extends BaseService{
 	private void setAttributeKeyWithCanNotValidate(HttpServletRequest request, RegistForm registForm) {
 		request.setAttribute("registForm", registForm);
 		request.setAttribute("formBusinessHoursList", registForm.getFormBusinessHoursList());
-		request.setAttribute("formRegistType", getRegistType());
+		request.setAttribute("formRegistType", getRegistTypeId());
 		request.setAttribute("msgMap", this.msgMap);
 	}
 
@@ -557,7 +582,7 @@ public class SignupService extends BaseService{
 			User user = getParameterUserDto(registForm);
 			switch(this.registType) {
 				//飼い主の場合
-				case "001":
+				case OWNER:
 					Pet pet = getParameterPetDto(request, registForm);
 					user.setPet(pet);
 					setAttributeRegistOwner(request, user);
@@ -569,7 +594,7 @@ public class SignupService extends BaseService{
 					break;
 
 				//トリマーの場合
-				case "002":
+				case TRIMMER:
 					Store store = getParameterStoreDto(request, registForm);
 					List<BusinessHours> businessHoursList = getParameterBusinessHoursDto(registForm);
 					store.setBusinessHoursList(businessHoursList);
@@ -773,7 +798,7 @@ public class SignupService extends BaseService{
 	 */
 	private void setAttributeRegistOwner(HttpServletRequest request, User user) {
 		Pet pet = user.getPet();
-		request.setAttribute("registType", this.registType);
+		request.setAttribute("registType", this.getRegistTypeId());
 		request.setAttribute("user", user);
 		request.setAttribute("pet", pet);
 		//画像をBase64化
@@ -787,7 +812,7 @@ public class SignupService extends BaseService{
 	 */
 	private void setAttributeRegistTrimmer(HttpServletRequest request, User user) {
 		Store store = user.getStore();
-		request.setAttribute("registType", this.registType);
+		request.setAttribute("registType", this.getRegistTypeId());
 		request.setAttribute("user", user);
 		request.setAttribute("store", store);
 		//画像をBase64化
