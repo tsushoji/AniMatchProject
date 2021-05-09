@@ -286,10 +286,9 @@ public class SignupService extends BaseService{
 	 * @return 営業時間登録フォームリスト
 	 */
 	private List<FormBusinessHours> getFormParameterBusinessHoursDto(HttpServletRequest request) throws IOException, ServletException, ParseException {
-		List<FormBusinessHours> formBusinessHoursList = null;
+		List<FormBusinessHours> formBusinessHoursList = new ArrayList<>();
 		String formBusinessHoursWeek = request.getParameter("business-hours");
 		if(!StringUtils.isEmpty(formBusinessHoursWeek)) {
-			formBusinessHoursList = new ArrayList<>();
 			String formBusinessHoursWeekAry[] = formBusinessHoursWeek.split(",");
 			for(int i = 0; i < formBusinessHoursWeekAry.length; i++) {
 				FormBusinessHours formBusinessHours = new FormBusinessHours();
@@ -419,88 +418,86 @@ public class SignupService extends BaseService{
 				//営業時間チェック
 				List<FormBusinessHours> formBusinessHoursList = registForm.getFormBusinessHoursList();
 				//Multipickerで選択されている場合
-				if(formBusinessHoursList != null) {
-					for(FormBusinessHours formBusinessHours: formBusinessHoursList){
-						boolean judgeTimeFlg = true;
-						//営業時間形式チェック
-						String formBusinessHoursStartTime = formBusinessHours.getBusinessHoursStartTime();
-						if(!formBusinessHoursStartTime.isEmpty()) {
-							if(!Pattern.matches(BUSINESS_TIME_FORMAT, formBusinessHoursStartTime)) {
-								formBusinessHours.setIsErrBusinessHoursStartTime("1");
-								judgeTimeFlg = false;
-								if(errorTimeCount == 0) {
-									this.msgMap.put("016", this.messageService.getMessage(MessageService.MessageType.ERROR, "005", "営業時間"));
-									errorTimeCount++;
-								}
+				for(FormBusinessHours formBusinessHours: formBusinessHoursList){
+					boolean judgeTimeFlg = true;
+					//営業時間形式チェック
+					String formBusinessHoursStartTime = formBusinessHours.getBusinessHoursStartTime();
+					if(!formBusinessHoursStartTime.isEmpty()) {
+						if(!Pattern.matches(BUSINESS_TIME_FORMAT, formBusinessHoursStartTime)) {
+							formBusinessHours.setIsErrBusinessHoursStartTime("1");
+							judgeTimeFlg = false;
+							if(errorTimeCount == 0) {
+								this.msgMap.put("016", this.messageService.getMessage(MessageService.MessageType.ERROR, "005", "営業時間"));
+								errorTimeCount++;
 							}
 						}
+					}
 
-						String formBusinessHoursEndTime = formBusinessHours.getBusinessHoursEndTime();
-						if(!formBusinessHoursEndTime.isEmpty()) {
-							if(!Pattern.matches(BUSINESS_TIME_FORMAT, formBusinessHoursEndTime)) {
-								formBusinessHours.setIsErrBusinessHoursEndTime("1");
-								judgeTimeFlg = false;
-								if(errorTimeCount == 0) {
-									this.msgMap.put("016", this.messageService.getMessage(MessageService.MessageType.ERROR, "005", "営業時間"));
-									errorTimeCount++;
-								}
+					String formBusinessHoursEndTime = formBusinessHours.getBusinessHoursEndTime();
+					if(!formBusinessHoursEndTime.isEmpty()) {
+						if(!Pattern.matches(BUSINESS_TIME_FORMAT, formBusinessHoursEndTime)) {
+							formBusinessHours.setIsErrBusinessHoursEndTime("1");
+							judgeTimeFlg = false;
+							if(errorTimeCount == 0) {
+								this.msgMap.put("016", this.messageService.getMessage(MessageService.MessageType.ERROR, "005", "営業時間"));
+								errorTimeCount++;
 							}
 						}
+					}
 
-						if(judgeTimeFlg) {
-							if(!formBusinessHoursStartTime.isEmpty() && !formBusinessHoursEndTime.isEmpty()) {
-								String[] startBusinessTimeAry = formBusinessHoursStartTime.split(":");
-								String[] endBusinessTimeAry = formBusinessHoursEndTime.split(":");
-								if(startBusinessTimeAry[0].equals(endBusinessTimeAry[0])) {
-									if(Integer.parseInt(startBusinessTimeAry[1]) >= Integer.parseInt(endBusinessTimeAry[1])) {
-										formBusinessHours.setIsErrBusinessHoursStartTime("1");
-										if(errorTimeCount == 0) {
-											this.msgMap.put("016", this.messageService.getMessage(MessageService.MessageType.ERROR, "005", "営業時間"));
-											errorTimeCount++;
-										}
-									}
-								}else {
-									if(Integer.parseInt(startBusinessTimeAry[0]) > Integer.parseInt(endBusinessTimeAry[0])) {
-										formBusinessHours.setIsErrBusinessHoursStartTime("1");
-										if(errorTimeCount == 0) {
-											this.msgMap.put("016", this.messageService.getMessage(MessageService.MessageType.ERROR, "005", "営業時間"));
-											errorTimeCount++;
-										}
+					if(judgeTimeFlg) {
+						if(!formBusinessHoursStartTime.isEmpty() && !formBusinessHoursEndTime.isEmpty()) {
+							String[] startBusinessTimeAry = formBusinessHoursStartTime.split(":");
+							String[] endBusinessTimeAry = formBusinessHoursEndTime.split(":");
+							if(startBusinessTimeAry[0].equals(endBusinessTimeAry[0])) {
+								if(Integer.parseInt(startBusinessTimeAry[1]) >= Integer.parseInt(endBusinessTimeAry[1])) {
+									formBusinessHours.setIsErrBusinessHoursStartTime("1");
+									if(errorTimeCount == 0) {
+										this.msgMap.put("016", this.messageService.getMessage(MessageService.MessageType.ERROR, "005", "営業時間"));
+										errorTimeCount++;
 									}
 								}
-							}else if(formBusinessHoursStartTime.isEmpty() && !formBusinessHoursEndTime.isEmpty()) {
-								formBusinessHours.setIsErrBusinessHoursStartTime("1");
-								if(errorTimeCount == 0) {
-									this.msgMap.put("016", this.messageService.getMessage(MessageService.MessageType.ERROR, "005", "営業時間"));
-									errorTimeCount++;
-								}
-							}else if(!formBusinessHoursStartTime.isEmpty() && formBusinessHoursEndTime.isEmpty()) {
-								formBusinessHours.setIsErrBusinessHoursStartTime("1");
-								if(errorTimeCount == 0) {
-									this.msgMap.put("016", this.messageService.getMessage(MessageService.MessageType.ERROR, "005", "営業時間"));
-									errorTimeCount++;
+							}else {
+								if(Integer.parseInt(startBusinessTimeAry[0]) > Integer.parseInt(endBusinessTimeAry[0])) {
+									formBusinessHours.setIsErrBusinessHoursStartTime("1");
+									if(errorTimeCount == 0) {
+										this.msgMap.put("016", this.messageService.getMessage(MessageService.MessageType.ERROR, "005", "営業時間"));
+										errorTimeCount++;
+									}
 								}
 							}
-						}
-
-						String formBusinessHoursRemarks = formBusinessHours.getBusinessHoursRemarks();
-						//補足100文字以下チェック
-						if(formBusinessHoursRemarks.length() > 100) {
-							formBusinessHours.setIsErrLengthBusinessHoursRemarks("1");
-							if(errorRemarksCount == 0) {
-								this.msgMap.put("017", this.messageService.getMessage(MessageService.MessageType.ERROR, "001", "営業時間補足", "100文字以下"));
-								errorRemarksCount++;
+						}else if(formBusinessHoursStartTime.isEmpty() && !formBusinessHoursEndTime.isEmpty()) {
+							formBusinessHours.setIsErrBusinessHoursStartTime("1");
+							if(errorTimeCount == 0) {
+								this.msgMap.put("016", this.messageService.getMessage(MessageService.MessageType.ERROR, "005", "営業時間"));
+								errorTimeCount++;
+							}
+						}else if(!formBusinessHoursStartTime.isEmpty() && formBusinessHoursEndTime.isEmpty()) {
+							formBusinessHours.setIsErrBusinessHoursStartTime("1");
+							if(errorTimeCount == 0) {
+								this.msgMap.put("016", this.messageService.getMessage(MessageService.MessageType.ERROR, "005", "営業時間"));
+								errorTimeCount++;
 							}
 						}
+					}
+
+					String formBusinessHoursRemarks = formBusinessHours.getBusinessHoursRemarks();
+					//補足100文字以下チェック
+					if(formBusinessHoursRemarks.length() > 100) {
+						formBusinessHours.setIsErrLengthBusinessHoursRemarks("1");
+						if(errorRemarksCount == 0) {
+							this.msgMap.put("017", this.messageService.getMessage(MessageService.MessageType.ERROR, "001", "営業時間補足", "100文字以下"));
+							errorRemarksCount++;
+						}
+					}
 
 
-						//補足XSS対策
-						if(formBusinessHoursRemarks.contains(TEXTAREA_INIT_PART_TAG) || formBusinessHoursRemarks.contains(TEXTAREA_END_TAG)) {
-							formBusinessHours.setIsErrXSSBusinessHoursRemarks("1");
-							if(errorXSSRemarksCount == 0) {
-								this.msgMap.put("024", this.messageService.getMessage(MessageService.MessageType.ERROR, "007"));
-								errorXSSRemarksCount++;
-							}
+					//補足XSS対策
+					if(formBusinessHoursRemarks.contains(TEXTAREA_INIT_PART_TAG) || formBusinessHoursRemarks.contains(TEXTAREA_END_TAG)) {
+						formBusinessHours.setIsErrXSSBusinessHoursRemarks("1");
+						if(errorXSSRemarksCount == 0) {
+							this.msgMap.put("024", this.messageService.getMessage(MessageService.MessageType.ERROR, "007"));
+							errorXSSRemarksCount++;
 						}
 					}
 				}
@@ -754,26 +751,25 @@ public class SignupService extends BaseService{
 	 * @return 登録営業時間リスト
 	 */
 	private List<BusinessHours> getParameterBusinessHoursDto(RegistForm registForm) throws IOException, ServletException, ParseException {
-		List<BusinessHours> businessHoursList = null;
+		List<BusinessHours> businessHoursList = new ArrayList<>();
 		List<FormBusinessHours> formBusinessHoursList = registForm.getFormBusinessHoursList();
-		if(formBusinessHoursList != null) {
-			businessHoursList = new ArrayList<>();
-			for(FormBusinessHours formBusinessHours: formBusinessHoursList){
-				BusinessHours businessHours = new BusinessHours();
-				businessHours.setBusinessDay("00" + formBusinessHours.getBusinessHoursWeekdayNum());
-				String[] startBusinessTimeAry = formBusinessHours.getBusinessHoursStartTime().split(":");
-				String[] endBusinessTimeAry = formBusinessHours.getBusinessHoursEndTime().split(":");
-				businessHours.setStartBusinessTime(LocalTime.of(Integer.parseInt(startBusinessTimeAry[0]), Integer.parseInt(startBusinessTimeAry[1])));
-				businessHours.setEndBusinessTime(LocalTime.of(Integer.parseInt(endBusinessTimeAry[0]), Integer.parseInt(endBusinessTimeAry[1])));
-				businessHours.setComplement(getParameterData(formBusinessHours.getBusinessHoursRemarks()));
-				businessHours.setIsDeleted(0);
-				LocalDateTime now = LocalDateTime.now();
-				businessHours.setInsertedTime(now);
-				businessHours.setUpdatedTime(now);
 
-				businessHoursList.add(businessHours);
-			}
+		for(FormBusinessHours formBusinessHours: formBusinessHoursList){
+			BusinessHours businessHours = new BusinessHours();
+			businessHours.setBusinessDay("00" + formBusinessHours.getBusinessHoursWeekdayNum());
+			String[] startBusinessTimeAry = formBusinessHours.getBusinessHoursStartTime().split(":");
+			String[] endBusinessTimeAry = formBusinessHours.getBusinessHoursEndTime().split(":");
+			businessHours.setStartBusinessTime(LocalTime.of(Integer.parseInt(startBusinessTimeAry[0]), Integer.parseInt(startBusinessTimeAry[1])));
+			businessHours.setEndBusinessTime(LocalTime.of(Integer.parseInt(endBusinessTimeAry[0]), Integer.parseInt(endBusinessTimeAry[1])));
+			businessHours.setComplement(getParameterData(formBusinessHours.getBusinessHoursRemarks()));
+			businessHours.setIsDeleted(0);
+			LocalDateTime now = LocalDateTime.now();
+			businessHours.setInsertedTime(now);
+			businessHours.setUpdatedTime(now);
+
+			businessHoursList.add(businessHours);
 		}
+
 		return businessHoursList;
 	}
 
