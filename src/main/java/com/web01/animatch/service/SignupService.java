@@ -1,7 +1,5 @@
 package com.web01.animatch.service;
 
-import static com.web01.animatch.constant.PropertiesConstant.*;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,12 +10,9 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 
 import javax.servlet.ServletException;
@@ -48,9 +43,9 @@ public class SignupService extends BaseService{
 	 */
 	private UserType registType;
 	/**
-	 * リソース・バンドルオブジェクト
+	 * プロパティーサービスオブジェクト
 	 */
-	private ResourceBundle resBundle;
+	private PropertiesService propertiesService;
 	/**
 	 * メッセージマップ
 	 */
@@ -126,7 +121,7 @@ public class SignupService extends BaseService{
 	 * デフォルトコンストラクタ
 	 */
 	public SignupService() {
-		this.resBundle = ResourceBundle.getBundle(ANIMATCH_PROPERTIES_NAME);
+		this.propertiesService = new PropertiesService();
 	}
 
 	/**
@@ -134,6 +129,7 @@ public class SignupService extends BaseService{
 	 * @param registType 登録区分
 	 */
 	public SignupService(String registType) {
+		this.propertiesService = new PropertiesService();
 		switch(UserType.getEnumFromId(registType)) {
 			//飼い主の場合
 			case OWNER:
@@ -146,8 +142,6 @@ public class SignupService extends BaseService{
 			default:
 				break;
 		}
-		//this.registType = registType;
-		this.resBundle = ResourceBundle.getBundle(ANIMATCH_PROPERTIES_NAME);
 		this.msgMap = new HashMap<>();
 		this.messageService = new MessageService();
 	}
@@ -186,36 +180,19 @@ public class SignupService extends BaseService{
 	 * @param request リクエストオブジェクト
 	 */
 	public void setInitPropertiesKey(HttpServletRequest request) {
-		List<String> registTypeKeyList = new ArrayList<>();
-		List<String> prefecturesKeyList = new ArrayList<>();
-		List<String> petTypeKeyList = new ArrayList<>();
-		List<String> weekdayKeyList = new ArrayList<>();
-		Collections.list(this.resBundle.getKeys()).forEach(key -> {
-		   if(key.startsWith(REGIST_TYPE_KEY_INIT_STR)){
-			   registTypeKeyList.add(key);
-		   }
+		Map<String, String> registTypeMap = new HashMap<>();
+		Map<String, String> prefecturesMap = new HashMap<>();
+		Map<String, String> petTypeMap = new HashMap<>();
+		Map<String, String> weekdayMap = new HashMap<>();
+		registTypeMap = this.propertiesService.getValues(PropertiesService.REGIST_TYPE_KEY_INIT_STR);
+		prefecturesMap = this.propertiesService.getValues(PropertiesService.PREFECTURES_KEY_INIT_STR);
+		petTypeMap = this.propertiesService.getValues(PropertiesService.PET_TYPE_KEY_INIT_STR);
+		weekdayMap = this.propertiesService.getValues(PropertiesService.WEEKDAY_KEY_INIT_STR);
 
-	       if(key.startsWith(PREFECTURES_KEY_INIT_STR)){
-	    	   prefecturesKeyList.add(key);
-		   }
-
-	       if(key.startsWith(PET_TYPE_KEY_INIT_STR)){
-	    	   petTypeKeyList.add(key);
-	       }
-
-	       if(key.startsWith(WEEKDAY_KEY_INIT_STR)){
-	    	   weekdayKeyList.add(key);
-	       }
-	    });
-		registTypeKeyList.sort(Comparator.comparingInt(key -> Integer.parseInt(key.substring(key.length() - 3))));
-		prefecturesKeyList.sort(Comparator.comparingInt(key -> Integer.parseInt(key.substring(key.length() - 3))));
-		petTypeKeyList.sort(Comparator.comparingInt(key -> Integer.parseInt(key.substring(key.length() - 3))));
-		weekdayKeyList.sort(Comparator.comparingInt(key -> Integer.parseInt(key.substring(key.length() - 3))));
-
-		request.setAttribute("registTypeKeyList", registTypeKeyList);
-		request.setAttribute("prefecturesKeyList", prefecturesKeyList);
-		request.setAttribute("petTypeKeyList", petTypeKeyList);
-		request.setAttribute("weekdayKeyList", weekdayKeyList);
+		request.setAttribute("registTypeMap", registTypeMap);
+		request.setAttribute("prefecturesMap", prefecturesMap);
+		request.setAttribute("petTypeMap", petTypeMap);
+		request.setAttribute("weekdayMap", weekdayMap);
 	}
 
 	/**
@@ -629,7 +606,7 @@ public class SignupService extends BaseService{
 		SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
 		user.setBirthday(dateFormat.parse(registForm.getBirthday()));
 		user.setPostalCode(registForm.getPostalCode());
-		String prefectures = this.resBundle.getString(PREFECTURES_KEY_INIT_STR + registForm.getPrefectures());
+		String prefectures = this.propertiesService.getValue(PropertiesService.PREFECTURES_KEY_INIT_STR + registForm.getPrefectures());
 		String cities = registForm.getCities();
 		String address = prefectures + cities;
 		user.setStreetAddress(address);
