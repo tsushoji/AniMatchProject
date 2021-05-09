@@ -35,7 +35,7 @@
 		<!-- plugin multipicker -->
     	<link rel="stylesheet" type="text/css" href="/animatch/styles/plugin/multipicker.min.css">
 
-		<link rel="stylesheet" type="text/css" href="/animatch/styles/regist.css" />
+		<link rel="stylesheet" type="text/css" href="/animatch/styles/signup.css" />
 
 		<link rel="stylesheet" type="text/css" href="/animatch/styles/common.css" />
 	</head>
@@ -70,12 +70,10 @@
 	            <label class="required-item" for="regist-type">登録区分</label>
 	            <select name="regist-type" id="regist-type" class="form-control">
 	                <option value="000">選んでください</option>
-	                <c:forEach items="${registTypeKeyList}" var="registTypeKey" varStatus="status">
-                       	<fmt:formatNumber var="registTypeKeyNum" value="${status.index + 1}" minIntegerDigits="3" />
-						<fmt:message bundle="${resource}" key="${registTypeKey}" var="registTypeVal" />
-                       	<option value="${registTypeKeyNum}"
-	                       	<c:if test="${not empty formRegistType and formRegistType == registTypeKeyNum}">selected</c:if>>
-	                       	${registTypeVal}
+	                <c:forEach items="${registTypeMap}" var="registType">
+                       	<option value="${registType.key}"
+	                       	<c:if test="${not empty formRegistType and formRegistType == registType.key}">selected</c:if>>
+	                       	${registType.value}
 	                    </option>
                    	</c:forEach>
 	            </select>
@@ -164,12 +162,10 @@
                     <label class="control-label required-item" for="prefectures">住所&ndash;都道府県</label>
                     <select name="prefectures" id="prefectures" class="custom-select form-control">
                         <option value="000">選んでください</option>
-                        <c:forEach items="${prefecturesKeyList}" var="prefecturesKey" varStatus="status">
-	                       	<fmt:formatNumber var="prefecturesKeyNum" value="${status.index + 1}" minIntegerDigits="3" />
-							<fmt:message bundle="${resource}" key="${prefecturesKey}" var="prefecturesVal" />
-	                       	<option value="${prefecturesKeyNum}"
-	                       		<c:if test="${not empty registForm.prefectures and registForm.prefectures == prefecturesKeyNum}">selected</c:if>>
-	                       		${prefecturesVal}
+                        <c:forEach items="${prefecturesMap}" var="prefectures">
+	                       	<option value="${prefectures.key}"
+	                       		<c:if test="${not empty registForm.prefectures and registForm.prefectures == prefectures.key}">selected</c:if>>
+	                       		${prefectures.value}
 	                       	</option>
 	                   	</c:forEach>
                     </select>
@@ -257,12 +253,10 @@
                     <label class="control-label">種別</label>
                     <select name="pet-type" class="custom-select form-control">
                         <option value="000">選んでください</option>
-                        <c:forEach items="${petTypeKeyList}" var="petTypeKey" varStatus="status">
-                        	<fmt:formatNumber var="petTypeKeyNum" value="${status.index + 1}" minIntegerDigits="3" />
-							<fmt:message bundle="${resource}" key="${petTypeKey}" var="petTypeVal" />
-                        	<option value="${petTypeKeyNum}"
-                        		<c:if test="${not empty registForm.petType and registForm.petType == petTypeKeyNum}">selected</c:if>>
-                        		${petTypeVal}
+                        <c:forEach items="${petTypeMap}" var="petType">
+                        	<option value="${petType.key}"
+                        		<c:if test="${not empty registForm.petType and registForm.petType == petType.key}">selected</c:if>>
+                        		${petType.value}
                         	</option>
                     	</c:forEach>
                     </select>
@@ -296,21 +290,19 @@
                 <label class="control-label">営業時間</label>
                 <div>
                     <ul class="plugin-multipicker">
-                    	<c:forEach items="${weekdayKeyList}" var="weekdayKey">
-							<fmt:message bundle="${resource}" key="${weekdayKey}" var="weekdayVal" />
-	                       	<li>${fn:substringBefore(weekdayVal, '曜日')}</li>
+                    	<c:forEach items="${weekdayMap}" var="weekday">
+	                       	<li>${fn:substringBefore(weekday.value, '曜日')}</li>
 	                   	</c:forEach>
                     </ul>
                     <input type="hidden" id="form-business-hours" value="${registForm.formBusinessHoursInputValue}">
                 </div>
             </div>
 
-			<c:forEach items="${weekdayKeyList}" var="weekdayKey" varStatus="status">
-				<fmt:message bundle="${resource}" key="${weekdayKey}" var="weekdayVal" />
+			<c:forEach items="${weekdayMap}" var="weekday" varStatus="status">
 
 				<div class="form-row form-trimmer-business-hours day-val-${status.index}">
 
-	                <h3 class="pt-3">${weekdayVal}</h3>
+	                <h3 class="pt-3">${weekdayl.value}</h3>
 
 	                <div class="form-group col-lg-2">
 	                    <label class="control-label">開始時間</label>
@@ -326,7 +318,7 @@
 
 	                <div class="form-group col-lg-5">
 	                    <label class="control-label">補足</label>
-	                    <textarea id="business-hours-remarks-${status.index}" name="business-hours-remarks-${status.index}" class="form-control col-lg col-md-6 col-sm-7" placeholder="第一${weekdayVal}は休業。"></textarea>
+	                    <textarea id="business-hours-remarks-${status.index}" name="business-hours-remarks-${status.index}" class="form-control col-lg col-md-6 col-sm-7" placeholder="第一${weekdayl.value}は休業。"></textarea>
 	                    <p id="business-hours-remarks-${status.index}-err-length-msg" class="is-hidden">${msgMap["017"]}</p>
 	                    <p id="business-hours-remarks-${status.index}-err-xss-msg" class="is-hidden">${msgMap["024"]}</p>
 	                </div>
@@ -402,7 +394,7 @@
     <!--フッター-->
     <footer>
         <div class="d-flex justify-content-end pr-3 footer-top">
-            <a class="footer-top-content move-page-top" href="/animatch/index">
+            <a class="footer-top-content move-page-top cursor-pointer">
                 <img src="/animatch/images/icon_upmove.png" alt="トップへ戻るアイコン"> <strong>新規会員登録の上部へ戻る</strong>
             </a>
         </div>
@@ -473,6 +465,6 @@
     </script>
 
 	<script src="/animatch/scripts/common.js"></script>
-    <script src="/animatch/scripts/regist.js"></script>
+    <script src="/animatch/scripts/signup.js"></script>
 </body>
 </html>

@@ -6,7 +6,7 @@ import java.util.ResourceBundle;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * メッセージロジッククラス
+ * メッセージサービスクラス
  * @author Tsuji
  * @version 1.0
  */
@@ -16,7 +16,7 @@ public class MessageService {
 	/**
 	 * メッセージ種別
 	 */
-	public enum Type {
+	public enum MessageType {
 
 		/**
 		 * 通常
@@ -69,7 +69,7 @@ public class MessageService {
 	 * @param messageKey メッセージキー
 	 * @return 失敗した場合、null 成功した場合、取得したメッセージ
 	 */
-	public String getMessage(MessageService.Type messageType, String messageKey) {
+	public String getMessage(MessageService.MessageType messageType, String messageKey) {
 
 		String messageInitPropertyKey = getMessageInitPropertyKey(messageType, messageKey);
 		if(StringUtils.isEmpty(messageInitPropertyKey)) {
@@ -91,7 +91,7 @@ public class MessageService {
 	 * @param replacedStrArgs 置換文字列可変引数
 	 * @return 失敗した場合、null 成功した場合、取得し、置換したメッセージ
 	 */
-	public String getMessage(MessageService.Type messageType, String messageKey, String ... replacedStr) {
+	public String getMessage(MessageService.MessageType messageType, String messageKey, String ... replacedStr) {
 
 		String messageInitPropertyKey = getMessageInitPropertyKey(messageType, messageKey);
 		if(StringUtils.isEmpty(messageInitPropertyKey)) {
@@ -118,7 +118,7 @@ public class MessageService {
 	 * @param messageKey メッセージキー
 	 * @return 失敗した場合、null 成功した場合、メッセージプロパティーキー頭文字列
 	 */
-	private String getMessageInitPropertyKey(MessageService.Type messageType, String messageKey) {
+	private String getMessageInitPropertyKey(MessageService.MessageType messageType, String messageKey) {
 		String messageInitPropertyKey = null;
 		switch(messageType) {
 			case INFO:

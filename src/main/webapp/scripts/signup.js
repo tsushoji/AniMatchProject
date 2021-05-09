@@ -104,7 +104,4 @@ $(document).ready(function(){
 		});
 	}
 
-	//画像サイズを調整
-	adjustImgbase64(300);
-
 });

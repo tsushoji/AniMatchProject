@@ -66,7 +66,7 @@ public class SearchService extends BaseService{
 	 */
 	public SearchService(String searchType) {
 		this.propertiesService = new PropertiesService();
-		switch(UserType.getEnumName(searchType.toUpperCase())) {
+		switch(UserType.getEnumFromEnumName(searchType.toUpperCase())) {
 			case OWNER:
 				this.searchType = UserType.OWNER;
 				break;

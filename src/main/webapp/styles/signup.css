@@ -28,6 +28,13 @@ input:required {
     font-weight:bolder;
 }
 
+.regist-complete-item-image img {
+	height:300px;
+    width:300px;
+    padding:2px;
+    display: block;
+}
+
 /*　画面サイズが991pxまではここを読み込む　*/
 @media screen and (max-width:991px) {
     /* 新規登録結果 */

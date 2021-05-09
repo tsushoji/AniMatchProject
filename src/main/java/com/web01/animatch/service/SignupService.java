@@ -1,7 +1,5 @@
 package com.web01.animatch.service;
 
-import static com.web01.animatch.constant.PropertiesConstant.*;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,12 +10,9 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 
 import javax.servlet.ServletException;
@@ -36,7 +31,7 @@ import com.web01.animatch.dto.Store;
 import com.web01.animatch.dto.User;
 
 /**
- * registロジッククラス
+ * サインアップサービスクラス
  * @author Tsuji
  * @version 1.0
  */
@@ -46,11 +41,11 @@ public class SignupService extends BaseService{
 	/**
 	 * 登録区分
 	 */
-	private String registType;
+	private UserType registType;
 	/**
-	 * リソース・バンドルオブジェクト
+	 * プロパティーサービスオブジェクト
 	 */
-	private ResourceBundle resBundle;
+	private PropertiesService propertiesService;
 	/**
 	 * メッセージマップ
 	 */
@@ -126,7 +121,7 @@ public class SignupService extends BaseService{
 	 * デフォルトコンストラクタ
 	 */
 	public SignupService() {
-		this.resBundle = ResourceBundle.getBundle(ANIMATCH_PROPERTIES_NAME);
+		this.propertiesService = new PropertiesService();
 	}
 
 	/**
@@ -134,18 +129,42 @@ public class SignupService extends BaseService{
 	 * @param registType 登録区分
 	 */
 	public SignupService(String registType) {
-		this.registType = registType;
-		this.resBundle = ResourceBundle.getBundle(ANIMATCH_PROPERTIES_NAME);
+		this.propertiesService = new PropertiesService();
+		switch(UserType.getEnumFromId(registType)) {
+			//飼い主の場合
+			case OWNER:
+				this.registType = UserType.OWNER;
+				break;
+			//トリマーの場合
+			case TRIMMER:
+				this.registType = UserType.TRIMMER;
+				break;
+			default:
+				break;
+		}
 		this.msgMap = new HashMap<>();
 		this.messageService = new MessageService();
 	}
 
 	/**
-	 * 登録区分getter
+	 * 登録区分ID取得
 	 * @return 登録区分
 	 */
-	public String getRegistType() {
-		return this.registType;
+	private String getRegistTypeId() {
+		String registType = null;
+		switch(this.registType) {
+			//飼い主の場合
+			case OWNER:
+				registType = "001";
+				break;
+			//トリマーの場合
+			case TRIMMER:
+				registType = "002";
+				break;
+			default:
+				break;
+		}
+		return registType;
 	}
 
 	/**
@@ -161,36 +180,19 @@ public class SignupService extends BaseService{
 	 * @param request リクエストオブジェクト
 	 */
 	public void setInitPropertiesKey(HttpServletRequest request) {
-		List<String> registTypeKeyList = new ArrayList<>();
-		List<String> prefecturesKeyList = new ArrayList<>();
-		List<String> petTypeKeyList = new ArrayList<>();
-		List<String> weekdayKeyList = new ArrayList<>();
-		Collections.list(this.resBundle.getKeys()).forEach(key -> {
-		   if(key.startsWith(REGIST_TYPE_KEY_INIT_STR)){
-			   registTypeKeyList.add(key);
-		   }
+		Map<String, String> registTypeMap = new HashMap<>();
+		Map<String, String> prefecturesMap = new HashMap<>();
+		Map<String, String> petTypeMap = new HashMap<>();
+		Map<String, String> weekdayMap = new HashMap<>();
+		registTypeMap = this.propertiesService.getValues(PropertiesService.REGIST_TYPE_KEY_INIT_STR);
+		prefecturesMap = this.propertiesService.getValues(PropertiesService.PREFECTURES_KEY_INIT_STR);
+		petTypeMap = this.propertiesService.getValues(PropertiesService.PET_TYPE_KEY_INIT_STR);
+		weekdayMap = this.propertiesService.getValues(PropertiesService.WEEKDAY_KEY_INIT_STR);
 
-	       if(key.startsWith(PREFECTURES_KEY_INIT_STR)){
-	    	   prefecturesKeyList.add(key);
-		   }
-
-	       if(key.startsWith(PET_TYPE_KEY_INIT_STR)){
-	    	   petTypeKeyList.add(key);
-	       }
-
-	       if(key.startsWith(WEEKDAY_KEY_INIT_STR)){
-	    	   weekdayKeyList.add(key);
-	       }
-	    });
-		registTypeKeyList.sort(Comparator.comparingInt(key -> Integer.parseInt(key.substring(key.length() - 3))));
-		prefecturesKeyList.sort(Comparator.comparingInt(key -> Integer.parseInt(key.substring(key.length() - 3))));
-		petTypeKeyList.sort(Comparator.comparingInt(key -> Integer.parseInt(key.substring(key.length() - 3))));
-		weekdayKeyList.sort(Comparator.comparingInt(key -> Integer.parseInt(key.substring(key.length() - 3))));
-
-		request.setAttribute("registTypeKeyList", registTypeKeyList);
-		request.setAttribute("prefecturesKeyList", prefecturesKeyList);
-		request.setAttribute("petTypeKeyList", petTypeKeyList);
-		request.setAttribute("weekdayKeyList", weekdayKeyList);
+		request.setAttribute("registTypeMap", registTypeMap);
+		request.setAttribute("prefecturesMap", prefecturesMap);
+		request.setAttribute("petTypeMap", petTypeMap);
+		request.setAttribute("weekdayMap", weekdayMap);
 	}
 
 	/**
@@ -232,7 +234,7 @@ public class SignupService extends BaseService{
 		registForm.setTelephoneNumber(request.getParameter("telephone-number"));
 		switch(this.registType) {
 			//飼い主の場合
-			case "001":
+			case OWNER:
 				registForm.setPetName(request.getParameter("pet-name"));
 				registForm.setPetSex(request.getParameter("radio-pet-sex"));
 				registForm.setPetType(request.getParameter("pet-type"));
@@ -240,7 +242,7 @@ public class SignupService extends BaseService{
 				registForm.setPetRemarks(request.getParameter("pet-remarks"));
 				break;
 			//トリマーの場合
-			case "002":
+			case TRIMMER:
 				registForm.setStoreName(request.getParameter("store-name"));
 				registForm.setFormBusinessHoursInputValue(request.getParameter("business-hours"));
 				registForm.setFormBusinessHoursList(getFormParameterBusinessHoursDto(request));
@@ -261,10 +263,9 @@ public class SignupService extends BaseService{
 	 * @return 営業時間登録フォームリスト
 	 */
 	private List<FormBusinessHours> getFormParameterBusinessHoursDto(HttpServletRequest request) throws IOException, ServletException, ParseException {
-		List<FormBusinessHours> formBusinessHoursList = null;
+		List<FormBusinessHours> formBusinessHoursList = new ArrayList<>();
 		String formBusinessHoursWeek = request.getParameter("business-hours");
 		if(!StringUtils.isEmpty(formBusinessHoursWeek)) {
-			formBusinessHoursList = new ArrayList<>();
 			String formBusinessHoursWeekAry[] = formBusinessHoursWeek.split(",");
 			for(int i = 0; i < formBusinessHoursWeekAry.length; i++) {
 				FormBusinessHours formBusinessHours = new FormBusinessHours();
@@ -288,60 +289,60 @@ public class SignupService extends BaseService{
 	private boolean isValidate(HttpServletRequest request, RegistForm registForm) throws ParseException, IOException, ServletException {
 		//ユーザーネーム10文字以下チェック
 		if(registForm.getUserName().length() > 10) {
-			this.msgMap.put("001", this.messageService.getMessage(MessageService.Type.ERROR, "001", "ユーザーネーム", "10文字以下"));
+			this.msgMap.put("001", this.messageService.getMessage(MessageService.MessageType.ERROR, "001", "ユーザーネーム", "10文字以下"));
 		}
 
 		//パスワード欄と再入力欄が一致するかチェック
 		if(!registForm.getPassword().equals(registForm.getRePassword())) {
-			this.msgMap.put("002", this.messageService.getMessage(MessageService.Type.ERROR, "002", "再入力欄", "入力したパスワード"));
+			this.msgMap.put("002", this.messageService.getMessage(MessageService.MessageType.ERROR, "002", "再入力欄", "入力したパスワード"));
 		}
 
 		//パスワード20文字以下チェック
 		if(registForm.getPassword().length() > 20) {
-			this.msgMap.put("003", this.messageService.getMessage(MessageService.Type.ERROR, "001", "パスワード", "20文字以下"));
+			this.msgMap.put("003", this.messageService.getMessage(MessageService.MessageType.ERROR, "001", "パスワード", "20文字以下"));
 		}
 
 		//郵便番号形式チェック
 		if(!Pattern.matches(POSTAL_CODE_FORMAT, registForm.getPostalCode())) {
-			this.msgMap.put("004", this.messageService.getMessage(MessageService.Type.ERROR, "003", "郵便番号"));
+			this.msgMap.put("004", this.messageService.getMessage(MessageService.MessageType.ERROR, "003", "郵便番号"));
 		}
 
 		//都道府県選択チェック
 		if(registForm.getPrefectures().equals("000")) {
-			this.msgMap.put("005", this.messageService.getMessage(MessageService.Type.ERROR, "004", "都道府県"));
+			this.msgMap.put("005", this.messageService.getMessage(MessageService.MessageType.ERROR, "004", "都道府県"));
 		}
 
 		//市区町村形式チェック
 		if(!Pattern.matches(CITIES_FORMAT, registForm.getCities())) {
-			this.msgMap.put("006", this.messageService.getMessage(MessageService.Type.ERROR, "003", "市区町村"));
+			this.msgMap.put("006", this.messageService.getMessage(MessageService.MessageType.ERROR, "003", "市区町村"));
 		}
 
 		//市区町村9文字以下チェック
 		if(registForm.getCities().length() > 9) {
-			this.msgMap.put("007", this.messageService.getMessage(MessageService.Type.ERROR, "001", "市区町村", "9文字以下"));
+			this.msgMap.put("007", this.messageService.getMessage(MessageService.MessageType.ERROR, "001", "市区町村", "9文字以下"));
 		}
 
 		//メールアドレス形式チェック
 		if(!Pattern.matches(EMAIL_ADDRES_FORMAT, registForm.getEmailAddress())) {
-			this.msgMap.put("008", this.messageService.getMessage(MessageService.Type.ERROR, "003", "メールアドレス"));
+			this.msgMap.put("008", this.messageService.getMessage(MessageService.MessageType.ERROR, "003", "メールアドレス"));
 		}
 
 		//メールアドレス254文字以下チェック
 		if(registForm.getEmailAddress().length() > 254) {
-			this.msgMap.put("009", this.messageService.getMessage(MessageService.Type.ERROR, "001", "メールアドレス", "254文字以下"));
+			this.msgMap.put("009", this.messageService.getMessage(MessageService.MessageType.ERROR, "001", "メールアドレス", "254文字以下"));
 		}
 
 		//電話番号形式チェック
 		if(!Pattern.matches(TELEPHONE_NUMBER_FORMAT, registForm.getTelephoneNumber())) {
-			this.msgMap.put("010", this.messageService.getMessage(MessageService.Type.ERROR, "003", "電話番号"));
+			this.msgMap.put("010", this.messageService.getMessage(MessageService.MessageType.ERROR, "003", "電話番号"));
 		}
 
 		switch(this.registType) {
 			//飼い主の場合
-			case "001":
+			case OWNER:
 				//ペットニックネーム20文字以下チェック
 				if(registForm.getPetName().length() > 20) {
-					this.msgMap.put("011", this.messageService.getMessage(MessageService.Type.ERROR, "001", "ペットネーム", "20文字以下"));
+					this.msgMap.put("011", this.messageService.getMessage(MessageService.MessageType.ERROR, "001", "ペットネーム", "20文字以下"));
 				}
 
 				//ペット体重数値チェック
@@ -351,41 +352,41 @@ public class SignupService extends BaseService{
 					if(Pattern.matches(DECIMAL_FORMAT, registFormPetWeight) || Pattern.matches(INIT_ZERO_DECIMAL_FORMAT, registFormPetWeight)) {
 						//ペット体重小数桁数チェック
 						if(registFormPetWeight.equals("0") || Pattern.matches(ZERO_DECIMAL_FORMAT, registFormPetWeight)) {
-							this.msgMap.put("012", this.messageService.getMessage(MessageService.Type.ERROR, "001", "ペット体重", "0以上の実数値"));
+							this.msgMap.put("012", this.messageService.getMessage(MessageService.MessageType.ERROR, "001", "ペット体重", "0以上の実数値"));
 						}else {
 							if(!Pattern.matches(END_ZERO_DECIMAL_FORMAT, registFormPetWeight)) {
 								int pointIndex = registFormPetWeight.indexOf(".");
 								if(pointIndex != -1) {
 									BigDecimal registFormPetWeightVal = new BigDecimal(registFormPetWeight);
 									if(registFormPetWeightVal.stripTrailingZeros().toString().substring(pointIndex + 1).length() > 2) {
-										this.msgMap.put("013", this.messageService.getMessage(MessageService.Type.ERROR, "001", "ペット体重", "小数第2位まで"));
+										this.msgMap.put("013", this.messageService.getMessage(MessageService.MessageType.ERROR, "001", "ペット体重", "小数第2位まで"));
 									}
 								}
 							}
 						}
 					}else {
-						this.msgMap.put("012", this.messageService.getMessage(MessageService.Type.ERROR, "001", "ペット体重", "0以上の実数値"));
+						this.msgMap.put("012", this.messageService.getMessage(MessageService.MessageType.ERROR, "001", "ペット体重", "0以上の実数値"));
 					}
 				}
 
 				String registFormPetRemarks = registForm.getPetRemarks();
 				//備考200文字以下チェック
 				if(registFormPetRemarks.length() > 200) {
-					this.msgMap.put("014", this.messageService.getMessage(MessageService.Type.ERROR, "001", "備考", "200文字以下"));
+					this.msgMap.put("014", this.messageService.getMessage(MessageService.MessageType.ERROR, "001", "備考", "200文字以下"));
 				}
 
 				//備考XSS対策
 				if(registFormPetRemarks.contains(TEXTAREA_INIT_PART_TAG) || registFormPetRemarks.contains(TEXTAREA_END_TAG)) {
-					this.msgMap.put("023", this.messageService.getMessage(MessageService.Type.ERROR, "007"));
+					this.msgMap.put("023", this.messageService.getMessage(MessageService.MessageType.ERROR, "007"));
 				}
 
 				break;
 
 			//トリマーの場合
-			case "002":
+			case TRIMMER:
 				//店名50文字以下チェック
 				if(registForm.getStoreName().length() > 50) {
-					this.msgMap.put("015", this.messageService.getMessage(MessageService.Type.ERROR, "001", "店名", "50文字以下"));
+					this.msgMap.put("015", this.messageService.getMessage(MessageService.MessageType.ERROR, "001", "店名", "50文字以下"));
 				}
 
 				int errorTimeCount = 0;
@@ -394,88 +395,86 @@ public class SignupService extends BaseService{
 				//営業時間チェック
 				List<FormBusinessHours> formBusinessHoursList = registForm.getFormBusinessHoursList();
 				//Multipickerで選択されている場合
-				if(formBusinessHoursList != null) {
-					for(FormBusinessHours formBusinessHours: formBusinessHoursList){
-						boolean judgeTimeFlg = true;
-						//営業時間形式チェック
-						String formBusinessHoursStartTime = formBusinessHours.getBusinessHoursStartTime();
-						if(!formBusinessHoursStartTime.isEmpty()) {
-							if(!Pattern.matches(BUSINESS_TIME_FORMAT, formBusinessHoursStartTime)) {
-								formBusinessHours.setIsErrBusinessHoursStartTime("1");
-								judgeTimeFlg = false;
-								if(errorTimeCount == 0) {
-									this.msgMap.put("016", this.messageService.getMessage(MessageService.Type.ERROR, "005", "営業時間"));
-									errorTimeCount++;
-								}
+				for(FormBusinessHours formBusinessHours: formBusinessHoursList){
+					boolean judgeTimeFlg = true;
+					//営業時間形式チェック
+					String formBusinessHoursStartTime = formBusinessHours.getBusinessHoursStartTime();
+					if(!formBusinessHoursStartTime.isEmpty()) {
+						if(!Pattern.matches(BUSINESS_TIME_FORMAT, formBusinessHoursStartTime)) {
+							formBusinessHours.setIsErrBusinessHoursStartTime("1");
+							judgeTimeFlg = false;
+							if(errorTimeCount == 0) {
+								this.msgMap.put("016", this.messageService.getMessage(MessageService.MessageType.ERROR, "005", "営業時間"));
+								errorTimeCount++;
 							}
 						}
+					}
 
-						String formBusinessHoursEndTime = formBusinessHours.getBusinessHoursEndTime();
-						if(!formBusinessHoursEndTime.isEmpty()) {
-							if(!Pattern.matches(BUSINESS_TIME_FORMAT, formBusinessHoursEndTime)) {
-								formBusinessHours.setIsErrBusinessHoursEndTime("1");
-								judgeTimeFlg = false;
-								if(errorTimeCount == 0) {
-									this.msgMap.put("016", this.messageService.getMessage(MessageService.Type.ERROR, "005", "営業時間"));
-									errorTimeCount++;
-								}
+					String formBusinessHoursEndTime = formBusinessHours.getBusinessHoursEndTime();
+					if(!formBusinessHoursEndTime.isEmpty()) {
+						if(!Pattern.matches(BUSINESS_TIME_FORMAT, formBusinessHoursEndTime)) {
+							formBusinessHours.setIsErrBusinessHoursEndTime("1");
+							judgeTimeFlg = false;
+							if(errorTimeCount == 0) {
+								this.msgMap.put("016", this.messageService.getMessage(MessageService.MessageType.ERROR, "005", "営業時間"));
+								errorTimeCount++;
 							}
 						}
+					}
 
-						if(judgeTimeFlg) {
-							if(!formBusinessHoursStartTime.isEmpty() && !formBusinessHoursEndTime.isEmpty()) {
-								String[] startBusinessTimeAry = formBusinessHoursStartTime.split(":");
-								String[] endBusinessTimeAry = formBusinessHoursEndTime.split(":");
-								if(startBusinessTimeAry[0].equals(endBusinessTimeAry[0])) {
-									if(Integer.parseInt(startBusinessTimeAry[1]) >= Integer.parseInt(endBusinessTimeAry[1])) {
-										formBusinessHours.setIsErrBusinessHoursStartTime("1");
-										if(errorTimeCount == 0) {
-											this.msgMap.put("016", this.messageService.getMessage(MessageService.Type.ERROR, "005", "営業時間"));
-											errorTimeCount++;
-										}
-									}
-								}else {
-									if(Integer.parseInt(startBusinessTimeAry[0]) > Integer.parseInt(endBusinessTimeAry[0])) {
-										formBusinessHours.setIsErrBusinessHoursStartTime("1");
-										if(errorTimeCount == 0) {
-											this.msgMap.put("016", this.messageService.getMessage(MessageService.Type.ERROR, "005", "営業時間"));
-											errorTimeCount++;
-										}
+					if(judgeTimeFlg) {
+						if(!formBusinessHoursStartTime.isEmpty() && !formBusinessHoursEndTime.isEmpty()) {
+							String[] startBusinessTimeAry = formBusinessHoursStartTime.split(":");
+							String[] endBusinessTimeAry = formBusinessHoursEndTime.split(":");
+							if(startBusinessTimeAry[0].equals(endBusinessTimeAry[0])) {
+								if(Integer.parseInt(startBusinessTimeAry[1]) >= Integer.parseInt(endBusinessTimeAry[1])) {
+									formBusinessHours.setIsErrBusinessHoursStartTime("1");
+									if(errorTimeCount == 0) {
+										this.msgMap.put("016", this.messageService.getMessage(MessageService.MessageType.ERROR, "005", "営業時間"));
+										errorTimeCount++;
 									}
 								}
-							}else if(formBusinessHoursStartTime.isEmpty() && !formBusinessHoursEndTime.isEmpty()) {
-								formBusinessHours.setIsErrBusinessHoursStartTime("1");
-								if(errorTimeCount == 0) {
-									this.msgMap.put("016", this.messageService.getMessage(MessageService.Type.ERROR, "005", "営業時間"));
-									errorTimeCount++;
-								}
-							}else if(!formBusinessHoursStartTime.isEmpty() && formBusinessHoursEndTime.isEmpty()) {
-								formBusinessHours.setIsErrBusinessHoursStartTime("1");
-								if(errorTimeCount == 0) {
-									this.msgMap.put("016", this.messageService.getMessage(MessageService.Type.ERROR, "005", "営業時間"));
-									errorTimeCount++;
+							}else {
+								if(Integer.parseInt(startBusinessTimeAry[0]) > Integer.parseInt(endBusinessTimeAry[0])) {
+									formBusinessHours.setIsErrBusinessHoursStartTime("1");
+									if(errorTimeCount == 0) {
+										this.msgMap.put("016", this.messageService.getMessage(MessageService.MessageType.ERROR, "005", "営業時間"));
+										errorTimeCount++;
+									}
 								}
 							}
-						}
-
-						String formBusinessHoursRemarks = formBusinessHours.getBusinessHoursRemarks();
-						//補足100文字以下チェック
-						if(formBusinessHoursRemarks.length() > 100) {
-							formBusinessHours.setIsErrLengthBusinessHoursRemarks("1");
-							if(errorRemarksCount == 0) {
-								this.msgMap.put("017", this.messageService.getMessage(MessageService.Type.ERROR, "001", "営業時間補足", "100文字以下"));
-								errorRemarksCount++;
+						}else if(formBusinessHoursStartTime.isEmpty() && !formBusinessHoursEndTime.isEmpty()) {
+							formBusinessHours.setIsErrBusinessHoursStartTime("1");
+							if(errorTimeCount == 0) {
+								this.msgMap.put("016", this.messageService.getMessage(MessageService.MessageType.ERROR, "005", "営業時間"));
+								errorTimeCount++;
+							}
+						}else if(!formBusinessHoursStartTime.isEmpty() && formBusinessHoursEndTime.isEmpty()) {
+							formBusinessHours.setIsErrBusinessHoursStartTime("1");
+							if(errorTimeCount == 0) {
+								this.msgMap.put("016", this.messageService.getMessage(MessageService.MessageType.ERROR, "005", "営業時間"));
+								errorTimeCount++;
 							}
 						}
+					}
+
+					String formBusinessHoursRemarks = formBusinessHours.getBusinessHoursRemarks();
+					//補足100文字以下チェック
+					if(formBusinessHoursRemarks.length() > 100) {
+						formBusinessHours.setIsErrLengthBusinessHoursRemarks("1");
+						if(errorRemarksCount == 0) {
+							this.msgMap.put("017", this.messageService.getMessage(MessageService.MessageType.ERROR, "001", "営業時間補足", "100文字以下"));
+							errorRemarksCount++;
+						}
+					}
 
 
-						//補足XSS対策
-						if(formBusinessHoursRemarks.contains(TEXTAREA_INIT_PART_TAG) || formBusinessHoursRemarks.contains(TEXTAREA_END_TAG)) {
-							formBusinessHours.setIsErrXSSBusinessHoursRemarks("1");
-							if(errorXSSRemarksCount == 0) {
-								this.msgMap.put("024", this.messageService.getMessage(MessageService.Type.ERROR, "007"));
-								errorXSSRemarksCount++;
-							}
+					//補足XSS対策
+					if(formBusinessHoursRemarks.contains(TEXTAREA_INIT_PART_TAG) || formBusinessHoursRemarks.contains(TEXTAREA_END_TAG)) {
+						formBusinessHours.setIsErrXSSBusinessHoursRemarks("1");
+						if(errorXSSRemarksCount == 0) {
+							this.msgMap.put("024", this.messageService.getMessage(MessageService.MessageType.ERROR, "007"));
+							errorXSSRemarksCount++;
 						}
 					}
 				}
@@ -487,33 +486,33 @@ public class SignupService extends BaseService{
 					if(Pattern.matches(NUMBER_FORMAT, registFormStoreEmployees)) {
 						//従業員数桁数チェック
 						if(registFormStoreEmployees.length() > 8) {
-							this.msgMap.put("019", this.messageService.getMessage(MessageService.Type.ERROR, "001", "従業員数", "8桁以下"));
+							this.msgMap.put("019", this.messageService.getMessage(MessageService.MessageType.ERROR, "001", "従業員数", "8桁以下"));
 						}
 					}else {
-						this.msgMap.put("018", this.messageService.getMessage(MessageService.Type.ERROR, "001", "従業員数", "数値"));
+						this.msgMap.put("018", this.messageService.getMessage(MessageService.MessageType.ERROR, "001", "従業員数", "数値"));
 					}
 				}
 
 				String registFormCourseInfo = registForm.getCourseInfo();
 				//コース200文字以下チェック
 				if(registFormCourseInfo.length() > 200) {
-					this.msgMap.put("020", this.messageService.getMessage(MessageService.Type.ERROR, "001", "コース", "200文字以下"));
+					this.msgMap.put("020", this.messageService.getMessage(MessageService.MessageType.ERROR, "001", "コース", "200文字以下"));
 				}
 
 				//コースXSS対策
 				if(registFormCourseInfo.contains(TEXTAREA_INIT_PART_TAG) || registFormCourseInfo.contains(TEXTAREA_END_TAG)) {
-					this.msgMap.put("025", this.messageService.getMessage(MessageService.Type.ERROR, "007"));
+					this.msgMap.put("025", this.messageService.getMessage(MessageService.MessageType.ERROR, "007"));
 				}
 
 				String registFormCommitment = registForm.getCommitment();
 				//こだわり200文字以下チェック
 				if(registFormCommitment.length() > 200) {
-					this.msgMap.put("021", this.messageService.getMessage(MessageService.Type.ERROR, "001", "こだわり", "200文字以下"));
+					this.msgMap.put("021", this.messageService.getMessage(MessageService.MessageType.ERROR, "001", "こだわり", "200文字以下"));
 				}
 
 				//こだわりXSS対策
 				if(registFormCommitment.contains(TEXTAREA_INIT_PART_TAG) || registFormCommitment.contains(TEXTAREA_END_TAG)) {
-					this.msgMap.put("026", this.messageService.getMessage(MessageService.Type.ERROR, "007"));
+					this.msgMap.put("026", this.messageService.getMessage(MessageService.MessageType.ERROR, "007"));
 				}
 
 				break;
@@ -526,7 +525,7 @@ public class SignupService extends BaseService{
 		if(this.msgMap.size() > 0) {
 			//画像添付している場合
 			if(request.getPart("file").getSize() > 0) {
-				this.msgMap.put("022", this.messageService.getMessage(MessageService.Type.ERROR, "006", "画像"));
+				this.msgMap.put("022", this.messageService.getMessage(MessageService.MessageType.ERROR, "006", "画像"));
 			}
 			this.canRegist = false;
 		}
@@ -541,7 +540,7 @@ public class SignupService extends BaseService{
 	private void setAttributeKeyWithCanNotValidate(HttpServletRequest request, RegistForm registForm) {
 		request.setAttribute("registForm", registForm);
 		request.setAttribute("formBusinessHoursList", registForm.getFormBusinessHoursList());
-		request.setAttribute("formRegistType", getRegistType());
+		request.setAttribute("formRegistType", getRegistTypeId());
 		request.setAttribute("msgMap", this.msgMap);
 	}
 
@@ -557,7 +556,7 @@ public class SignupService extends BaseService{
 			User user = getParameterUserDto(registForm);
 			switch(this.registType) {
 				//飼い主の場合
-				case "001":
+				case OWNER:
 					Pet pet = getParameterPetDto(request, registForm);
 					user.setPet(pet);
 					setAttributeRegistOwner(request, user);
@@ -569,7 +568,7 @@ public class SignupService extends BaseService{
 					break;
 
 				//トリマーの場合
-				case "002":
+				case TRIMMER:
 					Store store = getParameterStoreDto(request, registForm);
 					List<BusinessHours> businessHoursList = getParameterBusinessHoursDto(registForm);
 					store.setBusinessHoursList(businessHoursList);
@@ -607,7 +606,7 @@ public class SignupService extends BaseService{
 		SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
 		user.setBirthday(dateFormat.parse(registForm.getBirthday()));
 		user.setPostalCode(registForm.getPostalCode());
-		String prefectures = this.resBundle.getString(PREFECTURES_KEY_INIT_STR + registForm.getPrefectures());
+		String prefectures = this.propertiesService.getValue(PropertiesService.PREFECTURES_KEY_INIT_STR + registForm.getPrefectures());
 		String cities = registForm.getCities();
 		String address = prefectures + cities;
 		user.setStreetAddress(address);
@@ -729,26 +728,25 @@ public class SignupService extends BaseService{
 	 * @return 登録営業時間リスト
 	 */
 	private List<BusinessHours> getParameterBusinessHoursDto(RegistForm registForm) throws IOException, ServletException, ParseException {
-		List<BusinessHours> businessHoursList = null;
+		List<BusinessHours> businessHoursList = new ArrayList<>();
 		List<FormBusinessHours> formBusinessHoursList = registForm.getFormBusinessHoursList();
-		if(formBusinessHoursList != null) {
-			businessHoursList = new ArrayList<>();
-			for(FormBusinessHours formBusinessHours: formBusinessHoursList){
-				BusinessHours businessHours = new BusinessHours();
-				businessHours.setBusinessDay("00" + formBusinessHours.getBusinessHoursWeekdayNum());
-				String[] startBusinessTimeAry = formBusinessHours.getBusinessHoursStartTime().split(":");
-				String[] endBusinessTimeAry = formBusinessHours.getBusinessHoursEndTime().split(":");
-				businessHours.setStartBusinessTime(LocalTime.of(Integer.parseInt(startBusinessTimeAry[0]), Integer.parseInt(startBusinessTimeAry[1])));
-				businessHours.setEndBusinessTime(LocalTime.of(Integer.parseInt(endBusinessTimeAry[0]), Integer.parseInt(endBusinessTimeAry[1])));
-				businessHours.setComplement(getParameterData(formBusinessHours.getBusinessHoursRemarks()));
-				businessHours.setIsDeleted(0);
-				LocalDateTime now = LocalDateTime.now();
-				businessHours.setInsertedTime(now);
-				businessHours.setUpdatedTime(now);
 
-				businessHoursList.add(businessHours);
-			}
+		for(FormBusinessHours formBusinessHours: formBusinessHoursList){
+			BusinessHours businessHours = new BusinessHours();
+			businessHours.setBusinessDay("00" + formBusinessHours.getBusinessHoursWeekdayNum());
+			String[] startBusinessTimeAry = formBusinessHours.getBusinessHoursStartTime().split(":");
+			String[] endBusinessTimeAry = formBusinessHours.getBusinessHoursEndTime().split(":");
+			businessHours.setStartBusinessTime(LocalTime.of(Integer.parseInt(startBusinessTimeAry[0]), Integer.parseInt(startBusinessTimeAry[1])));
+			businessHours.setEndBusinessTime(LocalTime.of(Integer.parseInt(endBusinessTimeAry[0]), Integer.parseInt(endBusinessTimeAry[1])));
+			businessHours.setComplement(getParameterData(formBusinessHours.getBusinessHoursRemarks()));
+			businessHours.setIsDeleted(0);
+			LocalDateTime now = LocalDateTime.now();
+			businessHours.setInsertedTime(now);
+			businessHours.setUpdatedTime(now);
+
+			businessHoursList.add(businessHours);
 		}
+
 		return businessHoursList;
 	}
 
@@ -773,7 +771,7 @@ public class SignupService extends BaseService{
 	 */
 	private void setAttributeRegistOwner(HttpServletRequest request, User user) {
 		Pet pet = user.getPet();
-		request.setAttribute("registType", this.registType);
+		request.setAttribute("registType", this.getRegistTypeId());
 		request.setAttribute("user", user);
 		request.setAttribute("pet", pet);
 		//画像をBase64化
@@ -787,7 +785,7 @@ public class SignupService extends BaseService{
 	 */
 	private void setAttributeRegistTrimmer(HttpServletRequest request, User user) {
 		Store store = user.getStore();
-		request.setAttribute("registType", this.registType);
+		request.setAttribute("registType", this.getRegistTypeId());
 		request.setAttribute("user", user);
 		request.setAttribute("store", store);
 		//画像をBase64化

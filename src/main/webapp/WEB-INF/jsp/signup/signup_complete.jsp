@@ -25,7 +25,7 @@
 
 		<%@ include file="/WEB-INF/jsp/head.jsp" %>
 
-		<link rel="stylesheet" type="text/css" href="/animatch/styles/regist.css" />
+		<link rel="stylesheet" type="text/css" href="/animatch/styles/signup.css" />
 
 		<link rel="stylesheet" type="text/css" href="/animatch/styles/common.css" />
     </head>
@@ -102,7 +102,7 @@
 
 				<div>
 	                <label class="regist-complete-item-name">&lt;イメージ画像&gt;</label>
-	                <p>
+	                <p class="regist-complete-item-image">
 	                	<c:if test="${registType == '001'}">
 	                		<c:if test="${not empty petImage}">
 								<img src="data:image/png;base64,${petImage}" class="resize-img-base64">
@@ -243,8 +243,8 @@
 	    <!--フッター-->
 	    <footer>
 	    	<div class="d-flex justify-content-end pr-3 footer-top">
-			    <a class="move-page-top" href="#">
-			        <img src="/animatch/images/icon_upmove.png" alt="トップへ戻るアイコン"> <strong>AniMatchの上部へ戻る</strong>
+			    <a class="move-page-top cursor-pointer">
+			        <img src="/animatch/images/icon_upmove.png" alt="トップへ戻るアイコン"> <strong>登録結果画面の上部へ戻る</strong>
 			    </a>
 			</div>
 
@@ -252,7 +252,7 @@
 	    </footer>
 
 		<script src="/animatch/scripts/common.js"></script>
-		<script src="/animatch/scripts/regist.js"></script>
+		<script src="/animatch/scripts/signup.js"></script>
 	</body>
 
 </html>
