@@ -35,7 +35,7 @@
 		<!-- plugin multipicker -->
     	<link rel="stylesheet" type="text/css" href="/animatch/styles/plugin/multipicker.min.css">
 
-		<link rel="stylesheet" type="text/css" href="/animatch/styles/regist.css" />
+		<link rel="stylesheet" type="text/css" href="/animatch/styles/signup.css" />
 
 		<link rel="stylesheet" type="text/css" href="/animatch/styles/common.css" />
 	</head>
@@ -465,6 +465,6 @@
     </script>
 
 	<script src="/animatch/scripts/common.js"></script>
-    <script src="/animatch/scripts/regist.js"></script>
+    <script src="/animatch/scripts/signup.js"></script>
 </body>
 </html>

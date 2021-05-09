@@ -25,7 +25,7 @@
 
 		<%@ include file="/WEB-INF/jsp/head.jsp" %>
 
-		<link rel="stylesheet" type="text/css" href="/animatch/styles/regist.css" />
+		<link rel="stylesheet" type="text/css" href="/animatch/styles/signup.css" />
 
 		<link rel="stylesheet" type="text/css" href="/animatch/styles/common.css" />
     </head>
@@ -252,7 +252,7 @@
 	    </footer>
 
 		<script src="/animatch/scripts/common.js"></script>
-		<script src="/animatch/scripts/regist.js"></script>
+		<script src="/animatch/scripts/signup.js"></script>
 	</body>
 
 </html>
