@@ -42,6 +42,14 @@ public class PropertiesService {
 	 * プロパティ登録区分キー先頭文字列
 	 */
 	public static final String REGIST_TYPE_KEY_INIT_STR = "regist.type.";
+	/**
+	 * プロパティ人間性別キー先頭文字列
+	 */
+	public static final String HUMAN_SEX_KEY_INIT_STR = "human.sex.";
+	/**
+	 * プロパティペット性別キー先頭文字列
+	 */
+	public static final String PET_SEX_KEY_INIT_STR = "pet.sex.";
 
 	/**
 	 * デフォルトコンストラクタ
