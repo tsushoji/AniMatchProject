@@ -7,8 +7,6 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
-<c:set var="humanSexKeyInitStr" value="human.sex." />
-<c:set var="petSexKeyInitStr" value="pet.sex." />
 <c:set var="errMsgKeyInitStr" value="msg.err." />
 <c:set var="firstTypeKeyInitEnd" value="001" />
 <c:set var="secondTypeKeyInitEnd" value="002" />
@@ -120,13 +118,13 @@
             <div class="custom-control custom-radio custom-control-inline form-common">
                 <input type="radio" id="radio-man" name="radio-user-sex" value="${firstTypeKeyInitEnd}" class="custom-control-input"
                 <c:if test="${not empty registForm.sex and registForm.sex == firstTypeKeyInitEnd}">checked</c:if>>
-                <label class="custom-control-label custom-radio-label" for="radio-man"><fmt:message bundle="${resource}" key="${humanSexKeyInitStr}${firstTypeKeyInitEnd}" /></label>
+                <label class="custom-control-label custom-radio-label" for="radio-man">${humanSexMap["001"]}</label>
             </div>
 
             <div class="custom-control custom-radio custom-control-inline form-common">
                 <input type="radio" id="radio-woman" name="radio-user-sex" value="${secondTypeKeyInitEnd}" class="custom-control-input"
                 <c:if test="${not empty registForm.sex and registForm.sex == secondTypeKeyInitEnd}">checked</c:if>>
-                <label class="custom-control-label custom-radio-label" for="radio-woman"><fmt:message bundle="${resource}" key="${humanSexKeyInitStr}${secondTypeKeyInitEnd}" /></label>
+                <label class="custom-control-label custom-radio-label" for="radio-woman">${humanSexMap["002"]}</label>
             </div>
 
             <div class="form-row mt-3 form-common">
@@ -239,13 +237,13 @@
             <div class="custom-control custom-radio custom-control-inline form-owner">
                 <input type="radio" id="radio-male" name="radio-pet-sex" class="custom-control-input" value="${firstTypeKeyInitEnd}"
                 <c:if test="${not empty registForm.petSex and registForm.petSex == firstTypeKeyInitEnd}">checked</c:if>>
-                <label class="custom-control-label custom-radio-label" for="radio-male"><fmt:message bundle="${resource}" key="${petSexKeyInitStr}${firstTypeKeyInitEnd}" /></label>
+                <label class="custom-control-label custom-radio-label" for="radio-male">${petSexMap["001"]}</label>
             </div>
 
             <div class="custom-control custom-radio custom-control-inline form-owner">
                 <input type="radio" id="radio-female" name="radio-pet-sex" class="custom-control-input" value="${secondTypeKeyInitEnd}"
                 <c:if test="${not empty registForm.petSex and registForm.petSex == secondTypeKeyInitEnd}">checked</c:if>>
-                <label class="custom-control-label custom-radio-label" for="radio-female"><fmt:message bundle="${resource}" key="${petSexKeyInitStr}${secondTypeKeyInitEnd}" /></label>
+                <label class="custom-control-label custom-radio-label" for="radio-female">${petSexMap["002"]}</label>
             </div>
 
             <div class="form-row mt-3 form-owner">
