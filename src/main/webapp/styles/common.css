@@ -47,3 +47,8 @@ footer {
 .line-break {
 	word-wrap:break-word;
 }
+
+/* マウスポインター */
+.cursor-pointer {
+	cursor: pointer;
+}

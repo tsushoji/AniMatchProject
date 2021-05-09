@@ -176,7 +176,7 @@
 	    <!--フッター-->
 	    <footer>
 	    	<div class="d-flex justify-content-end pr-3 footer-top">
-			    <a class="move-page-top" href="/animatch/index">
+			    <a class="move-page-top cursor-pointer">
 			        <img src="/animatch/images/icon_upmove.png" alt="トップへ戻るアイコン"> <strong>AniMatchの上部へ戻る</strong>
 			    </a>
 			</div>
