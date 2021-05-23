@@ -17,12 +17,18 @@
 
 <c:if test="${searchType == firstTypeKeyInitEnd}">
 	<c:set var="labelTitlePart" value="お店" />
+	<c:set var="paramBusinessHoursWeekday" value="&businessHoursWeekday=" />
+	<c:set var="paramBusinessHoursStartTime" value="&businessHoursStartTime=" />
+	<c:set var="paramBusinessHoursEndTime" value="&businessHoursEndTime=" />
 </c:if>
 <c:if test="${searchType == secondTypeKeyInitEnd}">
 	<c:set var="labelTitlePart" value="お住まい" />
+	<c:set var="paramPetType" value="&petType=" />
 </c:if>
 <c:set var="paramTargetPage" value="?targetPage=" />
 <c:set var="paramStartPage" value="&startPage=" />
+<c:set var="paramPrefectures" value="&prefectures=" />
+<c:set var="paramCities" value="&cities=" />
 <c:set var="requestURLWithParam" value="${requestURL}${paramTargetPage}" />
 
 <!DOCTYPE html>
@@ -74,14 +80,15 @@
 
 	                    <h5 class="mt-3 px-0">絞り込み</h5>
 
-	                    <form class="main-search-left-form">
+	                    <form class="main-search-left-form" method="post" action="${requestURL}">
 
 	                        <div class="form-group mt-3">
 	                            <label class="control-label" for="prefectures">${labelTitlePart}&ndash;都道府県</label>
 	                            <select name="prefectures" id="prefectures" class="custom-select form-control">
 	                                <option value="000">未選択</option>
 	                                <c:forEach items="${prefecturesMap}" var="prefecture">
-	                       				<option value="${prefecture.key}">
+	                       				<option value="${prefecture.key}"
+	                       					<c:if test="${not empty searchForm.prefectures and searchForm.prefectures == prefecture.key}">selected</c:if>>
 	                       					${prefecture.value}
 	                       				</option>
 	                   				</c:forEach>
@@ -93,6 +100,7 @@
 	                            <select name="cities" id="cities" class="custom-select form-control">
 	                                <option value="000">未選択</option>
 	                            </select>
+	                            <input type="hidden" id="form-cities" value="<c:out value="${searchForm.cities}"/>">
 	                        </div>
 
 							<c:if test="${searchType == firstTypeKeyInitEnd}">
@@ -105,17 +113,18 @@
 					                       		<li>${fn:substringBefore(weekdayVal, '曜日')}</li>
 					                   		</c:forEach>
 	                                	</ul>
+	                                	<input type="hidden" id="form-business-hours" value="<c:out value="${searchForm.businessHoursInputValue}"/>">
 	                            	</div>
 	                        	</div>
 
 	                        	<div class="form-group">
 	                            	<label class="control-label">開始時間</label>
-	                            	<input type="time" name="form-start-time" class="form-control">
+	                            	<input type="time" name="form-start-time" class="form-control" value="<c:out value="${searchForm.businessHoursStartTime}"/>">
 	                        	</div>
 
 	                        	<div class="form-group">
 	                            	<label class="control-label">終了時間</label>
-	                            	<input type="time" name="form-end-time" class="form-control">
+	                            	<input type="time" name="form-end-time" class="form-control" value="<c:out value="${searchForm.businessHoursEndTime}"/>">
 	                        	</div>
 							</c:if>
 
@@ -125,7 +134,8 @@
 	                            	<select name="type-pet" class="custom-select form-control">
 	                                	<option value="000">未選択</option>
 	                                	<c:forEach items="${petTypeMap}" var="petType">
-                        					<option value="${petType.key}">
+                        					<option value="${petType.key}"
+                        					<c:if test="${not empty searchForm.petType and searchForm.petType == petType.key}">selected</c:if>>
                         						${petType.value}
                         					</option>
                     					</c:forEach>
@@ -276,7 +286,17 @@
 							<c:set var="pageItemIDInitName" value="page-item-" />
 			                <c:forEach begin="${displayStartPageIndexNum}" end="${displayEndPageIndexNum}" varStatus="status">
 			                	<fmt:parseNumber var="pageLinkNumStr" value="${status.index}" />
-			                	<li id="${pageItemIDInitName}${pageLinkNumStr}" class="page-item"><a class="page-link" href="${requestURLWithParam}${pageLinkNumStr}${paramStartPage}${displayStartPageIndexNum}">${status.index}</a></li>
+			                	<c:choose>
+				                	<c:when test="${searchType == firstTypeKeyInitEnd}">
+				                		<li id="${pageItemIDInitName}${pageLinkNumStr}" class="page-item"><a class="page-link" href="${requestURLWithParam}${pageLinkNumStr}${paramStartPage}${displayStartPageIndexNum}${paramPrefectures}<c:out value="${searchForm.prefectures}"/>${paramCities}<c:out value="${searchForm.cities}"/>${paramBusinessHoursWeekday}<c:out value="${searchForm.businessHoursInputValue}"/>${paramBusinessHoursStartTime}<c:out value="${searchForm.businessHoursStartTime}"/>${paramBusinessHoursEndTime}<c:out value="${searchForm.businessHoursEndTime}"/>">${status.index}</a></li>
+				                	</c:when>
+				                	<c:when test="${searchType == secondTypeKeyInitEnd}">
+				                		<li id="${pageItemIDInitName}${pageLinkNumStr}" class="page-item"><a class="page-link" href="${requestURLWithParam}${pageLinkNumStr}${paramStartPage}${displayStartPageIndexNum}${paramPrefectures}<c:out value="${searchForm.prefectures}"/>${paramCities}<c:out value="${searchForm.cities}"/>${paramPetType}<c:out value="${searchForm.petType}"/>">${status.index}</a></li>
+				                	</c:when>
+				                	<c:otherwise>
+				                		<li id="${pageItemIDInitName}${pageLinkNumStr}" class="page-item"><a class="page-link" href="${requestURLWithParam}${pageLinkNumStr}${paramStartPage}${displayStartPageIndexNum}">${status.index}</a></li>
+				                	</c:otherwise>
+			                	</c:choose>
 			                 </c:forEach>
 						  </c:otherwise>
 					  </c:choose>
@@ -314,10 +334,21 @@
 
 	    <script>
 	        $(document).ready(function(){
-	            //plugin multipicker
-	            $('.plugin-multipicker').multiPicker({
-	                'selector' : 'li'
-	            });
+	        	//plugin multipicker
+	          	let formInputVal = $('#form-business-hours').val();
+	          	if(formInputVal){
+	          		//再ページ画面遷移時、入力値を「multipicker」にセット
+	          		let formInputValAry = formInputVal.split(',');
+	          		$('.plugin-multipicker').multiPicker({
+	                    'selector' : 'li',
+	                    'inputName' : 'business-hours'
+	                }).multiPicker('select', formInputValAry);
+	          	}else{
+	          		$('.plugin-multipicker').multiPicker({
+	                    'selector' : 'li',
+	                    'inputName' : 'business-hours'
+	                });
+	          	}
 	        });
 	    </script>
 

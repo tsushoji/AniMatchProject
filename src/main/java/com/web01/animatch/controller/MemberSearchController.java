@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.web01.animatch.dto.SearchForm;
 import com.web01.animatch.service.SearchService;
 
 /**
@@ -27,11 +28,56 @@ public class MemberSearchController extends HttpServlet {
 	/**
 	 * 画面遷移ページ番号パラメータ名
 	 */
-	private static final String URLPARAM_NAME_TARGET_PAGE = "targetPage";
+	private static final String URL_PARAM_NAME_TARGET_PAGE = "targetPage";
 	/**
-	 * 画面遷移ページ番号パラメータ名
+	 * 画面遷移ページリンク開始番号パラメータ名
 	 */
-	private static final String URLPARAM_NAME_START_PAGE = "startPage";
+	private static final String URL_PARAM_NAME_START_PAGE = "startPage";
+	/**
+	 * 画面遷移都道府県パラメータ名
+	 */
+	private static final String URL_PARAM_NAME_PREFECTURES = "prefectures";
+	/**
+	 * 画面遷移市区町村パラメータ名
+	 */
+	private static final String URL_PARAM_NAME_CITIES = "cities";
+	/**
+	 * GET送信画面遷移動物区分パラメータ名
+	 */
+	private static final String GET_URL_PARAM_NAME_PET_TYPE = "petType";
+	/**
+	 * POST送信画面遷移動物区分パラメータ名
+	 */
+	private static final String POST_URL_PARAM_NAME_PET_TYPE = "type-pet";
+	/**
+	 * GET送信画面遷移曜日パラメータ名
+	 */
+	private static final String GET_URL_PARAM_NAME_BUSINESS_HOURS_WEEKDAY = "businessHoursWeekday";
+	/**
+	 * POST送信画面遷移曜日パラメータ名
+	 */
+	private static final String POST_URL_PARAM_NAME_BUSINESS_HOURS_WEEKDAY = "business-hours";
+	/**
+	 * GET送信画面遷移開始時間パラメータ名
+	 */
+	private static final String GET_URL_PARAM_NAME_BUSINESS_HOURS_START_TIME = "businessHoursStartTime";
+	/**
+	 * POST送信画面遷移開始時間パラメータ名
+	 */
+	private static final String POST_URL_PARAM_NAME_BUSINESS_HOURS_START_TIME = "form-start-time";
+	/**
+	 * GET送信画面遷移終了時間パラメータ名
+	 */
+	private static final String GET_URL_PARAM_NAME_BUSINESS_HOURS_END_TIME = "businessHoursEndTime";
+	/**
+	 * POST送信画面遷移終了時間パラメータ名
+	 */
+	private static final String POST_URL_PARAM_NAME_BUSINESS_HOURS_END_TIME = "form-end-time";
+	/**
+	 * デフォルト値
+	 */
+	private static final String SELECT_DEFAULT_VALUE = "000";
+
 
 	/**
 	 * デフォルトコンストラクタ
@@ -46,23 +92,7 @@ public class MemberSearchController extends HttpServlet {
 	 * @param response レスポンスオブジェクト
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String reqURL = request.getRequestURI();
-		SearchService searchService = new SearchService(reqURL.substring(reqURL.lastIndexOf("/") + 1, reqURL.length()));
-		int targetPage = 1;
-		int startPage = 1;
-		String tmpTargetPage = request.getParameter(URLPARAM_NAME_TARGET_PAGE);
-		String tmpStartPage = request.getParameter(URLPARAM_NAME_START_PAGE);
-		if(StringUtils.isNotEmpty(tmpTargetPage) && StringUtils.isNotEmpty(tmpStartPage) && StringUtils.isNumeric(tmpTargetPage) && StringUtils.isNumeric(tmpStartPage)) {
-			targetPage = Integer.parseInt(tmpTargetPage);
-			startPage = Integer.parseInt(tmpStartPage);
-		}
-		if(searchService.setPageAttribute(request, targetPage, startPage)) {
-			// ページリンクに使用
-			request.setAttribute("requestURL", reqURL);
-			String path = "/WEB-INF/jsp/member/search/search.jsp";
-			RequestDispatcher dispatcher = request.getRequestDispatcher(path);
-			dispatcher.forward(request, response);
-		}
+		setSearchDisplay(request, response, false);
 	}
 
 	/**
@@ -71,6 +101,88 @@ public class MemberSearchController extends HttpServlet {
 	 * @param response レスポンスオブジェクト
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		doGet(request, response);
+		setSearchDisplay(request, response, true);
+	}
+
+	/**
+	 * 検索結果画面セット
+	 * @param request リクエストオブジェクト
+	 * @param response レスポンスオブジェクト
+	 * @param isPost POST送信であるか否か
+	 */
+	protected void setSearchDisplay(HttpServletRequest request, HttpServletResponse response, boolean isPost) throws ServletException, IOException {
+		String reqURL = request.getRequestURI();
+		SearchService searchService = new SearchService(reqURL.substring(reqURL.lastIndexOf("/") + 1, reqURL.length()));
+		int targetPage = 1;
+		int startPage = 1;
+		if(!isPost) {
+			String tmpTargetPage = request.getParameter(URL_PARAM_NAME_TARGET_PAGE);
+			String tmpStartPage = request.getParameter(URL_PARAM_NAME_START_PAGE);
+			if(StringUtils.isNotEmpty(tmpTargetPage) && StringUtils.isNotEmpty(tmpStartPage) && StringUtils.isNumeric(tmpTargetPage) && StringUtils.isNumeric(tmpStartPage)) {
+				targetPage = Integer.parseInt(tmpTargetPage);
+				startPage = Integer.parseInt(tmpStartPage);
+			}
+		}
+
+		String tmpPrefectures = request.getParameter(URL_PARAM_NAME_PREFECTURES);
+		String tmpCities = request.getParameter(URL_PARAM_NAME_CITIES);
+
+		String tmpPetType;
+		if(isPost) {
+			tmpPetType = request.getParameter(POST_URL_PARAM_NAME_PET_TYPE);
+		}else {
+			tmpPetType = request.getParameter(GET_URL_PARAM_NAME_PET_TYPE);
+		}
+
+		String tmpBusinessHoursWeekday;
+		if(isPost) {
+			tmpBusinessHoursWeekday = request.getParameter(POST_URL_PARAM_NAME_BUSINESS_HOURS_WEEKDAY);
+		}else {
+			tmpBusinessHoursWeekday = request.getParameter(GET_URL_PARAM_NAME_BUSINESS_HOURS_WEEKDAY);
+		}
+		String tmpBusinessHoursStartTime;
+		if(isPost) {
+			tmpBusinessHoursStartTime = request.getParameter(POST_URL_PARAM_NAME_BUSINESS_HOURS_START_TIME);
+		}else {
+			tmpBusinessHoursStartTime = request.getParameter(GET_URL_PARAM_NAME_BUSINESS_HOURS_START_TIME);
+		}
+		String tmpBusinessHoursEndTime;
+		if(isPost) {
+			tmpBusinessHoursEndTime = request.getParameter(POST_URL_PARAM_NAME_BUSINESS_HOURS_END_TIME);
+		}else {
+			tmpBusinessHoursEndTime = request.getParameter(GET_URL_PARAM_NAME_BUSINESS_HOURS_END_TIME);
+		}
+
+		SearchForm searchForm = new SearchForm();
+		if(StringUtils.isNotEmpty(tmpPrefectures)) {
+			searchForm.setPrefectures(tmpPrefectures);
+		}else {
+			searchForm.setPrefectures(SELECT_DEFAULT_VALUE);
+		}
+
+		if(StringUtils.isNotEmpty(tmpCities)) {
+			searchForm.setCities(tmpCities);
+		}else {
+			searchForm.setCities(SELECT_DEFAULT_VALUE);
+		}
+
+		if(StringUtils.isNotEmpty(tmpPetType)) {
+			searchForm.setPetType(tmpPetType);
+		}else {
+			searchForm.setPetType(SELECT_DEFAULT_VALUE);
+		}
+
+		searchForm.setBusinessHoursInputValue(tmpBusinessHoursWeekday);
+
+		searchForm.setBusinessHoursStartTime(tmpBusinessHoursStartTime);
+		searchForm.setBusinessHoursEndTime(tmpBusinessHoursEndTime);
+
+		if(searchService.setPageAttribute(request, targetPage, startPage, searchForm)) {
+			// ページリンクに使用
+			request.setAttribute("requestURL", reqURL);
+			String path = "/WEB-INF/jsp/member/search/search.jsp";
+			RequestDispatcher dispatcher = request.getRequestDispatcher(path);
+			dispatcher.forward(request, response);
+		}
 	}
 }

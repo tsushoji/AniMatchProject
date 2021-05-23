@@ -1,3 +1,33 @@
+const setCitiesSelectBox = function(paramPrefectures){
+	//追加したDomを削除
+	$('.api-append-cities').remove();
+	$.getJSON("https://postcode.teraren.com/prefectures/" + paramPrefectures + ".json", function(json){
+		console.log('成功');
+		console.log(json);
+		targetSelect = $('#cities');
+		//追加したDomを区別するため、追加したDomに「api-append-cities」クラスを付与
+		$.each(json, function (index, val) {
+			//入力されている市区町村に一致している場合、「selected」属性を付与
+			if(val.city == $('#form-cities').val()){
+				appendOption = $('<option>')
+		        			.val(val.city)
+		        			.text(val.city)
+		        			.prop('selected', true)
+		        			.addClass("api-append-cities")
+			}else{
+				appendOption = $('<option>')
+		        			.val(val.city)
+		        			.text(val.city)
+		        			.addClass("api-append-cities")
+			}
+		    targetSelect.append(appendOption);
+		});
+    }).fail(function(jqXHR, textStatus, errorThrown) {
+    	console.log(XMLHttpRequest);
+    });
+}
+
+
 $(document).ready(function(){
     //アクション:「絞り込みクリア」ボタン押下
     $('.main-search-left-clear').click(function() {
@@ -24,24 +54,7 @@ $(document).ready(function(){
     //アクション:「都道府県」を入力する
     //都道府県コード https://postcode.teraren.com/prefectures
     $("#prefectures").change(function(){
-    	let paramPrefectures = $(this).val().replace(/^0+/, '');
-    	//追加したDomを削除
-    	$('.api-append-cities').remove();
-    	$.getJSON("https://postcode.teraren.com/prefectures/" + paramPrefectures + ".json", function(json){
-    		console.log('成功');
-    		console.log(json);
-    		targetSelect = $('#cities');
-    		//追加したDomを区別するため、追加したDomに「api-append-cities」クラスを付与
-    		$.each(json, function (index, val) {
-			    appendOption = $('<option>')
-			        			.val(val.city)
-			        			.text(val.city)
-			        			.addClass("api-append-cities")
-			    targetSelect.append(appendOption);
-			});
-	    }).fail(function(jqXHR, textStatus, errorThrown) {
-	    	console.log(XMLHttpRequest);
-	    });
+    	setCitiesSelectBox($(this).val().replace(/^0+/, ''));
     });
 
 	const targetPageParamName = '?targetPage=';
@@ -101,4 +114,12 @@ $(document).ready(function(){
 		$('#page-item-next').addClass('disabled');
 	}
 
+	//「都道府県」がデフォルト値以外で入力された場合
+	let targetPrefecturesVal = $("#prefectures").val();
+	console.log(targetPrefecturesVal);
+	console.log('通った1');
+	if(targetPrefecturesVal != '000'){
+		console.log('通った2');
+    	setCitiesSelectBox(targetPrefecturesVal.replace(/^0+/, ''));
+	}
 });
