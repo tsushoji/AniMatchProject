@@ -116,10 +116,7 @@ $(document).ready(function(){
 
 	//「都道府県」がデフォルト値以外で入力された場合
 	let targetPrefecturesVal = $("#prefectures").val();
-	console.log(targetPrefecturesVal);
-	console.log('通った1');
 	if(targetPrefecturesVal != '000'){
-		console.log('通った2');
     	setCitiesSelectBox(targetPrefecturesVal.replace(/^0+/, ''));
 	}
 });

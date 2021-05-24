@@ -35,4 +35,8 @@ public class SearchForm {
 	 * 営業時間終了時間
 	 */
 	private String businessHoursEndTime;
+	/**
+	 * 検索内容
+	 */
+	private String searchContents;
 }

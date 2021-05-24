@@ -26,53 +26,62 @@ public class MemberSearchController extends HttpServlet {
 	 */
 	private static final long serialVersionUID = 1L;
 	/**
-	 * 画面遷移ページ番号パラメータ名
+	 * ページ番号パラメータ名
 	 */
 	private static final String URL_PARAM_NAME_TARGET_PAGE = "targetPage";
 	/**
-	 * 画面遷移ページリンク開始番号パラメータ名
+	 * ページリンク開始番号パラメータ名
 	 */
 	private static final String URL_PARAM_NAME_START_PAGE = "startPage";
 	/**
-	 * 画面遷移都道府県パラメータ名
+	 * 都道府県パラメータ名
 	 */
 	private static final String URL_PARAM_NAME_PREFECTURES = "prefectures";
 	/**
-	 * 画面遷移市区町村パラメータ名
+	 * 市区町村パラメータ名
 	 */
 	private static final String URL_PARAM_NAME_CITIES = "cities";
 	/**
-	 * GET送信画面遷移動物区分パラメータ名
+	 * GET送信動物区分パラメータ名
 	 */
 	private static final String GET_URL_PARAM_NAME_PET_TYPE = "petType";
 	/**
-	 * POST送信画面遷移動物区分パラメータ名
+	 * POST送信動物区分パラメータ名
 	 */
 	private static final String POST_URL_PARAM_NAME_PET_TYPE = "type-pet";
 	/**
-	 * GET送信画面遷移曜日パラメータ名
+	 * GET送信曜日パラメータ名
 	 */
 	private static final String GET_URL_PARAM_NAME_BUSINESS_HOURS_WEEKDAY = "businessHoursWeekday";
 	/**
-	 * POST送信画面遷移曜日パラメータ名
+	 * POST送信曜日パラメータ名
 	 */
 	private static final String POST_URL_PARAM_NAME_BUSINESS_HOURS_WEEKDAY = "business-hours";
 	/**
-	 * GET送信画面遷移開始時間パラメータ名
+	 * GET送信開始時間パラメータ名
 	 */
 	private static final String GET_URL_PARAM_NAME_BUSINESS_HOURS_START_TIME = "businessHoursStartTime";
 	/**
-	 * POST送信画面遷移開始時間パラメータ名
+	 * POST送信開始時間パラメータ名
 	 */
 	private static final String POST_URL_PARAM_NAME_BUSINESS_HOURS_START_TIME = "form-start-time";
 	/**
-	 * GET送信画面遷移終了時間パラメータ名
+	 * GET送信終了時間パラメータ名
 	 */
 	private static final String GET_URL_PARAM_NAME_BUSINESS_HOURS_END_TIME = "businessHoursEndTime";
 	/**
-	 * POST送信画面遷移終了時間パラメータ名
+	 * POST送信終了時間パラメータ名
 	 */
 	private static final String POST_URL_PARAM_NAME_BUSINESS_HOURS_END_TIME = "form-end-time";
+	/**
+	 * GET送信検索内容パラメータ名
+	 */
+	private static final String GET_URL_PARAM_NAME_SEARCH_CONTENTS = "searchContents";
+	/**
+	 * POST送信検索内容パラメータ名
+	 */
+	private static final String POST_URL_PARAM_NAME_SEARCH_CONTENTS = "search-contents";
+
 	/**
 	 * デフォルト値
 	 */
@@ -153,6 +162,13 @@ public class MemberSearchController extends HttpServlet {
 			tmpBusinessHoursEndTime = request.getParameter(GET_URL_PARAM_NAME_BUSINESS_HOURS_END_TIME);
 		}
 
+		String tmpSearchContents;
+		if(isPost) {
+			tmpSearchContents = request.getParameter(POST_URL_PARAM_NAME_SEARCH_CONTENTS);
+		}else {
+			tmpSearchContents = request.getParameter(GET_URL_PARAM_NAME_SEARCH_CONTENTS);
+		}
+
 		SearchForm searchForm = new SearchForm();
 		if(StringUtils.isNotEmpty(tmpPrefectures)) {
 			searchForm.setPrefectures(tmpPrefectures);
@@ -176,6 +192,8 @@ public class MemberSearchController extends HttpServlet {
 
 		searchForm.setBusinessHoursStartTime(tmpBusinessHoursStartTime);
 		searchForm.setBusinessHoursEndTime(tmpBusinessHoursEndTime);
+
+		searchForm.setSearchContents(tmpSearchContents);
 
 		if(searchService.setPageAttribute(request, targetPage, startPage, searchForm)) {
 			// ページリンクに使用
