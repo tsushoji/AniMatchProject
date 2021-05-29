@@ -148,7 +148,7 @@ public class SearchService extends BaseService{
 			switch(this.searchType) {
 				//飼い主の場合
 				case OWNER:
-					List<TrimmerInfo> trimmerInfoList = readDao.findTrimmerInfoByPaging(this, searchStartDataPos, searchEndDataPos);
+					List<TrimmerInfo> trimmerInfoList = readDao.findTrimmerInfoByStartDataRowNumAndEndDataRowNumAndSearchForm(this, searchStartDataPos, searchEndDataPos, searchForm);
 
 					for(TrimmerInfo trimmerInfo:trimmerInfoList) {
 						//画像をBase64化
@@ -172,7 +172,7 @@ public class SearchService extends BaseService{
 					break;
 				//トリマーの場合
 				case TRIMMER:
-					List<OwnerInfo> ownerInfoList = readDao.findOwnerInfoByPaging(this, searchStartDataPos, searchEndDataPos);
+					List<OwnerInfo> ownerInfoList = readDao.findOwnerInfoByStartDataRowNumAndEndDataRowNumAndSearchForm(this, searchStartDataPos, searchEndDataPos, searchForm);
 
 					//画像をBase64化
 					for(OwnerInfo ownerInfo:ownerInfoList) {

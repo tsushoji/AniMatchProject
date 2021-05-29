@@ -41,14 +41,22 @@ $(document).ready(function(){
 
     //アクション:「main-center-block」の検索ブロックをクリック
     $('.is-show-details-owner').click(function () {
+    	trimmerUserId = $(this).find('.trimmer-user-id').val();
+    	if(trimmerUserId === undefined){
+        	return;
+        }
         // 同じタグで表示
-        location.href = '/animatch/member/detail/owner';
+        location.href = '/animatch/member/detail/owner/' + trimmerUserId;
     });
 
     //アクション:「main-center-block」の検索ブロックをクリック
     $('.is-show-details-trimmer').click(function () {
+    	ownerUserId = $(this).find('.owner-user-id').val();
+    	if(ownerUserId === undefined){
+        	return;
+        }
         // 同じタグで表示
-        location.href = '/animatch/member/detail/trimmer';
+        location.href = '/animatch/member/detail/trimmer/' + ownerUserId;
     });
 
     //アクション:「都道府県」を入力する

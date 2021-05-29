@@ -12,8 +12,10 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 import com.web01.animatch.dto.OwnerInfo;
+import com.web01.animatch.dto.SearchForm;
 import com.web01.animatch.dto.TrimmerInfo;
 import com.web01.animatch.dto.TrimmerInfoBusinessHours;
+import com.web01.animatch.service.PropertiesService;
 import com.web01.animatch.service.SearchService;
 
 /**
@@ -43,12 +45,17 @@ public class ReadDao extends BaseDao{
 	 * @param searchService 検索サービスオブジェクト
 	 * @param startDataRowNum 検索開始行数
 	 * @param endDataRowNum 検索終了行数
+	 * @param searchForm 検索フォームオブジェクト
 	 * @return 飼い主情報オブジェクトリスト
 	 */
-	public List<OwnerInfo> findOwnerInfoByPaging(SearchService searchService, int startDataRowNum, int endDataRowNum) throws SQLException {
+	public List<OwnerInfo> findOwnerInfoByStartDataRowNumAndEndDataRowNumAndSearchForm(SearchService searchService, int startDataRowNum, int endDataRowNum, SearchForm searchForm) throws SQLException {
 		List<OwnerInfo> ownerInfoList = new ArrayList<>();
+		PropertiesService propertiesService = new PropertiesService();
+		List<HashMap<String, Object>> registFormDataList = new ArrayList<>();
 
-		try (PreparedStatement pstmt = createSelectStatement(null, "v_owner_info", null, null, null, null);){
+		String whereStr = getWhereOfOwnerInfoOrTrimmerInfo(searchForm, registFormDataList, propertiesService);
+
+		try (PreparedStatement pstmt = createSelectStatement(null, "v_owner_info", whereStr, null, null, null);){
 			ResultSet rs = pstmt.executeQuery();
 
 			int count = 0;
@@ -91,7 +98,7 @@ public class ReadDao extends BaseDao{
 	 * @param endDataRowNum 検索終了行数
 	 * @return トリマー情報オブジェクトリスト
 	 */
-	public List<TrimmerInfo> findTrimmerInfoByPaging(SearchService searchService, int startDataRowNum, int endDataRowNum) throws SQLException {
+	public List<TrimmerInfo> findTrimmerInfoByStartDataRowNumAndEndDataRowNumAndSearchForm(SearchService searchService, int startDataRowNum, int endDataRowNum, SearchForm searchForm) throws SQLException {
 		List<TrimmerInfo> trimmerInfoList = new ArrayList<>();
 
 		try (PreparedStatement pstmt = createSelectStatement(null, "v_trimmer_info", null, null, null, null);){
@@ -157,6 +164,44 @@ public class ReadDao extends BaseDao{
 		}
 
 		return trimmerInfoBusinessHoursList;
+	}
+
+	/**
+	 * ページング用飼い主、トリマーWhere句取得
+	 * @param searchForm 検索フォームオブジェクト
+	 * @param paramDataList SQLパラメータデータリスト
+	 * @param propertiesService プロパティサービスオブジェクト
+	 * @return Where句
+	 */
+	private String getWhereOfOwnerInfoOrTrimmerInfo(SearchForm searchForm, List<HashMap<String, Object>> paramDataList, PropertiesService propertiesService) {
+		String whereStr = null;
+		int paramDataListSize = 0;
+
+		//都道府県、市区町村Where句取得
+		if(StringUtils.isNotEmpty(searchForm.getPrefectures())) {
+			String prefectures = propertiesService.getValue(PropertiesService.PREFECTURES_KEY_INIT_STR + searchForm.getPrefectures());
+			whereStr = "street_address LIKE ?%";
+			paramDataList.add(createSqlParatemerMap(prefectures, Types.VARCHAR));
+			if(StringUtils.isNotEmpty(searchForm.getCities())) {
+				String cities = searchForm.getCities();
+				paramDataListSize = paramDataList.size();
+				if(StringUtils.isNotEmpty(whereStr)) {
+					whereStr = "street_address = ?";
+					if(paramDataListSize > 0) {
+						paramDataList.remove(paramDataListSize - 1);
+					}
+					paramDataList.add(createSqlParatemerMap(prefectures + cities, Types.VARCHAR));
+				}else {
+					whereStr = "street_address LIKE %?";
+					if(paramDataListSize > 0) {
+						paramDataList.remove(paramDataListSize - 1);
+					}
+					paramDataList.add(createSqlParatemerMap(cities, Types.VARCHAR));
+				}
+			}
+		}
+
+		return whereStr;
 	}
 
 	/**

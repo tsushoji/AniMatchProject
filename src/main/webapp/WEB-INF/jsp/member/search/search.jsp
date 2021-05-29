@@ -185,7 +185,7 @@
 
 				                        <div class="col-9">
 
-				                            <h6 class="mt-2"><a href="/animatch/member/detail/owner"><c:out value="${trimmerInfo.storeName}"/></a></h6>
+				                            <h6 class="mt-2"><c:out value="${trimmerInfo.storeName}"/></h6>
 
 				                            <div class="row mt-2 main-search-right-list-private-info-contents">
 
@@ -212,6 +212,8 @@
 
 				                        </div>
 
+										<input type="hidden" class="trimmer-user-id" value="${trimmerInfo.userId}">
+
 				                    </div>
 
 		                 		</c:forEach>
@@ -232,7 +234,7 @@
 
 				                        <div class="col-9">
 
-				                            <h6 class="mt-2"><a href="/animatch/member/detail/trimmer"><c:out value="${ownerInfo.petNickName}"/></a></h6>
+				                            <h6 class="mt-2"><c:out value="${ownerInfo.petNickName}"/></h6>
 
 				                            <div class="row mt-2 main-search-right-list-private-info-contents">
 
@@ -264,6 +266,8 @@
 				                            </p>
 
 				                        </div>
+
+										<input type="hidden" class="owner-user-id" value="${ownerInfo.userId}">
 
 				                    </div>
 
