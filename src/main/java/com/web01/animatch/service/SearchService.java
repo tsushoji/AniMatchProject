@@ -115,13 +115,16 @@ public class SearchService extends BaseService{
 	private void setInitPropertiesKey(HttpServletRequest request) {
 		Map<String, String> prefecturesMap = new HashMap<>();
 		Map<String, String> petTypeMap = new HashMap<>();
+		Map<String, String> petSexMap = new HashMap<>();
 		Map<String, String> weekdayMap = new HashMap<>();
 		prefecturesMap = this.propertiesService.getValues(PropertiesService.PREFECTURES_KEY_INIT_STR);
 		petTypeMap = this.propertiesService.getValues(PropertiesService.PET_TYPE_KEY_INIT_STR);
+		petSexMap = this.propertiesService.getValues(PropertiesService.PET_SEX_KEY_INIT_STR);
 		weekdayMap = this.propertiesService.getValues(PropertiesService.WEEKDAY_KEY_INIT_STR);
 
 		request.setAttribute("prefecturesMap", prefecturesMap);
 		request.setAttribute("petTypeMap", petTypeMap);
+		request.setAttribute("petSexMap", petSexMap);
 		request.setAttribute("weekdayMap", weekdayMap);
 	}
 

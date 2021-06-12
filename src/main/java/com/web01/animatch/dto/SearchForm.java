@@ -24,6 +24,10 @@ public class SearchForm {
 	 */
 	private String petType;
 	/**
+	 * 動物性別
+	 */
+	private String petSex;
+	/**
 	 * 営業時間インプットフォームValue属性
 	 */
 	private String businessHoursInputValue;

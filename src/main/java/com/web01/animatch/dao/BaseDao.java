@@ -17,6 +17,19 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class BaseDao {
 
+	protected enum LogicalOperatorType {
+
+		/**
+		 * 論理積
+		 */
+		AND,
+		/**
+		 * 論理和
+		 */
+		OR,
+		;
+	}
+
 	/**
 	 * SQLパラメータ設定
 	 * @param pstmt プリコンパイルされたSQL文オブジェクト
@@ -68,11 +81,21 @@ public class BaseDao {
 	 * SQL句内容作成
 	 * @param value 値
 	 * @param clauseContents 句内容
+	 * @param logicalOperatorType 論理演算子種別
 	 * @return SQL句内容
 	 */
-	protected String createSqlClauseContent(String value, String clauseContents) {
+	protected String createSqlClauseContent(String value, String clauseContents, LogicalOperatorType logicalOperatorType) {
 		if(StringUtils.isNotEmpty(clauseContents)) {
-			clauseContents += " AND " + value;
+			switch(logicalOperatorType) {
+				case AND:
+					clauseContents += " " + LogicalOperatorType.AND.toString() + " " + value;
+					break;
+				case OR:
+					clauseContents += " " + LogicalOperatorType.OR.toString() + " " + value;
+					break;
+				default:
+					break;
+			}
 		}else {
 			clauseContents = value;
 		}

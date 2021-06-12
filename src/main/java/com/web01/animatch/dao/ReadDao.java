@@ -203,37 +203,34 @@ public class ReadDao extends BaseDao{
 		//動物区分Where句作成
 		String petType = searchForm.getPetType();
 		if(StringUtils.isNotEmpty(petType) && !petType.equals("000")) {
-			whereOfOwnerInfo = createSqlClauseContent("pet_type = ?", whereOfOwnerInfo);
+			whereOfOwnerInfo = createSqlClauseContent("pet_type = ?", whereOfOwnerInfo, LogicalOperatorType.AND);
 			paramDataList.add(createSqlParatemerMap(petType, Types.VARCHAR));
+		}
+
+		//動物性別Where句作成
+		String petSex = searchForm.getPetSex();
+		if(StringUtils.isNotEmpty(petSex) && !petSex.equals("000")) {
+			whereOfOwnerInfo = createSqlClauseContent("pet_sex = ?", whereOfOwnerInfo, LogicalOperatorType.AND);
+			paramDataList.add(createSqlParatemerMap(petSex, Types.VARCHAR));
 		}
 
 		//検索内容Where句作成
 		String searchContents = searchForm.getSearchContents();
 		if(StringUtils.isNotEmpty(searchContents)) {
-			String searchContentsParam = "%" + searchContents + "%";
-			whereOfOwnerInfo = createSqlClauseContent("pet_nickname LIKE ?", whereOfOwnerInfo);
-			paramDataList.add(createSqlParatemerMap(searchContentsParam, Types.VARCHAR));
+			//空白区切りで検索された場合を考慮
+			String[] searchContentsAry = searchContents.split(" ");
+			for(String contents:searchContentsAry) {
+				String whereOfSearchContents = null;
+				String searchContentsParam = "%" + contents + "%";
+				whereOfSearchContents = createSqlClauseContent("pet_nickname LIKE ?", whereOfSearchContents, LogicalOperatorType.OR);
+				paramDataList.add(createSqlParatemerMap(searchContentsParam, Types.VARCHAR));
 
-			whereOfOwnerInfo = createSqlClauseContent("street_address LIKE ?", whereOfOwnerInfo);
-			paramDataList.add(createSqlParatemerMap(searchContentsParam, Types.VARCHAR));
+				whereOfSearchContents = createSqlClauseContent("pet_remarks LIKE ?", whereOfSearchContents, LogicalOperatorType.OR);
+				paramDataList.add(createSqlParatemerMap(searchContentsParam, Types.VARCHAR));
 
-			whereOfOwnerInfo = createSqlClauseContent("pet_remarks LIKE ?", whereOfOwnerInfo);
-			paramDataList.add(createSqlParatemerMap(searchContentsParam, Types.VARCHAR));
-
-			Map<String, String> petTypeMap = propertiesService.getValues(PropertiesService.PET_TYPE_KEY_INIT_STR);
-			for(Map.Entry<String, String> entry : petTypeMap.entrySet()){
-			    if(entry.getValue().contains(searchContents)) {
-			    	whereOfOwnerInfo = createSqlClauseContent("pet_type = ?", whereOfOwnerInfo);
-					paramDataList.add(createSqlParatemerMap(entry.getKey(), Types.VARCHAR));
-			    }
-			}
-
-			Map<String, String> petSexMap = propertiesService.getValues(PropertiesService.PET_SEX_KEY_INIT_STR);
-			for(Map.Entry<String, String> entry : petSexMap.entrySet()){
-			    if(entry.getValue().contains(searchContents)) {
-			    	whereOfOwnerInfo = createSqlClauseContent("pet_sex = ?", whereOfOwnerInfo);
-					paramDataList.add(createSqlParatemerMap(entry.getKey(), Types.VARCHAR));
-			    }
+				if(StringUtils.isNotEmpty(whereOfSearchContents)) {
+					whereOfOwnerInfo = createSqlClauseContent(" ( " + whereOfSearchContents + " ) ", whereOfOwnerInfo, LogicalOperatorType.AND);
+				}
 			}
 		}
 
@@ -263,21 +260,20 @@ public class ReadDao extends BaseDao{
 		String searchContents = searchForm.getSearchContents();
 
 		if(StringUtils.isNotEmpty(searchContents)) {
-			String searchContentsParam = "%" + searchContents + "%";
-			whereOfTrimmerInfo = createSqlClauseContent("store_name LIKE ?", whereOfTrimmerInfo);
-			paramDataList.add(createSqlParatemerMap(searchContentsParam, Types.VARCHAR));
+			//空白区切りで検索された場合を考慮
+			String[] searchContentsAry = searchContents.split(" ");
+			for(String contents:searchContentsAry) {
+				String whereOfSearchContents = null;
+				String searchContentsParam = "%" + contents + "%";
+				whereOfSearchContents = createSqlClauseContent("store_name LIKE ?", whereOfSearchContents, LogicalOperatorType.OR);
+				paramDataList.add(createSqlParatemerMap(searchContentsParam, Types.VARCHAR));
 
-			whereOfTrimmerInfo = createSqlClauseContent("street_address LIKE ?", whereOfTrimmerInfo);
-			paramDataList.add(createSqlParatemerMap(searchContentsParam, Types.VARCHAR));
+				whereOfSearchContents = createSqlClauseContent("store_commitment LIKE ?", whereOfSearchContents, LogicalOperatorType.OR);
+				paramDataList.add(createSqlParatemerMap(searchContentsParam, Types.VARCHAR));
 
-			whereOfTrimmerInfo = createSqlClauseContent("store_commitment LIKE ?", whereOfTrimmerInfo);
-			paramDataList.add(createSqlParatemerMap(searchContentsParam, Types.VARCHAR));
-
-			Map<String, String> weekdayMap = propertiesService.getValues(PropertiesService.WEEKDAY_KEY_INIT_STR);
-			for(Map.Entry<String, String> entry : weekdayMap.entrySet()){
-			    if(entry.getValue().contains(searchContents)) {
-			    	businessHoursWeekdayList.add(entry.getKey());
-			    }
+				if(StringUtils.isNotEmpty(whereOfSearchContents)) {
+					whereOfTrimmerInfo = createSqlClauseContent(" ( " + whereOfSearchContents + " ) ", whereOfTrimmerInfo, LogicalOperatorType.AND);
+				}
 			}
 		}
 		//営業時間Where句作成
@@ -300,7 +296,7 @@ public class ReadDao extends BaseDao{
 			paramDataList.add(createSqlParatemerMap(storeId, Types.INTEGER));
 		}
 		if(storeIdParams.size() > 0) {
-			whereOfTrimmerInfo = createSqlClauseContent("store_id IN (" + String.join(",", storeIdParams) + ")", whereOfTrimmerInfo);
+			whereOfTrimmerInfo = createSqlClauseContent("store_id IN (" + String.join(",", storeIdParams) + ")", whereOfTrimmerInfo, LogicalOperatorType.AND);
 		}
 		if((StringUtils.isNotEmpty(inputBusinessHoursWeekday) || StringUtils.isNotEmpty(businessHoursStartTime) || StringUtils.isNotEmpty(businessHoursEndTime)) && storeIdList.size() == 0) {
 			isExistTrimmerInfoByStartDataRowNumAndEndDataRowNumAndSearchForm = false;
@@ -362,13 +358,13 @@ public class ReadDao extends BaseDao{
 
 		if(StringUtils.isNotEmpty(startBusinessHoursTime)) {
 			String[] startBusinessHoursTimeAry = startBusinessHoursTime.split(":");
-			whereStr = createSqlClauseContent("start_business_time >= TIME(?)", whereStr);
+			whereStr = createSqlClauseContent("start_business_time >= TIME(?)", whereStr, LogicalOperatorType.AND);
 			businessHoursStoreIdDataList.add(createSqlParatemerMap(Time.valueOf(LocalTime.of(Integer.parseInt(startBusinessHoursTimeAry[0]), Integer.parseInt(startBusinessHoursTimeAry[1]))), Types.TIME));
 		}
 
 		if(StringUtils.isNotEmpty(endBusinessHoursTime)) {
 			String[] endBusinessHoursTimeAry = endBusinessHoursTime.split(":");
-			whereStr = createSqlClauseContent("end_business_time <= TIME(?)", whereStr);
+			whereStr = createSqlClauseContent("end_business_time <= TIME(?)", whereStr, LogicalOperatorType.AND);
 			businessHoursStoreIdDataList.add(createSqlParatemerMap(Time.valueOf(LocalTime.of(Integer.parseInt(endBusinessHoursTimeAry[0]), Integer.parseInt(endBusinessHoursTimeAry[1]))), Types.TIME));
 		}
 

@@ -24,6 +24,7 @@
 <c:if test="${searchType == secondTypeKeyInitEnd}">
 	<c:set var="labelTitlePart" value="お住まい" />
 	<c:set var="paramPetType" value="&petType=" />
+	<c:set var="paramPetSex" value="&petSex=" />
 </c:if>
 <c:set var="paramSearchContents" value="&searchContents=" />
 <c:set var="paramTargetPage" value="?targetPage=" />
@@ -144,6 +145,19 @@
 	                    					</c:forEach>
 		                            	</select>
 		                        	</div>
+
+									<div class="form-group mt-3">
+		                            	<label class="control-label">動物&ndash;性別</label>
+		                            	<select name="sex-pet" class="custom-select form-control">
+		                                	<option value="000">未選択</option>
+		                                	<c:forEach items="${petSexMap}" var="petSex">
+	                        					<option value="${petSex.key}"
+	                        					<c:if test="${not empty searchForm.petSex and searchForm.petSex == petSex.key}">selected</c:if>>
+	                        						${petSex.value}
+	                        					</option>
+	                    					</c:forEach>
+		                            	</select>
+		                        	</div>
 								</c:if>
 
 		                        <div class="form-group">
@@ -163,7 +177,7 @@
 		                    <div class="main-search-right-form">
 
 		                        <div class="input-group my-3 col-11">
-		                            <input type="text" name="search-contents" class="form-control" placeholder="キーワードを入力" value="<c:out value="${searchForm.searchContents}"/>">
+		                            <input type="text" name="search-contents" class="form-control" placeholder="${searchType == firstTypeKeyInitEnd?'店舗名、アピールポイントについて、キーワードを入力':'ペット名、備考について、キーワードを入力' }" value="<c:out value="${searchForm.searchContents}"/>">
 		                            <span class="input-group-btn">
 		                                <button type="submit" class="btn btn-outline-primary"><img src="/animatch/images/icon_search.png" alt="検索アイコン"></button>
 		                            </span>
@@ -300,7 +314,7 @@
 				                		<li id="${pageItemIDInitName}${pageLinkNumStr}" class="page-item"><a class="page-link" href="${requestURLWithParam}${pageLinkNumStr}${paramStartPage}${displayStartPageIndexNum}${paramSearchContents}<c:out value="${searchForm.searchContents}"/>${paramPrefectures}<c:out value="${searchForm.prefectures}"/>${paramCities}<c:out value="${searchForm.cities}"/>${paramBusinessHoursWeekday}<c:out value="${searchForm.businessHoursInputValue}"/>${paramBusinessHoursStartTime}<c:out value="${searchForm.businessHoursStartTime}"/>${paramBusinessHoursEndTime}<c:out value="${searchForm.businessHoursEndTime}"/>">${status.index}</a></li>
 				                	</c:when>
 				                	<c:when test="${searchType == secondTypeKeyInitEnd}">
-				                		<li id="${pageItemIDInitName}${pageLinkNumStr}" class="page-item"><a class="page-link" href="${requestURLWithParam}${pageLinkNumStr}${paramStartPage}${displayStartPageIndexNum}${paramSearchContents}<c:out value="${searchForm.searchContents}"/>${paramPrefectures}<c:out value="${searchForm.prefectures}"/>${paramCities}<c:out value="${searchForm.cities}"/>${paramPetType}<c:out value="${searchForm.petType}"/>">${status.index}</a></li>
+				                		<li id="${pageItemIDInitName}${pageLinkNumStr}" class="page-item"><a class="page-link" href="${requestURLWithParam}${pageLinkNumStr}${paramStartPage}${displayStartPageIndexNum}${paramSearchContents}<c:out value="${searchForm.searchContents}"/>${paramPrefectures}<c:out value="${searchForm.prefectures}"/>${paramCities}<c:out value="${searchForm.cities}"/>${paramPetType}<c:out value="${searchForm.petType}"/>${paramPetSex}<c:out value="${searchForm.petSex}"/>">${status.index}</a></li>
 				                	</c:when>
 				                	<c:otherwise>
 				                		<li id="${pageItemIDInitName}${pageLinkNumStr}" class="page-item"><a class="page-link" href="${requestURLWithParam}${pageLinkNumStr}${paramStartPage}${displayStartPageIndexNum}">${status.index}</a></li>

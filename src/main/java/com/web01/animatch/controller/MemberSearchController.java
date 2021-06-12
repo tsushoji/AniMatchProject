@@ -50,6 +50,14 @@ public class MemberSearchController extends HttpServlet {
 	 */
 	private static final String POST_URL_PARAM_NAME_PET_TYPE = "type-pet";
 	/**
+	 * GET送信動物性別パラメータ名
+	 */
+	private static final String GET_URL_PARAM_NAME_PET_SEX = "petSex";
+	/**
+	 * POST送信動物性別パラメータ名
+	 */
+	private static final String POST_URL_PARAM_NAME_PET_SEX = "sex-pet";
+	/**
 	 * GET送信曜日パラメータ名
 	 */
 	private static final String GET_URL_PARAM_NAME_BUSINESS_HOURS_WEEKDAY = "businessHoursWeekday";
@@ -137,10 +145,13 @@ public class MemberSearchController extends HttpServlet {
 		String tmpCities = request.getParameter(URL_PARAM_NAME_CITIES);
 
 		String tmpPetType;
+		String tmpPetSex;
 		if(isPost) {
 			tmpPetType = request.getParameter(POST_URL_PARAM_NAME_PET_TYPE);
+			tmpPetSex = request.getParameter(POST_URL_PARAM_NAME_PET_SEX);
 		}else {
 			tmpPetType = request.getParameter(GET_URL_PARAM_NAME_PET_TYPE);
+			tmpPetSex = request.getParameter(GET_URL_PARAM_NAME_PET_SEX);
 		}
 
 		String tmpBusinessHoursWeekday;
@@ -186,6 +197,12 @@ public class MemberSearchController extends HttpServlet {
 			searchForm.setPetType(tmpPetType);
 		}else {
 			searchForm.setPetType(SELECT_DEFAULT_VALUE);
+		}
+
+		if(StringUtils.isNotEmpty(tmpPetSex)) {
+			searchForm.setPetSex(tmpPetSex);
+		}else {
+			searchForm.setPetSex(SELECT_DEFAULT_VALUE);
 		}
 
 		searchForm.setBusinessHoursInputValue(tmpBusinessHoursWeekday);
