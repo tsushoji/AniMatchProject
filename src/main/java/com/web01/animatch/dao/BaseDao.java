@@ -8,6 +8,8 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.HashMap;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * BaseDaoクラス
  * @author Tsuji
@@ -60,5 +62,20 @@ public class BaseDao {
 		ret.put("value", value);
 		ret.put("dataType", dataType);
 		return ret;
+	}
+
+	/**
+	 * SQL句内容作成
+	 * @param value 値
+	 * @param clauseContents 句内容
+	 * @return SQL句内容
+	 */
+	protected String createSqlClauseContent(String value, String clauseContents) {
+		if(StringUtils.isNotEmpty(clauseContents)) {
+			clauseContents += " AND " + value;
+		}else {
+			clauseContents = value;
+		}
+		return clauseContents;
 	}
 }

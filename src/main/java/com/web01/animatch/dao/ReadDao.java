@@ -4,10 +4,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Time;
 import java.sql.Types;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -32,6 +36,11 @@ public class ReadDao extends BaseDao{
 	private Connection con;
 
 	/**
+	 * ページング用トリマー情報データ存在
+	 */
+	private boolean isExistTrimmerInfoByStartDataRowNumAndEndDataRowNumAndSearchForm = true;
+
+	/**
 	 * 引数付きコンストラクタ
 	 *
 	 * @param con DBコネクションオブジェクト
@@ -53,9 +62,9 @@ public class ReadDao extends BaseDao{
 		PropertiesService propertiesService = new PropertiesService();
 		List<HashMap<String, Object>> registFormDataList = new ArrayList<>();
 
-		String whereStr = getWhereOfOwnerInfoOrTrimmerInfo(searchForm, registFormDataList, propertiesService);
+		String whereStr = createWhereOfOwnerInfo(searchForm, registFormDataList, propertiesService);
 
-		try (PreparedStatement pstmt = createSelectStatement(null, "v_owner_info", whereStr, null, null, null);){
+		try (PreparedStatement pstmt = createSelectStatement(null, "v_owner_info", whereStr, null, null, registFormDataList);){
 			ResultSet rs = pstmt.executeQuery();
 
 			int count = 0;
@@ -100,8 +109,17 @@ public class ReadDao extends BaseDao{
 	 */
 	public List<TrimmerInfo> findTrimmerInfoByStartDataRowNumAndEndDataRowNumAndSearchForm(SearchService searchService, int startDataRowNum, int endDataRowNum, SearchForm searchForm) throws SQLException {
 		List<TrimmerInfo> trimmerInfoList = new ArrayList<>();
+		PropertiesService propertiesService = new PropertiesService();
+		List<HashMap<String, Object>> registFormDataList = new ArrayList<>();
 
-		try (PreparedStatement pstmt = createSelectStatement(null, "v_trimmer_info", null, null, null, null);){
+		String whereStr = createWhereOfTrimmerInfo(searchForm, registFormDataList, propertiesService);
+
+		//営業時間入力条件に合わなかった場合
+		if(!isExistTrimmerInfoByStartDataRowNumAndEndDataRowNumAndSearchForm) {
+			return trimmerInfoList;
+		}
+
+		try (PreparedStatement pstmt = createSelectStatement(null, "v_trimmer_info", whereStr, null, null, registFormDataList);){
 			ResultSet rs = pstmt.executeQuery();
 
 			int count = 0;
@@ -121,7 +139,7 @@ public class ReadDao extends BaseDao{
 					trimmerInfo.setTelephoneNumber(rs.getString("telephone_number"));
 					trimmerInfo.setStoreId(storeId == 0?null:storeId);
 					trimmerInfo.setStoreImage(rs.getBytes("store_image"));
-					trimmerInfo.setStoreName(rs.getString("store_store_name"));
+					trimmerInfo.setStoreName(rs.getString("store_name"));
 					trimmerInfo.setStoreEmployeesNumber(rs.getInt("store_employees_number") == 0?null:rs.getInt("store_employees_number"));
 					trimmerInfo.setStoreCourseInfo(rs.getString("store_course_info"));
 					trimmerInfo.setStoreCommitment(rs.getString("store_commitment"));
@@ -167,41 +185,237 @@ public class ReadDao extends BaseDao{
 	}
 
 	/**
-	 * ページング用飼い主、トリマーWhere句取得
+	 * 飼い主情報Where句作成
 	 * @param searchForm 検索フォームオブジェクト
 	 * @param paramDataList SQLパラメータデータリスト
 	 * @param propertiesService プロパティサービスオブジェクト
-	 * @return Where句
+	 * @return 飼い主情報Where句
 	 */
-	private String getWhereOfOwnerInfoOrTrimmerInfo(SearchForm searchForm, List<HashMap<String, Object>> paramDataList, PropertiesService propertiesService) {
-		String whereStr = null;
+	private String createWhereOfOwnerInfo(SearchForm searchForm, List<HashMap<String, Object>> paramDataList, PropertiesService propertiesService) {
+		String whereOfOwnerInfo = null;
+
+		//都道府県、市区町村Where句作成
+		String whereOfPrefecturesAndCities = createWhereOfPrefecturesAndCities(searchForm, paramDataList, propertiesService);
+		if(StringUtils.isNotEmpty(whereOfPrefecturesAndCities)) {
+			whereOfOwnerInfo = whereOfPrefecturesAndCities;
+		}
+
+		//動物区分Where句作成
+		String petType = searchForm.getPetType();
+		if(StringUtils.isNotEmpty(petType) && !petType.equals("000")) {
+			whereOfOwnerInfo = createSqlClauseContent("pet_type = ?", whereOfOwnerInfo);
+			paramDataList.add(createSqlParatemerMap(petType, Types.VARCHAR));
+		}
+
+		//検索内容Where句作成
+		String searchContents = searchForm.getSearchContents();
+		if(StringUtils.isNotEmpty(searchContents)) {
+			String searchContentsParam = "%" + searchContents + "%";
+			whereOfOwnerInfo = createSqlClauseContent("pet_nickname LIKE ?", whereOfOwnerInfo);
+			paramDataList.add(createSqlParatemerMap(searchContentsParam, Types.VARCHAR));
+
+			whereOfOwnerInfo = createSqlClauseContent("street_address LIKE ?", whereOfOwnerInfo);
+			paramDataList.add(createSqlParatemerMap(searchContentsParam, Types.VARCHAR));
+
+			whereOfOwnerInfo = createSqlClauseContent("pet_remarks LIKE ?", whereOfOwnerInfo);
+			paramDataList.add(createSqlParatemerMap(searchContentsParam, Types.VARCHAR));
+
+			Map<String, String> petTypeMap = propertiesService.getValues(PropertiesService.PET_TYPE_KEY_INIT_STR);
+			for(Map.Entry<String, String> entry : petTypeMap.entrySet()){
+			    if(entry.getValue().contains(searchContents)) {
+			    	whereOfOwnerInfo = createSqlClauseContent("pet_type = ?", whereOfOwnerInfo);
+					paramDataList.add(createSqlParatemerMap(entry.getKey(), Types.VARCHAR));
+			    }
+			}
+
+			Map<String, String> petSexMap = propertiesService.getValues(PropertiesService.PET_SEX_KEY_INIT_STR);
+			for(Map.Entry<String, String> entry : petSexMap.entrySet()){
+			    if(entry.getValue().contains(searchContents)) {
+			    	whereOfOwnerInfo = createSqlClauseContent("pet_sex = ?", whereOfOwnerInfo);
+					paramDataList.add(createSqlParatemerMap(entry.getKey(), Types.VARCHAR));
+			    }
+			}
+		}
+
+		return whereOfOwnerInfo;
+	}
+
+	/**
+	 * トリマー情報Where句作成
+	 * @param searchForm 検索フォームオブジェクト
+	 * @param paramDataList SQLパラメータデータリスト
+	 * @param propertiesService プロパティサービスオブジェクト
+	 * @return トリマー情報Where句
+	 * @throws SQLException
+	 */
+	private String createWhereOfTrimmerInfo(SearchForm searchForm, List<HashMap<String, Object>> paramDataList, PropertiesService propertiesService) throws SQLException {
+		String whereOfTrimmerInfo = null;
+		//検索営業時間曜日List
+		List<String> businessHoursWeekdayList = new ArrayList<>();
+
+		//都道府県、市区町村Where句作成
+		String whereOfPrefecturesAndCities = createWhereOfPrefecturesAndCities(searchForm, paramDataList, propertiesService);
+		if(StringUtils.isNotEmpty(whereOfPrefecturesAndCities)) {
+			whereOfTrimmerInfo = whereOfPrefecturesAndCities;
+		}
+
+		//検索内容Where句作成
+		String searchContents = searchForm.getSearchContents();
+
+		if(StringUtils.isNotEmpty(searchContents)) {
+			String searchContentsParam = "%" + searchContents + "%";
+			whereOfTrimmerInfo = createSqlClauseContent("store_name LIKE ?", whereOfTrimmerInfo);
+			paramDataList.add(createSqlParatemerMap(searchContentsParam, Types.VARCHAR));
+
+			whereOfTrimmerInfo = createSqlClauseContent("street_address LIKE ?", whereOfTrimmerInfo);
+			paramDataList.add(createSqlParatemerMap(searchContentsParam, Types.VARCHAR));
+
+			whereOfTrimmerInfo = createSqlClauseContent("store_commitment LIKE ?", whereOfTrimmerInfo);
+			paramDataList.add(createSqlParatemerMap(searchContentsParam, Types.VARCHAR));
+
+			Map<String, String> weekdayMap = propertiesService.getValues(PropertiesService.WEEKDAY_KEY_INIT_STR);
+			for(Map.Entry<String, String> entry : weekdayMap.entrySet()){
+			    if(entry.getValue().contains(searchContents)) {
+			    	businessHoursWeekdayList.add(entry.getKey());
+			    }
+			}
+		}
+		//営業時間Where句作成
+		String inputBusinessHoursWeekday = searchForm.getBusinessHoursInputValue();
+		if(StringUtils.isNotEmpty(inputBusinessHoursWeekday)) {
+			String[] businessHoursWeekdayAry = inputBusinessHoursWeekday.split(",");
+			for(String businessHoursWeekday:businessHoursWeekdayAry) {
+				businessHoursWeekdayList.add("00" + businessHoursWeekday);
+			}
+			//重複要素を取り除く
+			businessHoursWeekdayList = businessHoursWeekdayList.stream().distinct().collect(Collectors.toList());
+		}
+		String businessHoursStartTime = searchForm.getBusinessHoursStartTime();
+		String businessHoursEndTime = searchForm.getBusinessHoursEndTime();
+		//該当する店舗IDリスト
+		List<Integer> storeIdList = findBusinessHoursStoreIdByStoreId(businessHoursWeekdayList, businessHoursStartTime, businessHoursEndTime);
+		ArrayList<String> storeIdParams = new ArrayList<>();
+		for(int storeId:storeIdList) {
+			storeIdParams.add("?");
+			paramDataList.add(createSqlParatemerMap(storeId, Types.INTEGER));
+		}
+		if(storeIdParams.size() > 0) {
+			whereOfTrimmerInfo = createSqlClauseContent("store_id IN (" + String.join(",", storeIdParams) + ")", whereOfTrimmerInfo);
+		}
+		if((StringUtils.isNotEmpty(inputBusinessHoursWeekday) || StringUtils.isNotEmpty(businessHoursStartTime) || StringUtils.isNotEmpty(businessHoursEndTime)) && storeIdList.size() == 0) {
+			isExistTrimmerInfoByStartDataRowNumAndEndDataRowNumAndSearchForm = false;
+		}
+
+		return whereOfTrimmerInfo;
+	}
+
+	/**
+	 * 都道府県、市区町村Where句作成
+	 * @param searchForm 検索フォームオブジェクト
+	 * @param paramDataList SQLパラメータデータリスト
+	 * @param propertiesService プロパティサービスオブジェクト
+	 * @return 都道府県、市区町村Where句
+	 */
+	private String createWhereOfPrefecturesAndCities(SearchForm searchForm, List<HashMap<String, Object>> paramDataList, PropertiesService propertiesService) {
+		String whereOfPrefecturesAndCities = null;
 		int paramDataListSize = 0;
 
-		//都道府県、市区町村Where句取得
-		if(StringUtils.isNotEmpty(searchForm.getPrefectures())) {
-			String prefectures = propertiesService.getValue(PropertiesService.PREFECTURES_KEY_INIT_STR + searchForm.getPrefectures());
-			whereStr = "street_address LIKE ?%";
-			paramDataList.add(createSqlParatemerMap(prefectures, Types.VARCHAR));
-			if(StringUtils.isNotEmpty(searchForm.getCities())) {
-				String cities = searchForm.getCities();
+		String prefecturesKey = searchForm.getPrefectures();
+		if(StringUtils.isNotEmpty(prefecturesKey) && !prefecturesKey.equals("000")) {
+			String prefectures = propertiesService.getValue(PropertiesService.PREFECTURES_KEY_INIT_STR + prefecturesKey);
+			whereOfPrefecturesAndCities = "street_address LIKE ?";
+			paramDataList.add(createSqlParatemerMap(prefectures + "%", Types.VARCHAR));
+			String cities = searchForm.getCities();
+			if(StringUtils.isNotEmpty(cities) && !cities.equals("000")) {
 				paramDataListSize = paramDataList.size();
-				if(StringUtils.isNotEmpty(whereStr)) {
-					whereStr = "street_address = ?";
-					if(paramDataListSize > 0) {
-						paramDataList.remove(paramDataListSize - 1);
+				whereOfPrefecturesAndCities = "street_address = ?";
+				if(paramDataListSize > 0) {
+					paramDataList.remove(paramDataListSize - 1);
+				}
+				paramDataList.add(createSqlParatemerMap(prefectures + cities, Types.VARCHAR));
+			}
+		}
+
+		return whereOfPrefecturesAndCities;
+	}
+
+	/**
+	 * 営業時間店舗ID抽出
+	 * @param businessHoursWeekdayList 曜日
+	 * @param startBusinessHoursTime 開始時間
+	 * @param endBusinessHoursTime 終了時間
+	 * @return 営業時間店舗IDリスト
+	 */
+	private List<Integer> findBusinessHoursStoreIdByStoreId(List<String> businessHoursWeekdayList, String startBusinessHoursTime, String endBusinessHoursTime) throws SQLException {
+		List<Integer> businessHoursStoreIdList = new ArrayList<>();
+		List<HashMap<String, Object>> businessHoursStoreIdDataList = new ArrayList<>();
+		String whereStr = null;
+
+		ArrayList<String> businessDayParams = new ArrayList<>();
+		for(String businessHoursWeekday:businessHoursWeekdayList) {
+			businessDayParams.add("?");
+			businessHoursStoreIdDataList.add(createSqlParatemerMap(businessHoursWeekday, Types.VARCHAR));
+		}
+		if(businessDayParams.size() > 0) {
+			whereStr = "business_day IN (" + String.join(",", businessDayParams) + ")";
+		}
+
+		if(StringUtils.isNotEmpty(startBusinessHoursTime)) {
+			String[] startBusinessHoursTimeAry = startBusinessHoursTime.split(":");
+			whereStr = createSqlClauseContent("start_business_time >= TIME(?)", whereStr);
+			businessHoursStoreIdDataList.add(createSqlParatemerMap(Time.valueOf(LocalTime.of(Integer.parseInt(startBusinessHoursTimeAry[0]), Integer.parseInt(startBusinessHoursTimeAry[1]))), Types.TIME));
+		}
+
+		if(StringUtils.isNotEmpty(endBusinessHoursTime)) {
+			String[] endBusinessHoursTimeAry = endBusinessHoursTime.split(":");
+			whereStr = createSqlClauseContent("end_business_time <= TIME(?)", whereStr);
+			businessHoursStoreIdDataList.add(createSqlParatemerMap(Time.valueOf(LocalTime.of(Integer.parseInt(endBusinessHoursTimeAry[0]), Integer.parseInt(endBusinessHoursTimeAry[1]))), Types.TIME));
+		}
+
+		try (PreparedStatement pstmt = createSelectStatement("DISTINCT store_id", "t_business_hours", whereStr, "null", null, businessHoursStoreIdDataList);){
+			ResultSet rs = pstmt.executeQuery();
+
+			while(rs.next()) {
+				businessHoursStoreIdList.add(rs.getInt("store_id"));
+			}
+		} catch(SQLException e) {
+			throw e;
+		}
+
+		//営業時間曜日が複数入力された場合
+		if(businessHoursWeekdayList.size() > 1) {
+			HashMap<Integer, List<String>> businessHoursStoreIdMap = new HashMap<>();
+			whereStr = "store_id = ?";
+			for(Integer businessHoursStoreId:businessHoursStoreIdList) {
+				List<String> weekdayList = new ArrayList<>();
+
+				// パラメータデータリストリセット
+				businessHoursStoreIdDataList.clear();
+				businessHoursStoreIdDataList.add(createSqlParatemerMap(businessHoursStoreId, Types.INTEGER));
+
+				try (PreparedStatement pstmt = createSelectStatement("business_day", "t_business_hours", whereStr, "null", null, businessHoursStoreIdDataList);){
+					ResultSet rs = pstmt.executeQuery();
+
+					while(rs.next()) {
+						weekdayList.add(rs.getString("business_day"));
 					}
-					paramDataList.add(createSqlParatemerMap(prefectures + cities, Types.VARCHAR));
-				}else {
-					whereStr = "street_address LIKE %?";
-					if(paramDataListSize > 0) {
-						paramDataList.remove(paramDataListSize - 1);
-					}
-					paramDataList.add(createSqlParatemerMap(cities, Types.VARCHAR));
+				} catch(SQLException e) {
+					throw e;
+				}
+
+				businessHoursStoreIdMap.put(businessHoursStoreId, weekdayList);
+			}
+
+			//営業時間店舗IDリストリセット
+			businessHoursStoreIdList.clear();
+			for(Map.Entry<Integer, List<String>> entry : businessHoursStoreIdMap.entrySet()){
+				if(entry.getValue().containsAll(businessHoursWeekdayList)) {
+					businessHoursStoreIdList.add(entry.getKey());
 				}
 			}
 		}
 
-		return whereStr;
+		return businessHoursStoreIdList;
 	}
 
 	/**
