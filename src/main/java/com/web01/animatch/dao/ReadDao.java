@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -283,8 +282,6 @@ public class ReadDao extends BaseDao{
 			for(String businessHoursWeekday:businessHoursWeekdayAry) {
 				businessHoursWeekdayList.add("00" + businessHoursWeekday);
 			}
-			//重複要素を取り除く
-			businessHoursWeekdayList = businessHoursWeekdayList.stream().distinct().collect(Collectors.toList());
 		}
 		String businessHoursStartTime = searchForm.getBusinessHoursStartTime();
 		String businessHoursEndTime = searchForm.getBusinessHoursEndTime();
