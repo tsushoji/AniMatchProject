@@ -12,6 +12,10 @@ public class SearchForm {
 
 	//メンバー
 	/**
+	 * ユーザID
+	 */
+	private String userId;
+	/**
 	 * 都道府県
 	 */
 	private String prefectures;

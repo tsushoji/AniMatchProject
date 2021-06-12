@@ -29,6 +29,7 @@
 <c:set var="paramSearchContents" value="&searchContents=" />
 <c:set var="paramTargetPage" value="?targetPage=" />
 <c:set var="paramStartPage" value="&startPage=" />
+<c:set var="paramUserId" value="&userId=" />
 <c:set var="paramPrefectures" value="&prefectures=" />
 <c:set var="paramCities" value="&cities=" />
 <c:set var="requestURLWithParam" value="${requestURL}${paramTargetPage}" />
@@ -86,7 +87,12 @@
 
 		                    <div class="main-search-left-form">
 
-		                        <div class="form-group mt-3">
+								<div class="form-group mt-3">
+		                            <label class="control-label">${labelTitlePart}&ndash;ID</label>
+		                            <input type="text" name="user-id" class="form-control" placeholder="未入力" value="<c:out value="${searchForm.userId}"/>">
+		                        </div>
+
+		                        <div class="form-group">
 		                            <label class="control-label" for="prefectures">${labelTitlePart}&ndash;都道府県</label>
 		                            <select name="prefectures" id="prefectures" class="custom-select form-control">
 		                                <option value="000">未選択</option>
@@ -123,12 +129,12 @@
 
 		                        	<div class="form-group">
 		                            	<label class="control-label">開始時間</label>
-		                            	<input type="time" name="form-start-time" class="form-control" value="<c:out value="${searchForm.businessHoursStartTime}"/>">
+		                            	<input type="time" name="businessHours-start-time" class="form-control" value="<c:out value="${searchForm.businessHoursStartTime}"/>">
 		                        	</div>
 
 		                        	<div class="form-group">
 		                            	<label class="control-label">終了時間</label>
-		                            	<input type="time" name="form-end-time" class="form-control" value="<c:out value="${searchForm.businessHoursEndTime}"/>">
+		                            	<input type="time" name="businessHours-end-time" class="form-control" value="<c:out value="${searchForm.businessHoursEndTime}"/>">
 		                        	</div>
 								</c:if>
 
@@ -199,7 +205,7 @@
 
 				                        <div class="col-9">
 
-				                            <h6 class="mt-2"><c:out value="${trimmerInfo.storeName}"/></h6>
+				                            <h6 class="mt-2"><c:out value="${trimmerInfo.storeName}"/><span class="ml-2">ID:<c:out value="${trimmerInfo.userId}"/></span></h6>
 
 				                            <div class="row mt-2 main-search-right-list-private-info-contents">
 
@@ -248,7 +254,7 @@
 
 				                        <div class="col-9">
 
-				                            <h6 class="mt-2"><c:out value="${ownerInfo.petNickName}"/></h6>
+				                            <h6 class="mt-2"><c:out value="${ownerInfo.petNickName}"/><span class="ml-2">ID:<c:out value="${ownerInfo.userId}"/></span></h6>
 
 				                            <div class="row mt-2 main-search-right-list-private-info-contents">
 
@@ -311,10 +317,10 @@
 			                	<fmt:parseNumber var="pageLinkNumStr" value="${status.index}" />
 			                	<c:choose>
 				                	<c:when test="${searchType == firstTypeKeyInitEnd}">
-				                		<li id="${pageItemIDInitName}${pageLinkNumStr}" class="page-item"><a class="page-link" href="${requestURLWithParam}${pageLinkNumStr}${paramStartPage}${displayStartPageIndexNum}${paramSearchContents}<c:out value="${searchForm.searchContents}"/>${paramPrefectures}<c:out value="${searchForm.prefectures}"/>${paramCities}<c:out value="${searchForm.cities}"/>${paramBusinessHoursWeekday}<c:out value="${searchForm.businessHoursInputValue}"/>${paramBusinessHoursStartTime}<c:out value="${searchForm.businessHoursStartTime}"/>${paramBusinessHoursEndTime}<c:out value="${searchForm.businessHoursEndTime}"/>">${status.index}</a></li>
+				                		<li id="${pageItemIDInitName}${pageLinkNumStr}" class="page-item"><a class="page-link" href="${requestURLWithParam}${pageLinkNumStr}${paramStartPage}${displayStartPageIndexNum}${paramSearchContents}<c:out value="${searchForm.searchContents}"/>${paramUserId}<c:out value="${searchForm.userId}"/>${paramPrefectures}<c:out value="${searchForm.prefectures}"/>${paramCities}<c:out value="${searchForm.cities}"/>${paramBusinessHoursWeekday}<c:out value="${searchForm.businessHoursInputValue}"/>${paramBusinessHoursStartTime}<c:out value="${searchForm.businessHoursStartTime}"/>${paramBusinessHoursEndTime}<c:out value="${searchForm.businessHoursEndTime}"/>">${status.index}</a></li>
 				                	</c:when>
 				                	<c:when test="${searchType == secondTypeKeyInitEnd}">
-				                		<li id="${pageItemIDInitName}${pageLinkNumStr}" class="page-item"><a class="page-link" href="${requestURLWithParam}${pageLinkNumStr}${paramStartPage}${displayStartPageIndexNum}${paramSearchContents}<c:out value="${searchForm.searchContents}"/>${paramPrefectures}<c:out value="${searchForm.prefectures}"/>${paramCities}<c:out value="${searchForm.cities}"/>${paramPetType}<c:out value="${searchForm.petType}"/>${paramPetSex}<c:out value="${searchForm.petSex}"/>">${status.index}</a></li>
+				                		<li id="${pageItemIDInitName}${pageLinkNumStr}" class="page-item"><a class="page-link" href="${requestURLWithParam}${pageLinkNumStr}${paramStartPage}${displayStartPageIndexNum}${paramSearchContents}<c:out value="${searchForm.searchContents}"/>${paramUserId}<c:out value="${searchForm.userId}"/>${paramPrefectures}<c:out value="${searchForm.prefectures}"/>${paramCities}<c:out value="${searchForm.cities}"/>${paramPetType}<c:out value="${searchForm.petType}"/>${paramPetSex}<c:out value="${searchForm.petSex}"/>">${status.index}</a></li>
 				                	</c:when>
 				                	<c:otherwise>
 				                		<li id="${pageItemIDInitName}${pageLinkNumStr}" class="page-item"><a class="page-link" href="${requestURLWithParam}${pageLinkNumStr}${paramStartPage}${displayStartPageIndexNum}">${status.index}</a></li>

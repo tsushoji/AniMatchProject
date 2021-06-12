@@ -193,11 +193,13 @@ public class ReadDao extends BaseDao{
 	private String createWhereOfOwnerInfo(SearchForm searchForm, List<HashMap<String, Object>> paramDataList, PropertiesService propertiesService) {
 		String whereOfOwnerInfo = null;
 
+		//ユーザIDWhere句作成
+		String whereOfUserId = createWhereOfUserId(searchForm, paramDataList);
+		whereOfOwnerInfo = createSqlClauseContent(whereOfUserId, whereOfOwnerInfo, LogicalOperatorType.AND);
+
 		//都道府県、市区町村Where句作成
 		String whereOfPrefecturesAndCities = createWhereOfPrefecturesAndCities(searchForm, paramDataList, propertiesService);
-		if(StringUtils.isNotEmpty(whereOfPrefecturesAndCities)) {
-			whereOfOwnerInfo = whereOfPrefecturesAndCities;
-		}
+		whereOfOwnerInfo = createSqlClauseContent(whereOfPrefecturesAndCities, whereOfOwnerInfo, LogicalOperatorType.AND);
 
 		//動物区分Where句作成
 		String petType = searchForm.getPetType();
@@ -246,8 +248,10 @@ public class ReadDao extends BaseDao{
 	 */
 	private String createWhereOfTrimmerInfo(SearchForm searchForm, List<HashMap<String, Object>> paramDataList, PropertiesService propertiesService) throws SQLException {
 		String whereOfTrimmerInfo = null;
-		//検索営業時間曜日List
-		List<String> businessHoursWeekdayList = new ArrayList<>();
+
+		//ユーザIDWhere句作成
+		String whereOfUserId = createWhereOfUserId(searchForm, paramDataList);
+		whereOfTrimmerInfo = createSqlClauseContent(whereOfUserId, whereOfTrimmerInfo, LogicalOperatorType.AND);
 
 		//都道府県、市区町村Where句作成
 		String whereOfPrefecturesAndCities = createWhereOfPrefecturesAndCities(searchForm, paramDataList, propertiesService);
@@ -277,6 +281,7 @@ public class ReadDao extends BaseDao{
 		}
 		//営業時間Where句作成
 		String inputBusinessHoursWeekday = searchForm.getBusinessHoursInputValue();
+		List<String> businessHoursWeekdayList = new ArrayList<>();
 		if(StringUtils.isNotEmpty(inputBusinessHoursWeekday)) {
 			String[] businessHoursWeekdayAry = inputBusinessHoursWeekday.split(",");
 			for(String businessHoursWeekday:businessHoursWeekdayAry) {
@@ -300,6 +305,24 @@ public class ReadDao extends BaseDao{
 		}
 
 		return whereOfTrimmerInfo;
+	}
+
+	/**
+	 * ユーザIDWhere句作成
+	 * @param searchForm 検索フォームオブジェクト
+	 * @param paramDataList SQLパラメータデータリスト
+	 * @return ユーザIDWhere句
+	 */
+	private String createWhereOfUserId(SearchForm searchForm, List<HashMap<String, Object>> paramDataList) {
+		String whereOfUserId = null;
+
+		String userId = searchForm.getUserId();
+		if(StringUtils.isNotEmpty(userId) && StringUtils.isNumeric(userId)) {
+			whereOfUserId = "user_id = ?";
+			paramDataList.add(createSqlParatemerMap(Integer.parseInt(userId), Types.INTEGER));
+		}
+
+		return whereOfUserId;
 	}
 
 	/**

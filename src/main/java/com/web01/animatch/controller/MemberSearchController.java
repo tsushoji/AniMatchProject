@@ -34,6 +34,14 @@ public class MemberSearchController extends HttpServlet {
 	 */
 	private static final String URL_PARAM_NAME_START_PAGE = "startPage";
 	/**
+	 * GET送信ユーザIDパラメータ名
+	 */
+	private static final String GET_URL_PARAM_NAME_USER_ID = "userId";
+	/**
+	 * POST送信ユーザIDパラメータ名
+	 */
+	private static final String POST_URL_PARAM_NAME_USER_ID = "user-id";
+	/**
 	 * 都道府県パラメータ名
 	 */
 	private static final String URL_PARAM_NAME_PREFECTURES = "prefectures";
@@ -72,7 +80,7 @@ public class MemberSearchController extends HttpServlet {
 	/**
 	 * POST送信開始時間パラメータ名
 	 */
-	private static final String POST_URL_PARAM_NAME_BUSINESS_HOURS_START_TIME = "form-start-time";
+	private static final String POST_URL_PARAM_NAME_BUSINESS_HOURS_START_TIME = "businessHours-start-time";
 	/**
 	 * GET送信終了時間パラメータ名
 	 */
@@ -80,7 +88,7 @@ public class MemberSearchController extends HttpServlet {
 	/**
 	 * POST送信終了時間パラメータ名
 	 */
-	private static final String POST_URL_PARAM_NAME_BUSINESS_HOURS_END_TIME = "form-end-time";
+	private static final String POST_URL_PARAM_NAME_BUSINESS_HOURS_END_TIME = "businessHours-end-time";
 	/**
 	 * GET送信検索内容パラメータ名
 	 */
@@ -141,6 +149,12 @@ public class MemberSearchController extends HttpServlet {
 			}
 		}
 
+		String tmpUserId;
+		if(isPost) {
+			tmpUserId = request.getParameter(POST_URL_PARAM_NAME_USER_ID);
+		}else {
+			tmpUserId = request.getParameter(GET_URL_PARAM_NAME_USER_ID);
+		}
 		String tmpPrefectures = request.getParameter(URL_PARAM_NAME_PREFECTURES);
 		String tmpCities = request.getParameter(URL_PARAM_NAME_CITIES);
 
@@ -181,6 +195,9 @@ public class MemberSearchController extends HttpServlet {
 		}
 
 		SearchForm searchForm = new SearchForm();
+		if(StringUtils.isNotEmpty(tmpUserId)) {
+			searchForm.setUserId(tmpUserId);
+		}
 		if(StringUtils.isNotEmpty(tmpPrefectures)) {
 			searchForm.setPrefectures(tmpPrefectures);
 		}else {

@@ -31,12 +31,12 @@ const setCitiesSelectBox = function(paramPrefectures){
 $(document).ready(function(){
     //アクション:「絞り込みクリア」ボタン押下
     $('.main-search-left-clear').click(function() {
-        let $form = $(this).parents('.container-fluid').find('.main-search-left-form');
-        $form.find('select').val('000');
+        let $leftForm = $(this).parents('.container-fluid').find('.main-search-left-form');
+        $leftForm.find('select').val('000');
 
-        $form.find('input[name="form-start-time"],input[name="form-end-time"]').val('');
+        $leftForm.find('input[name="user-id"],input[name="businessHours-start-time"],input[name="businessHours-end-time"]').val('');
 
-        $form.find('ul li').removeClass('active');
+        $leftForm.find('ul li').removeClass('active');
     });
 
     //アクション:「main-center-block」の検索ブロックをクリック
