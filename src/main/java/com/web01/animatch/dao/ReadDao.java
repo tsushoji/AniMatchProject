@@ -218,8 +218,8 @@ public class ReadDao extends BaseDao{
 		//検索内容Where句作成
 		String searchContents = searchForm.getSearchContents();
 		if(StringUtils.isNotEmpty(searchContents)) {
-			//空白区切りで検索された場合を考慮
-			String[] searchContentsAry = searchContents.split(" ");
+			//半角、全角スペース区切りで検索された場合を考慮
+			String[] searchContentsAry = searchContents.replaceAll("　", " ").split(" ");
 			for(String contents:searchContentsAry) {
 				String whereOfSearchContents = null;
 				String searchContentsParam = "%" + contents + "%";
@@ -263,8 +263,8 @@ public class ReadDao extends BaseDao{
 		String searchContents = searchForm.getSearchContents();
 
 		if(StringUtils.isNotEmpty(searchContents)) {
-			//空白区切りで検索された場合を考慮
-			String[] searchContentsAry = searchContents.split(" ");
+			//半角、全角スペース区切りで検索された場合を考慮
+			String[] searchContentsAry = searchContents.replaceAll("　", " ").split(" ");
 			for(String contents:searchContentsAry) {
 				String whereOfSearchContents = null;
 				String searchContentsParam = "%" + contents + "%";
