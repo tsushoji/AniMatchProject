@@ -85,19 +85,19 @@ public class BaseDao {
 	 * @return SQL句内容
 	 */
 	protected String createSqlClauseContent(String value, String clauseContents, LogicalOperatorType logicalOperatorType) {
-		if(StringUtils.isNotEmpty(clauseContents)) {
-			switch(logicalOperatorType) {
-				case AND:
-					clauseContents += " " + LogicalOperatorType.AND.toString() + " " + value;
-					break;
-				case OR:
-					clauseContents += " " + LogicalOperatorType.OR.toString() + " " + value;
-					break;
-				default:
-					break;
-			}
-		}else {
-			clauseContents = value;
+		if(StringUtils.isEmpty(clauseContents)) {
+			return value;
+		}
+
+		switch(logicalOperatorType) {
+			case AND:
+				clauseContents += " " + LogicalOperatorType.AND.toString() + " " + value;
+				break;
+			case OR:
+				clauseContents += " " + LogicalOperatorType.OR.toString() + " " + value;
+				break;
+			default:
+				break;
 		}
 		return clauseContents;
 	}
