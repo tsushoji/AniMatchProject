@@ -65,241 +65,237 @@
 
 	        <div class="container-fluid">
 
-				<form method="post" action="${requestURL}">
+	            <div class="row">
+	                <div class="col">
+	                	<c:if test="${searchType == firstTypeKeyInitEnd}">
+	                		<h1 class="mt-2"><img src="/animatch/images/icon_pad.png" alt="犬アイコン" class="main-search-header-img">飼い主専用</h1>
+	                	</c:if>
+	                	<c:if test="${searchType == secondTypeKeyInitEnd}">
+	                		<h1 class="mt-2"><img src="/animatch/images/icon_beauty_salon.png" alt="お店アイコン" class="main-search-header-img">お店専用</h1>
+	                	</c:if>
+	                    <p><span><c:out value="${searchCount}"/></span>件見つかりました。</p>
+	                </div>
+	            </div>
 
-		            <div class="row">
-		                <div class="col">
-		                	<c:if test="${searchType == firstTypeKeyInitEnd}">
-		                		<h1 class="mt-2"><img src="/animatch/images/icon_pad.png" alt="犬アイコン" class="main-search-header-img">飼い主専用</h1>
-		                	</c:if>
-		                	<c:if test="${searchType == secondTypeKeyInitEnd}">
-		                		<h1 class="mt-2"><img src="/animatch/images/icon_beauty_salon.png" alt="お店アイコン" class="main-search-header-img">お店専用</h1>
-		                	</c:if>
-		                    <p><span><c:out value="${searchCount}"/></span>件見つかりました。</p>
-		                </div>
-		            </div>
+	            <div class="row">
 
-		            <div class="row">
+	                <div class="col-xl-3 mr-0 mb-xl-3 main-search-left">
 
-		                <div class="col-xl-3 mr-0 mb-xl-3 main-search-left">
+	                    <h5 class="mt-3 px-0">絞り込み</h5>
 
-		                    <h5 class="mt-3 px-0">絞り込み</h5>
+	                    <div class="main-search-left-form">
 
-		                    <div class="main-search-left-form">
+							<div class="form-group mt-3">
+	                            <label class="control-label">${labelTitlePart}&ndash;ID</label>
+	                            <input type="text" id="user-id" class="form-control" placeholder="未入力" value="<c:out value="${searchForm.userId}"/>">
+	                        </div>
+
+	                        <div class="form-group">
+	                            <label class="control-label" for="prefectures">${labelTitlePart}&ndash;都道府県</label>
+	                            <select id="prefectures" class="custom-select form-control">
+	                                <option value="000">未選択</option>
+	                                <c:forEach items="${prefecturesMap}" var="prefecture">
+	                       				<option value="${prefecture.key}"
+	                       					<c:if test="${not empty searchForm.prefectures and searchForm.prefectures == prefecture.key}">selected</c:if>>
+	                       					${prefecture.value}
+	                       				</option>
+	                   				</c:forEach>
+	                            </select>
+	                        </div>
+
+	                        <div class="form-group">
+	                            <label class="control-label" for="cities">${labelTitlePart}&ndash;市町村</label>
+	                            <select id="cities" class="custom-select form-control">
+	                                <option value="000">未選択</option>
+	                            </select>
+	                            <input type="hidden" id="form-cities" value="<c:out value="${searchForm.cities}"/>">
+	                        </div>
+
+							<c:if test="${searchType == firstTypeKeyInitEnd}">
+								<div class="form-group">
+	                            	<label class="control-label">営業日</label>
+	                            	<div>
+	                                	<ul class="plugin-multipicker">
+	                                    	<c:forEach items="${weekdayMap}" var="weekday">
+	                                    		<c:set var="weekdayVal" value="${weekday.value}" />
+					                       		<li>${fn:substringBefore(weekdayVal, '曜日')}</li>
+					                   		</c:forEach>
+	                                	</ul>
+	                                	<input type="hidden" id="form-business-hours" value="<c:out value="${searchForm.businessHoursInputValue}"/>">
+	                            	</div>
+	                        	</div>
+
+	                        	<div class="form-group">
+	                            	<label class="control-label">開始時間</label>
+	                            	<input type="time" id="businessHours-start-time" class="form-control" value="<c:out value="${searchForm.businessHoursStartTime}"/>">
+	                        	</div>
+
+	                        	<div class="form-group">
+	                            	<label class="control-label">終了時間</label>
+	                            	<input type="time" id="businessHours-end-time" class="form-control" value="<c:out value="${searchForm.businessHoursEndTime}"/>">
+	                        	</div>
+							</c:if>
+
+							<c:if test="${searchType == secondTypeKeyInitEnd}">
+								<div class="form-group mt-3">
+	                            	<label class="control-label">動物&ndash;種別</label>
+	                            	<select id="type-pet" class="custom-select form-control">
+	                                	<option value="000">未選択</option>
+	                                	<c:forEach items="${petTypeMap}" var="petType">
+                        					<option value="${petType.key}"
+                        					<c:if test="${not empty searchForm.petType and searchForm.petType == petType.key}">selected</c:if>>
+                        						${petType.value}
+                        					</option>
+                    					</c:forEach>
+	                            	</select>
+	                        	</div>
 
 								<div class="form-group mt-3">
-		                            <label class="control-label">${labelTitlePart}&ndash;ID</label>
-		                            <input type="text" name="user-id" class="form-control" placeholder="未入力" value="<c:out value="${searchForm.userId}"/>">
-		                        </div>
-
-		                        <div class="form-group">
-		                            <label class="control-label" for="prefectures">${labelTitlePart}&ndash;都道府県</label>
-		                            <select name="prefectures" id="prefectures" class="custom-select form-control">
-		                                <option value="000">未選択</option>
-		                                <c:forEach items="${prefecturesMap}" var="prefecture">
-		                       				<option value="${prefecture.key}"
-		                       					<c:if test="${not empty searchForm.prefectures and searchForm.prefectures == prefecture.key}">selected</c:if>>
-		                       					${prefecture.value}
-		                       				</option>
-		                   				</c:forEach>
-		                            </select>
-		                        </div>
-
-		                        <div class="form-group">
-		                            <label class="control-label" for="cities">${labelTitlePart}&ndash;市町村</label>
-		                            <select name="cities" id="cities" class="custom-select form-control">
-		                                <option value="000">未選択</option>
-		                            </select>
-		                            <input type="hidden" id="form-cities" value="<c:out value="${searchForm.cities}"/>">
-		                        </div>
-
-								<c:if test="${searchType == firstTypeKeyInitEnd}">
-									<div class="form-group">
-		                            	<label class="control-label">営業日</label>
-		                            	<div>
-		                                	<ul class="plugin-multipicker">
-		                                    	<c:forEach items="${weekdayMap}" var="weekday">
-		                                    		<c:set var="weekdayVal" value="${weekday.value}" />
-						                       		<li>${fn:substringBefore(weekdayVal, '曜日')}</li>
-						                   		</c:forEach>
-		                                	</ul>
-		                                	<input type="hidden" id="form-business-hours" value="<c:out value="${searchForm.businessHoursInputValue}"/>">
-		                            	</div>
-		                        	</div>
-
-		                        	<div class="form-group">
-		                            	<label class="control-label">開始時間</label>
-		                            	<input type="time" name="businessHours-start-time" class="form-control" value="<c:out value="${searchForm.businessHoursStartTime}"/>">
-		                        	</div>
-
-		                        	<div class="form-group">
-		                            	<label class="control-label">終了時間</label>
-		                            	<input type="time" name="businessHours-end-time" class="form-control" value="<c:out value="${searchForm.businessHoursEndTime}"/>">
-		                        	</div>
-								</c:if>
-
-								<c:if test="${searchType == secondTypeKeyInitEnd}">
-									<div class="form-group mt-3">
-		                            	<label class="control-label">動物&ndash;種別</label>
-		                            	<select name="type-pet" class="custom-select form-control">
-		                                	<option value="000">未選択</option>
-		                                	<c:forEach items="${petTypeMap}" var="petType">
-	                        					<option value="${petType.key}"
-	                        					<c:if test="${not empty searchForm.petType and searchForm.petType == petType.key}">selected</c:if>>
-	                        						${petType.value}
-	                        					</option>
-	                    					</c:forEach>
-		                            	</select>
-		                        	</div>
-
-									<div class="form-group mt-3">
-		                            	<label class="control-label">動物&ndash;性別</label>
-		                            	<select name="sex-pet" class="custom-select form-control">
-		                                	<option value="000">未選択</option>
-		                                	<c:forEach items="${petSexMap}" var="petSex">
-	                        					<option value="${petSex.key}"
-	                        					<c:if test="${not empty searchForm.petSex and searchForm.petSex == petSex.key}">selected</c:if>>
-	                        						${petSex.value}
-	                        					</option>
-	                    					</c:forEach>
-		                            	</select>
-		                        	</div>
-								</c:if>
-
-		                        <div class="form-group">
-		                            <a class="main-search-left-clear">リセット</a>
-		                        </div>
-
-		                        <div class="form-group">
-		                            <input type="submit" class="btn btn-outline-primary col-xl-12 col-sm-6 main-search-left-select-btn" value="絞り込む">
-		                        </div>
-
-		                    </div>
-
-		                </div>
-
-		                <div class="col-xl-9 ml-0 mb-3 px-0 main-search-right">
-
-		                    <div class="main-search-right-form">
-
-		                        <div class="input-group my-3 col-11">
-		                            <input type="text" name="search-contents" class="form-control" placeholder="${searchType == firstTypeKeyInitEnd?'店舗名、アピールポイントについて、キーワードを入力':'ペット名、備考について、キーワードを入力' }" value="<c:out value="${searchForm.searchContents}"/>">
-		                            <span class="input-group-btn">
-		                                <button type="submit" class="btn btn-outline-primary"><img src="/animatch/images/icon_search.png" alt="検索アイコン"></button>
-		                            </span>
-		                        </div>
-
-		                    </div>
-
-							<c:if test="${not empty trimmerInfoList and searchType == firstTypeKeyInitEnd}">
-
-								<c:forEach items="${trimmerInfoList}" var="trimmerInfo">
-
-		                     		<div class="row main-search-right-list is-show-details-owner">
-
-				                        <div class="col-3 main-search-right-list-img">
-				                        	<c:if test="${not empty trimmerInfo.storeImageBase64}">
-				                            	<img src="data:image/png;base64,${trimmerInfo.storeImageBase64}" class="resize-img-base64">
-				                        	</c:if>
-				                        </div>
-
-				                        <div class="col-9">
-
-				                            <h6 class="mt-2"><c:out value="${trimmerInfo.storeName}"/><span class="ml-2">ID:<c:out value="${trimmerInfo.userId}"/></span></h6>
-
-				                            <div class="row mt-2 main-search-right-list-private-info-contents">
-
-				                                <div class="col-sm-3 p-0">
-				                                    <c:out value="${trimmerInfo.streetAddress}"/>
-				                                </div>
-
-												<c:if test="${not empty trimmerInfo.trimmerInfoBusinessHoursList}">
-													<c:forEach items="${trimmerInfo.trimmerInfoBusinessHoursList}" var="trimmerInfoBusinessHours">
-														<div class="col-sm-1 p-0">
-						                                    <span class="mr-1"><c:out value="${trimmerInfoBusinessHours.displayBusinessHours}"/></span><c:out value="${trimmerInfoBusinessHours.displayStartBusinessTime}"/>&sim;<c:out value="${trimmerInfoBusinessHours.displayEndBusinessTime}"/>
-						                                </div>
-					                                </c:forEach>
-				                                </c:if>
-
-				                            </div>
-
-				                            <p class="mt-2 line-break">
-				                            	<c:set var="storeCommitment" value="${trimmerInfo.storeCommitment}" />
-						                    	<c:forEach var="storeCommitmentStr" items="${fn:split(storeCommitment, newLine)}" >
-													<c:out value="${storeCommitmentStr}"/><br/>
-												</c:forEach>
-				                            </p>
-
-				                        </div>
-
-										<input type="hidden" class="trimmer-user-id" value="${trimmerInfo.userId}">
-
-				                    </div>
-
-		                 		</c:forEach>
-
+	                            	<label class="control-label">動物&ndash;性別</label>
+	                            	<select id="sex-pet" class="custom-select form-control">
+	                                	<option value="000">未選択</option>
+	                                	<c:forEach items="${petSexMap}" var="petSex">
+                        					<option value="${petSex.key}"
+                        					<c:if test="${not empty searchForm.petSex and searchForm.petSex == petSex.key}">selected</c:if>>
+                        						${petSex.value}
+                        					</option>
+                    					</c:forEach>
+	                            	</select>
+	                        	</div>
 							</c:if>
 
-							<c:if test="${not empty ownerInfoList and searchType == secondTypeKeyInitEnd}">
+	                        <div class="form-group">
+	                            <a id="main-search-left-clear" class="main-search-left-clear">リセット</a>
+	                        </div>
 
-								<c:forEach items="${ownerInfoList}" var="ownerInfo">
+	                        <div class="form-group">
+	                            <input type="submit" class="btn btn-outline-primary col-xl-12 col-sm-6 main-search-left-select-btn filter-btn" value="絞り込む">
+	                        </div>
 
-									<div class="row main-search-right-list is-show-details-trimmer">
+	                    </div>
 
-				                        <div class="col-3 main-search-right-list-img">
-				                        	<c:if test="${not empty ownerInfo.petImageBase64}">
-				                            	<img src="data:image/png;base64,${ownerInfo.petImageBase64}" class="resize-img-base64">
-				                        	</c:if>
-				                        </div>
+	                </div>
 
-				                        <div class="col-9">
+	                <div class="col-xl-9 ml-0 mb-3 px-0 main-search-right">
 
-				                            <h6 class="mt-2"><c:out value="${ownerInfo.petNickName}"/><span class="ml-2">ID:<c:out value="${ownerInfo.userId}"/></span></h6>
+	                    <div class="main-search-right-form">
 
-				                            <div class="row mt-2 main-search-right-list-private-info-contents">
+	                        <div class="input-group my-3 col-11">
+	                            <input type="text" id="search-contents" class="form-control" placeholder="${searchType == firstTypeKeyInitEnd?'店舗名、アピールポイントについて、キーワードを入力':'ペット名、備考について、キーワードを入力' }" value="<c:out value="${searchForm.searchContents}"/>">
+	                            <span class="input-group-btn">
+	                                <button type="submit" class="btn btn-outline-primary filter-btn"><img src="/animatch/images/icon_search.png" alt="検索アイコン"></button>
+	                            </span>
+	                        </div>
 
-				                                <div class="col-sm-3 p-0">
-				                                    <c:out value="${ownerInfo.streetAddress}"/>
-				                                </div>
+	                    </div>
 
-												<div class="col-sm-1 p-0">
-				                                	<c:if test="${not empty ownerInfo.petType}">
-				                                		<fmt:message bundle="${resource}" key="${petTypeKeyInitStr}${ownerInfo.petType}" var="ownerInfoPetTypeVal" />
-				                                    	<c:out value="${ownerInfoPetTypeVal}"/>
-				                                    </c:if>
-				                                </div>
+						<c:if test="${not empty trimmerInfoList and searchType == firstTypeKeyInitEnd}">
 
-				                                <div class="col-sm-1 p-0">
-				                                	<c:if test="${not empty ownerInfo.petSex}">
-				                                		<fmt:message bundle="${resource}" key="${petSexKeyInitStr}${ownerInfo.petSex}" var="ownerInfoPetSexVal" />
-				                                    	<c:out value="${ownerInfoPetSexVal}"/>
-				                                    </c:if>
-				                                </div>
+							<c:forEach items="${trimmerInfoList}" var="trimmerInfo">
 
-				                            </div>
+	                     		<div class="row main-search-right-list is-show-details-owner">
 
-				                            <p class="mt-2 line-break">
-				                            	<c:set var="petRemarks" value="${ownerInfo.petRemarks}" />
-						                    	<c:forEach var="petRemarksStr" items="${fn:split(petRemarks, newLine)}" >
-													<c:out value="${petRemarksStr}"/><br/>
-												</c:forEach>
-				                            </p>
+			                        <div class="col-3 main-search-right-list-img">
+			                        	<c:if test="${not empty trimmerInfo.storeImageBase64}">
+			                            	<img src="data:image/png;base64,${trimmerInfo.storeImageBase64}" class="resize-img-base64">
+			                        	</c:if>
+			                        </div>
 
-				                        </div>
+			                        <div class="col-9">
 
-										<input type="hidden" class="owner-user-id" value="${ownerInfo.userId}">
+			                            <h6 class="mt-2"><c:out value="${trimmerInfo.storeName}"/><span class="ml-2">ID:<c:out value="${trimmerInfo.userId}"/></span></h6>
 
-				                    </div>
+			                            <div class="row mt-2 main-search-right-list-private-info-contents">
 
-			                    </c:forEach>
+			                                <div class="col-sm-3 p-0">
+			                                    <c:out value="${trimmerInfo.streetAddress}"/>
+			                                </div>
 
-							</c:if>
+											<c:if test="${not empty trimmerInfo.trimmerInfoBusinessHoursList}">
+												<c:forEach items="${trimmerInfo.trimmerInfoBusinessHoursList}" var="trimmerInfoBusinessHours">
+													<div class="col-sm-1 p-0">
+					                                    <span class="mr-1"><c:out value="${trimmerInfoBusinessHours.displayBusinessHours}"/></span><c:out value="${trimmerInfoBusinessHours.displayStartBusinessTime}"/>&sim;<c:out value="${trimmerInfoBusinessHours.displayEndBusinessTime}"/>
+					                                </div>
+				                                </c:forEach>
+			                                </c:if>
 
-		                </div>
+			                            </div>
 
-		            </div>
+			                            <p class="mt-2 line-break">
+			                            	<c:set var="storeCommitment" value="${trimmerInfo.storeCommitment}" />
+					                    	<c:forEach var="storeCommitmentStr" items="${fn:split(storeCommitment, newLine)}" >
+												<c:out value="${storeCommitmentStr}"/><br/>
+											</c:forEach>
+			                            </p>
 
-				</form>
+			                        </div>
+
+									<input type="hidden" class="trimmer-user-id" value="${trimmerInfo.userId}">
+
+			                    </div>
+
+	                 		</c:forEach>
+
+						</c:if>
+
+						<c:if test="${not empty ownerInfoList and searchType == secondTypeKeyInitEnd}">
+
+							<c:forEach items="${ownerInfoList}" var="ownerInfo">
+
+								<div class="row main-search-right-list is-show-details-trimmer">
+
+			                        <div class="col-3 main-search-right-list-img">
+			                        	<c:if test="${not empty ownerInfo.petImageBase64}">
+			                            	<img src="data:image/png;base64,${ownerInfo.petImageBase64}" class="resize-img-base64">
+			                        	</c:if>
+			                        </div>
+
+			                        <div class="col-9">
+
+			                            <h6 class="mt-2"><c:out value="${ownerInfo.petNickName}"/><span class="ml-2">ID:<c:out value="${ownerInfo.userId}"/></span></h6>
+
+			                            <div class="row mt-2 main-search-right-list-private-info-contents">
+
+			                                <div class="col-sm-3 p-0">
+			                                    <c:out value="${ownerInfo.streetAddress}"/>
+			                                </div>
+
+											<div class="col-sm-1 p-0">
+			                                	<c:if test="${not empty ownerInfo.petType}">
+			                                		<fmt:message bundle="${resource}" key="${petTypeKeyInitStr}${ownerInfo.petType}" var="ownerInfoPetTypeVal" />
+			                                    	<c:out value="${ownerInfoPetTypeVal}"/>
+			                                    </c:if>
+			                                </div>
+
+			                                <div class="col-sm-1 p-0">
+			                                	<c:if test="${not empty ownerInfo.petSex}">
+			                                		<fmt:message bundle="${resource}" key="${petSexKeyInitStr}${ownerInfo.petSex}" var="ownerInfoPetSexVal" />
+			                                    	<c:out value="${ownerInfoPetSexVal}"/>
+			                                    </c:if>
+			                                </div>
+
+			                            </div>
+
+			                            <p class="mt-2 line-break">
+			                            	<c:set var="petRemarks" value="${ownerInfo.petRemarks}" />
+					                    	<c:forEach var="petRemarksStr" items="${fn:split(petRemarks, newLine)}" >
+												<c:out value="${petRemarksStr}"/><br/>
+											</c:forEach>
+			                            </p>
+
+			                        </div>
+
+									<input type="hidden" class="owner-user-id" value="${ownerInfo.userId}">
+
+			                    </div>
+
+		                    </c:forEach>
+
+						</c:if>
+
+	                </div>
+
+	            </div>
 
 	            <nav aria-label="ページ送りの実例">
 	                <ul class="pagination justify-content-center pb-3 mb-0">
@@ -337,6 +333,7 @@
 	            <input type="hidden" id="display-end-page-index" value="${displayEndPageIndexNum}">
 	            <input type="hidden" id="end-page" value="${endPage}">
 	            <input type="hidden" id="request-url" value="${requestURL}">
+	            <input type="hidden" id="search-type" value="${searchType}">
 
 	        </div>
 

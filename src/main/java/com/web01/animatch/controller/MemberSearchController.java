@@ -26,79 +26,6 @@ public class MemberSearchController extends HttpServlet {
 	 */
 	private static final long serialVersionUID = 1L;
 	/**
-	 * ページ番号パラメータ名
-	 */
-	private static final String URL_PARAM_NAME_TARGET_PAGE = "targetPage";
-	/**
-	 * ページリンク開始番号パラメータ名
-	 */
-	private static final String URL_PARAM_NAME_START_PAGE = "startPage";
-	/**
-	 * GET送信ユーザIDパラメータ名
-	 */
-	private static final String GET_URL_PARAM_NAME_USER_ID = "userId";
-	/**
-	 * POST送信ユーザIDパラメータ名
-	 */
-	private static final String POST_URL_PARAM_NAME_USER_ID = "user-id";
-	/**
-	 * 都道府県パラメータ名
-	 */
-	private static final String URL_PARAM_NAME_PREFECTURES = "prefectures";
-	/**
-	 * 市区町村パラメータ名
-	 */
-	private static final String URL_PARAM_NAME_CITIES = "cities";
-	/**
-	 * GET送信動物区分パラメータ名
-	 */
-	private static final String GET_URL_PARAM_NAME_PET_TYPE = "petType";
-	/**
-	 * POST送信動物区分パラメータ名
-	 */
-	private static final String POST_URL_PARAM_NAME_PET_TYPE = "type-pet";
-	/**
-	 * GET送信動物性別パラメータ名
-	 */
-	private static final String GET_URL_PARAM_NAME_PET_SEX = "petSex";
-	/**
-	 * POST送信動物性別パラメータ名
-	 */
-	private static final String POST_URL_PARAM_NAME_PET_SEX = "sex-pet";
-	/**
-	 * GET送信曜日パラメータ名
-	 */
-	private static final String GET_URL_PARAM_NAME_BUSINESS_HOURS_WEEKDAY = "businessHoursWeekday";
-	/**
-	 * POST送信曜日パラメータ名
-	 */
-	private static final String POST_URL_PARAM_NAME_BUSINESS_HOURS_WEEKDAY = "business-hours";
-	/**
-	 * GET送信開始時間パラメータ名
-	 */
-	private static final String GET_URL_PARAM_NAME_BUSINESS_HOURS_START_TIME = "businessHoursStartTime";
-	/**
-	 * POST送信開始時間パラメータ名
-	 */
-	private static final String POST_URL_PARAM_NAME_BUSINESS_HOURS_START_TIME = "businessHours-start-time";
-	/**
-	 * GET送信終了時間パラメータ名
-	 */
-	private static final String GET_URL_PARAM_NAME_BUSINESS_HOURS_END_TIME = "businessHoursEndTime";
-	/**
-	 * POST送信終了時間パラメータ名
-	 */
-	private static final String POST_URL_PARAM_NAME_BUSINESS_HOURS_END_TIME = "businessHours-end-time";
-	/**
-	 * GET送信検索内容パラメータ名
-	 */
-	private static final String GET_URL_PARAM_NAME_SEARCH_CONTENTS = "searchContents";
-	/**
-	 * POST送信検索内容パラメータ名
-	 */
-	private static final String POST_URL_PARAM_NAME_SEARCH_CONTENTS = "search-contents";
-
-	/**
 	 * デフォルト値
 	 */
 	private static final String SELECT_DEFAULT_VALUE = "000";
@@ -117,84 +44,32 @@ public class MemberSearchController extends HttpServlet {
 	 * @param response レスポンスオブジェクト
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		setSearchDisplay(request, response, false);
-	}
-
-	/**
-	 * post送信
-	 * @param request リクエストオブジェクト
-	 * @param response レスポンスオブジェクト
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		setSearchDisplay(request, response, true);
-	}
-
-	/**
-	 * 検索結果画面セット
-	 * @param request リクエストオブジェクト
-	 * @param response レスポンスオブジェクト
-	 * @param isPost POST送信であるか否か
-	 */
-	protected void setSearchDisplay(HttpServletRequest request, HttpServletResponse response, boolean isPost) throws ServletException, IOException {
 		String reqURL = request.getRequestURI();
 		SearchService searchService = new SearchService(reqURL.substring(reqURL.lastIndexOf("/") + 1, reqURL.length()));
 		int targetPage = 1;
 		int startPage = 1;
-		if(!isPost) {
-			String tmpTargetPage = request.getParameter(URL_PARAM_NAME_TARGET_PAGE);
-			String tmpStartPage = request.getParameter(URL_PARAM_NAME_START_PAGE);
-			if(StringUtils.isNotEmpty(tmpTargetPage) && StringUtils.isNotEmpty(tmpStartPage) && StringUtils.isNumeric(tmpTargetPage) && StringUtils.isNumeric(tmpStartPage)) {
-				targetPage = Integer.parseInt(tmpTargetPage);
-				startPage = Integer.parseInt(tmpStartPage);
-			}
-		}
-
-		String tmpUserId;
-		if(isPost) {
-			tmpUserId = request.getParameter(POST_URL_PARAM_NAME_USER_ID);
-		}else {
-			tmpUserId = request.getParameter(GET_URL_PARAM_NAME_USER_ID);
-		}
-		String tmpPrefectures = request.getParameter(URL_PARAM_NAME_PREFECTURES);
-		String tmpCities = request.getParameter(URL_PARAM_NAME_CITIES);
-
-		String tmpPetType;
-		String tmpPetSex;
-		if(isPost) {
-			tmpPetType = request.getParameter(POST_URL_PARAM_NAME_PET_TYPE);
-			tmpPetSex = request.getParameter(POST_URL_PARAM_NAME_PET_SEX);
-		}else {
-			tmpPetType = request.getParameter(GET_URL_PARAM_NAME_PET_TYPE);
-			tmpPetSex = request.getParameter(GET_URL_PARAM_NAME_PET_SEX);
-		}
-
-		String tmpBusinessHoursWeekday;
-		if(isPost) {
-			tmpBusinessHoursWeekday = request.getParameter(POST_URL_PARAM_NAME_BUSINESS_HOURS_WEEKDAY);
-		}else {
-			tmpBusinessHoursWeekday = request.getParameter(GET_URL_PARAM_NAME_BUSINESS_HOURS_WEEKDAY);
-		}
-		String tmpBusinessHoursStartTime;
-		if(isPost) {
-			tmpBusinessHoursStartTime = request.getParameter(POST_URL_PARAM_NAME_BUSINESS_HOURS_START_TIME);
-		}else {
-			tmpBusinessHoursStartTime = request.getParameter(GET_URL_PARAM_NAME_BUSINESS_HOURS_START_TIME);
-		}
-		String tmpBusinessHoursEndTime;
-		if(isPost) {
-			tmpBusinessHoursEndTime = request.getParameter(POST_URL_PARAM_NAME_BUSINESS_HOURS_END_TIME);
-		}else {
-			tmpBusinessHoursEndTime = request.getParameter(GET_URL_PARAM_NAME_BUSINESS_HOURS_END_TIME);
-		}
-
-		String tmpSearchContents;
-		if(isPost) {
-			tmpSearchContents = request.getParameter(POST_URL_PARAM_NAME_SEARCH_CONTENTS);
-		}else {
-			tmpSearchContents = request.getParameter(GET_URL_PARAM_NAME_SEARCH_CONTENTS);
+		String tmpTargetPage = request.getParameter("targetPage");
+		String tmpStartPage = request.getParameter("startPage");
+		if(StringUtils.isNotEmpty(tmpTargetPage) && StringUtils.isNotEmpty(tmpStartPage) && StringUtils.isNumeric(tmpTargetPage) && StringUtils.isNumeric(tmpStartPage)) {
+			targetPage = Integer.parseInt(tmpTargetPage);
+			startPage = Integer.parseInt(tmpStartPage);
 		}
 
 		SearchForm searchForm = new SearchForm();
+
+		String tmpUserId = request.getParameter("userId");
+		String tmpPrefectures = request.getParameter("prefectures");
+		String tmpCities = request.getParameter("cities");
+
+		String tmpPetType = request.getParameter("petType");
+		String tmpPetSex = request.getParameter("petSex");
+
+		String tmpBusinessHoursWeekday = request.getParameter("businessHoursWeekday");
+		String tmpBusinessHoursStartTime = request.getParameter("businessHoursStartTime");
+		String tmpBusinessHoursEndTime = request.getParameter("businessHoursEndTime");
+
+		String tmpSearchContents = request.getParameter("searchContents");
+
 		if(StringUtils.isNotEmpty(tmpUserId)) {
 			searchForm.setUserId(tmpUserId);
 		}
@@ -236,5 +111,14 @@ public class MemberSearchController extends HttpServlet {
 			RequestDispatcher dispatcher = request.getRequestDispatcher(path);
 			dispatcher.forward(request, response);
 		}
+	}
+
+	/**
+	 * post送信
+	 * @param request リクエストオブジェクト
+	 * @param response レスポンスオブジェクト
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doGet(request, response);
 	}
 }

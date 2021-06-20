@@ -30,13 +30,84 @@ const setCitiesSelectBox = function(paramPrefectures){
 
 $(document).ready(function(){
     //アクション:「絞り込みクリア」ボタン押下
-    $('.main-search-left-clear').click(function() {
+    $('#main-search-left-clear').click(function() {
         let $leftForm = $(this).parents('.container-fluid').find('.main-search-left-form');
         $leftForm.find('select').val('000');
 
-        $leftForm.find('input[name="user-id"],input[name="businessHours-start-time"],input[name="businessHours-end-time"]').val('');
+        $leftForm.find('#user-id, #businessHours-start-time, #businessHours-end-time').val('');
 
         $leftForm.find('ul li').removeClass('active');
+    });
+
+	//アクション:「検索」、「絞り込み」ボタン押下
+    $('.filter-btn').click(function() {
+		//飼い主区分
+    	const ownerType = '001';
+    	//トリマー区分
+    	const trimmerType = '002';
+
+		let reqURL = "/animatch/member/search/";
+		let inputCount = 0;
+
+		let registType = $('#search-type').val();
+
+		if(registType === ownerType){
+			reqURL += "owner";
+			let businessHoursWeekday = $('input[name="business-hours"]').val();
+			if(businessHoursWeekday){
+				reqURL = setReqURLParam(reqURL, 'businessHoursWeekday', businessHoursWeekday);
+				inputCount++;
+			}
+			let businessHoursStartTime = $('#businessHours-start-time').val();
+			if(businessHoursStartTime){
+				reqURL = setReqURLParam(reqURL, 'businessHoursStartTime', businessHoursStartTime);
+				inputCount++;
+			}
+			let businessHoursEndTime = $('#businessHours-end-time').val();
+			if(businessHoursEndTime){
+				reqURL = setReqURLParam(reqURL, 'businessHoursEndTime', businessHoursEndTime);
+				inputCount++;
+			}
+		}else if(registType === trimmerType){
+			reqURL += "trimmer";
+			let petType = $('#type-pet option:selected').val();
+			if(petType){
+				reqURL = setReqURLParam(reqURL, 'petType', petType);
+				inputCount++;
+			}
+			let petSex = $('#sex-pet option:selected').val();
+			if(petSex){
+				reqURL = setReqURLParam(reqURL, 'petSex', petSex);
+				inputCount++;
+			}
+		}
+
+		let userId = $('#user-id').val();
+		if(userId){
+			reqURL = setReqURLParam(reqURL, 'userId', userId);
+			inputCount++;
+		}
+		let prefectures = $('#prefectures option:selected').val();
+		if(prefectures){
+			reqURL = setReqURLParam(reqURL, 'prefectures', prefectures)
+			inputCount++;;
+		}
+		let cities = $('#cities option:selected').val();
+		if(prefectures){
+			reqURL = setReqURLParam(reqURL, 'cities', cities);
+			inputCount++;
+		}
+
+		let searchContents = $('search-contents').val();
+		if(searchContents){
+			reqURL = setReqURLParam(reqURL, 'searchContents', searchContents);
+			inputCount++;
+		}
+
+		if(inputCount > 0){
+			console.log(reqURL);
+			location.href = reqURL;
+		}
     });
 
     //アクション:「main-center-block」の検索ブロックをクリック

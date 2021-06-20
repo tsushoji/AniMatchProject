@@ -199,7 +199,9 @@ public class ReadDao extends BaseDao{
 
 		//都道府県、市区町村Where句作成
 		String whereOfPrefecturesAndCities = createWhereOfPrefecturesAndCities(searchForm, paramDataList, propertiesService);
-		whereOfOwnerInfo = createSqlClauseContent(whereOfPrefecturesAndCities, whereOfOwnerInfo, LogicalOperatorType.AND);
+		if(StringUtils.isNotEmpty(whereOfPrefecturesAndCities)) {
+			whereOfOwnerInfo = createSqlClauseContent(whereOfPrefecturesAndCities, whereOfOwnerInfo, LogicalOperatorType.AND);
+		}
 
 		//動物区分Where句作成
 		String petType = searchForm.getPetType();
@@ -256,7 +258,7 @@ public class ReadDao extends BaseDao{
 		//都道府県、市区町村Where句作成
 		String whereOfPrefecturesAndCities = createWhereOfPrefecturesAndCities(searchForm, paramDataList, propertiesService);
 		if(StringUtils.isNotEmpty(whereOfPrefecturesAndCities)) {
-			whereOfTrimmerInfo = whereOfPrefecturesAndCities;
+			whereOfTrimmerInfo = createSqlClauseContent(whereOfPrefecturesAndCities, whereOfTrimmerInfo, LogicalOperatorType.AND);
 		}
 
 		//検索内容Where句作成
@@ -290,18 +292,20 @@ public class ReadDao extends BaseDao{
 		}
 		String businessHoursStartTime = searchForm.getBusinessHoursStartTime();
 		String businessHoursEndTime = searchForm.getBusinessHoursEndTime();
-		//該当する店舗IDリスト
-		List<Integer> storeIdList = findBusinessHoursStoreIdByStoreId(businessHoursWeekdayList, businessHoursStartTime, businessHoursEndTime);
-		ArrayList<String> storeIdParams = new ArrayList<>();
-		for(int storeId:storeIdList) {
-			storeIdParams.add("?");
-			paramDataList.add(createSqlParatemerMap(storeId, Types.INTEGER));
-		}
-		if(storeIdParams.size() > 0) {
-			whereOfTrimmerInfo = createSqlClauseContent("store_id IN (" + String.join(",", storeIdParams) + ")", whereOfTrimmerInfo, LogicalOperatorType.AND);
-		}
-		if((StringUtils.isNotEmpty(inputBusinessHoursWeekday) || StringUtils.isNotEmpty(businessHoursStartTime) || StringUtils.isNotEmpty(businessHoursEndTime)) && storeIdList.size() == 0) {
-			isExistTrimmerInfoByStartDataRowNumAndEndDataRowNumAndSearchForm = false;
+		if(StringUtils.isNotEmpty(inputBusinessHoursWeekday) || StringUtils.isNotEmpty(businessHoursStartTime) || StringUtils.isNotEmpty(businessHoursEndTime)) {
+			//該当する店舗IDリスト
+			List<Integer> storeIdList = findBusinessHoursStoreIdByStoreId(businessHoursWeekdayList, businessHoursStartTime, businessHoursEndTime);
+			ArrayList<String> storeIdParams = new ArrayList<>();
+			for(int storeId:storeIdList) {
+				storeIdParams.add("?");
+				paramDataList.add(createSqlParatemerMap(storeId, Types.INTEGER));
+			}
+			if(storeIdParams.size() > 0) {
+				whereOfTrimmerInfo = createSqlClauseContent("store_id IN (" + String.join(",", storeIdParams) + ")", whereOfTrimmerInfo, LogicalOperatorType.AND);
+			}
+			if(storeIdList.size() == 0) {
+				isExistTrimmerInfoByStartDataRowNumAndEndDataRowNumAndSearchForm = false;
+			}
 		}
 
 		return whereOfTrimmerInfo;
