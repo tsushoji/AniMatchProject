@@ -8,9 +8,9 @@ import java.sql.Time;
 import java.sql.Types;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -370,14 +370,22 @@ public class ReadDao extends BaseDao{
 		List<Integer> businessHoursStoreIdList = new ArrayList<>();
 		List<HashMap<String, Object>> businessHoursStoreIdDataList = new ArrayList<>();
 		String whereStr = null;
+		String existsSQL = "EXISTS(SELECT * FROM t_business_hours AS t_business_hours_*1 WHERE t_business_hours_*1.store_id = t_business_hours.store_id AND t_business_hours_*1.business_day = ?)";
+		List<String> businessHoursWeekdayMasterList = new ArrayList<>(Arrays.asList("000", "001", "002", "003", "004", "005", "006"));
 
-		ArrayList<String> businessDayParams = new ArrayList<>();
-		for(String businessHoursWeekday:businessHoursWeekdayList) {
-			businessDayParams.add("?");
-			businessHoursStoreIdDataList.add(createSqlParatemerMap(businessHoursWeekday, Types.VARCHAR));
-		}
-		if(businessDayParams.size() > 0) {
-			whereStr = "business_day IN (" + String.join(",", businessDayParams) + ")";
+		// 曜日が入力されている場合
+		if(businessHoursWeekdayList.size() > 0) {
+			for(String businessHoursWeekdayMaster:businessHoursWeekdayMasterList) {
+				String tmpExistsSQL;
+				if(businessHoursWeekdayList.contains(businessHoursWeekdayMaster)) {
+					tmpExistsSQL = existsSQL.replace("*1", businessHoursWeekdayMaster);
+				}else {
+					tmpExistsSQL = " NOT " + existsSQL.replace("*1", businessHoursWeekdayMaster);
+				}
+				businessHoursStoreIdDataList.add(createSqlParatemerMap(businessHoursWeekdayMaster, Types.VARCHAR));
+
+				whereStr = createSqlClauseContent(tmpExistsSQL, whereStr, LogicalOperatorType.AND);
+			}
 		}
 
 		if(StringUtils.isNotEmpty(startBusinessHoursTime)) {
@@ -400,39 +408,6 @@ public class ReadDao extends BaseDao{
 			}
 		} catch(SQLException e) {
 			throw e;
-		}
-
-		//営業時間曜日が複数入力された場合
-		if(businessHoursWeekdayList.size() > 1) {
-			HashMap<Integer, List<String>> businessHoursStoreIdMap = new HashMap<>();
-			whereStr = "store_id = ?";
-			for(Integer businessHoursStoreId:businessHoursStoreIdList) {
-				List<String> weekdayList = new ArrayList<>();
-
-				// パラメータデータリストリセット
-				businessHoursStoreIdDataList.clear();
-				businessHoursStoreIdDataList.add(createSqlParatemerMap(businessHoursStoreId, Types.INTEGER));
-
-				try (PreparedStatement pstmt = createSelectStatement("business_day", "t_business_hours", whereStr, "null", null, businessHoursStoreIdDataList);){
-					ResultSet rs = pstmt.executeQuery();
-
-					while(rs.next()) {
-						weekdayList.add(rs.getString("business_day"));
-					}
-				} catch(SQLException e) {
-					throw e;
-				}
-
-				businessHoursStoreIdMap.put(businessHoursStoreId, weekdayList);
-			}
-
-			//営業時間店舗IDリストリセット
-			businessHoursStoreIdList.clear();
-			for(Map.Entry<Integer, List<String>> entry : businessHoursStoreIdMap.entrySet()){
-				if(entry.getValue().containsAll(businessHoursWeekdayList)) {
-					businessHoursStoreIdList.add(entry.getKey());
-				}
-			}
 		}
 
 		return businessHoursStoreIdList;

@@ -37,6 +37,10 @@ $(document).ready(function(){
         $leftForm.find('#user-id, #businessHours-start-time, #businessHours-end-time').val('');
 
         $leftForm.find('ul li').removeClass('active');
+        $leftForm.find('ul li').removeClass('left-side');
+        $leftForm.find('ul li').removeClass('right-side');
+        $leftForm.find('ul li').removeClass('center-side');
+        $leftForm.find('input[name="business-hours"]').val('');
     });
 
 	//アクション:「検索」、「絞り込み」ボタン押下
