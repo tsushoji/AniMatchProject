@@ -7,8 +7,6 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
-<c:set var="petTypeKeyInitStr" value="pet.type." />
-<c:set var="petSexKeyInitStr" value="pet.sex." />
 <c:set var="firstTypeKeyInitEnd" value="001" />
 <c:set var="secondTypeKeyInitEnd" value="002" />
 <c:set var="oneStr" value="1" />
@@ -51,8 +49,6 @@
     </head>
 
 	<body>
-
-		<fmt:setBundle basename="animatch" var="resource"/>
 
 		<!--ヘッダー-->
     	<header>
@@ -261,17 +257,11 @@
 			                                </div>
 
 											<div class="col-sm-1 p-0">
-			                                	<c:if test="${not empty ownerInfo.petType}">
-			                                		<fmt:message bundle="${resource}" key="${petTypeKeyInitStr}${ownerInfo.petType}" var="ownerInfoPetTypeVal" />
-			                                    	<c:out value="${ownerInfoPetTypeVal}"/>
-			                                    </c:if>
+												<c:out value="${ownerInfo.petType}"/>
 			                                </div>
 
 			                                <div class="col-sm-1 p-0">
-			                                	<c:if test="${not empty ownerInfo.petSex}">
-			                                		<fmt:message bundle="${resource}" key="${petSexKeyInitStr}${ownerInfo.petSex}" var="ownerInfoPetSexVal" />
-			                                    	<c:out value="${ownerInfoPetSexVal}"/>
-			                                    </c:if>
+			                                	<c:out value="${ownerInfo.petSex}"/>
 			                                </div>
 
 			                            </div>

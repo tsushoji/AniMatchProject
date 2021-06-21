@@ -177,9 +177,12 @@ public class SearchService extends BaseService{
 				case TRIMMER:
 					List<OwnerInfo> ownerInfoList = readDao.findOwnerInfoByStartDataRowNumAndEndDataRowNumAndSearchForm(this, searchStartDataPos, searchEndDataPos, searchForm);
 
-					//画像をBase64化
 					for(OwnerInfo ownerInfo:ownerInfoList) {
+						//画像をBase64化
 						ownerInfo.setPetImageBase64(convertByteAryToBase64(ownerInfo.getPetImage()));
+						//会員検索画面表示文字セット
+						ownerInfo.setPetType(this.propertiesService.getValue(PropertiesService.PET_TYPE_KEY_INIT_STR + ownerInfo.getPetType()));
+						ownerInfo.setPetSex(this.propertiesService.getValue(PropertiesService.PET_SEX_KEY_INIT_STR + ownerInfo.getPetSex()));
 					}
 					request.setAttribute("ownerInfoList", ownerInfoList);
 					break;
