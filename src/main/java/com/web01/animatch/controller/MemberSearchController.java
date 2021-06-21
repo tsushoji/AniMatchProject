@@ -112,13 +112,4 @@ public class MemberSearchController extends HttpServlet {
 			dispatcher.forward(request, response);
 		}
 	}
-
-	/**
-	 * post送信
-	 * @param request リクエストオブジェクト
-	 * @param response レスポンスオブジェクト
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		doGet(request, response);
-	}
 }
