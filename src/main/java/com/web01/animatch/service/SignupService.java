@@ -565,11 +565,11 @@ public class SignupService extends BaseService{
 				case OWNER:
 					Pet pet = getParameterPetDto(request, registForm);
 					user.setPet(pet);
-					setAttributeRegistOwner(request, user);
 					if(this.canRegist) {
 						//DB登録処理前に登録成功失敗リセット
 						this.canRegist = false;
 						this.canRegist = createDao.registOwner(user);
+						setAttributeRegistOwner(request, user);
 					}
 					break;
 
@@ -579,11 +579,11 @@ public class SignupService extends BaseService{
 					List<BusinessHours> businessHoursList = getParameterBusinessHoursDto(registForm);
 					store.setBusinessHoursList(businessHoursList);
 					user.setStore(store);
-					setAttributeRegistTrimmer(request, user);
 					if(this.canRegist) {
 						//DB登録処理前に登録成功失敗リセット
 						this.canRegist = false;
 						this.canRegist = createDao.registTrimmer(user);
+						setAttributeRegistTrimmer(request, user);
 					}
 					break;
 
@@ -777,6 +777,17 @@ public class SignupService extends BaseService{
 	 */
 	private void setAttributeRegistOwner(HttpServletRequest request, User user) {
 		Pet pet = user.getPet();
+
+		//登録完了画面表示文字セット
+		String registTypeName = this.propertiesService.getValue(PropertiesService.REGIST_TYPE_KEY_INIT_STR + this.getRegistTypeId());
+		String userSex = this.propertiesService.getValue(PropertiesService.HUMAN_SEX_KEY_INIT_STR + user.getSex());
+		String petSex = this.propertiesService.getValue(PropertiesService.PET_SEX_KEY_INIT_STR + pet.getSex());
+		String petType = this.propertiesService.getValue(PropertiesService.PET_TYPE_KEY_INIT_STR + pet.getType());
+		user.setSex(userSex);
+		pet.setSex(petSex);
+		pet.setType(petType);
+
+		request.setAttribute("registTypeName", registTypeName);
 		request.setAttribute("registType", this.getRegistTypeId());
 		request.setAttribute("user", user);
 		request.setAttribute("pet", pet);
@@ -791,12 +802,23 @@ public class SignupService extends BaseService{
 	 */
 	private void setAttributeRegistTrimmer(HttpServletRequest request, User user) {
 		Store store = user.getStore();
+
+		//登録完了画面表示文字セット
+		String registTypeName = this.propertiesService.getValue(PropertiesService.REGIST_TYPE_KEY_INIT_STR + this.getRegistTypeId());
+		String userSex = this.propertiesService.getValue(PropertiesService.HUMAN_SEX_KEY_INIT_STR + user.getSex());
+		user.setSex(userSex);
+		List<BusinessHours> businessHoursList = store.getBusinessHoursList();
+		for(BusinessHours businessHours:businessHoursList) {
+			businessHours.setBusinessDay(this.propertiesService.getValue(PropertiesService.WEEKDAY_KEY_INIT_STR + businessHours.getBusinessDay()));
+		}
+
+		request.setAttribute("registTypeName", registTypeName);
 		request.setAttribute("registType", this.getRegistTypeId());
 		request.setAttribute("user", user);
 		request.setAttribute("store", store);
 		//画像をBase64化
 		request.setAttribute("storeImage", convertByteAryToBase64(store.getImage()));
-		request.setAttribute("businessHoursList", store.getBusinessHoursList());
+		request.setAttribute("businessHoursList", businessHoursList);
 	}
 
 }

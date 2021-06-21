@@ -292,7 +292,7 @@
 	                       	<li>${fn:substringBefore(weekday.value, '曜日')}</li>
 	                   	</c:forEach>
                     </ul>
-                    <input type="hidden" id="form-business-hours" value="${registForm.formBusinessHoursInputValue}">
+                    <input type="hidden" id="form-business-hours" value="<c:out value="${registForm.formBusinessHoursInputValue}"/>">
                 </div>
             </div>
 

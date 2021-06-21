@@ -7,13 +7,6 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
-<c:set var="registTypeKeyInitStr" value="regist.type." />
-<c:set var="humanSexKeyInitStr" value="human.sex." />
-<c:set var="prefecturesKeyInitStr" value="prefectures." />
-<c:set var="petSexKeyInitStr" value="pet.sex." />
-<c:set var="petTypeKeyInitStr" value="pet.type." />
-<c:set var="weekdayKeyInitStr" value="weekday." />
-
 <c:set var="newLine" value="${System.lineSeparator()}" />
 
 <!DOCTYPE html>
@@ -53,7 +46,7 @@
 
 				<div>
 		            <label class="regist-complete-item-name"> &lt;登録区分&gt;</label>
-		            <p><fmt:message bundle="${resource}" key="${registTypeKeyInitStr}${registType}" /></p>
+		            <p><c:out value="${registTypeName}"/></p>
 		        </div>
 
 	            <div>
@@ -68,11 +61,7 @@
 
 	            <div>
 	                <label class="regist-complete-item-name">&lt;性別&gt;</label>
-	                <p>
-	                	<c:if test="${user.sex != null}">
-	                		<fmt:message bundle="${resource}" key="${humanSexKeyInitStr}${user.sex}" />
-	                	</c:if>
-	                </p>
+	                <p><c:out value="${user.sex}"/></p>
 	            </div>
 
 	            <div>
@@ -126,20 +115,12 @@
 
 		            <div>
 		                <label class="regist-complete-item-name">&lt;ペット性別&gt;</label>
-		                <p>
-		                	<c:if test="${pet.sex != null}">
-		                		<fmt:message bundle="${resource}" key="${petSexKeyInitStr}${pet.sex}" />
-		                	</c:if>
-		                </p>
+		                <p><c:out value="${pet.sex}"/></p>
 		            </div>
 
 		            <div>
 		                <label class="regist-complete-item-name">&lt;ペット種別&gt;</label>
-		                <p>
-			                <c:if test="${pet.type != null}">
-			                	<fmt:message bundle="${resource}" key="${petTypeKeyInitStr}${pet.type}" />
-			                </c:if>
-		                </p>
+		                <p><c:out value="${pet.type}"/></p>
 		            </div>
 
 		            <div>
@@ -174,11 +155,10 @@
 						<label class="regist-complete-item-name">&lt;営業日時&gt;</label>
 
 						<c:forEach items="${businessHoursList}" var="businessHours">
-							<fmt:message bundle="${resource}" key="${weekdayKeyInitStr}${businessHours.businessDay}" var="businessDay" />
 
 							<div>
 
-				                <p class="regist-complete-item-name under-line">${businessDay}</p>
+				                <p class="regist-complete-item-name under-line"><c:out value="${businessHours.businessDay}"/></p>
 
 				                <div>
 				                    <label class="regist-complete-item-name">&lt;開始時間&gt;</label>
