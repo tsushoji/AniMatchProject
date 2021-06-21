@@ -8,12 +8,27 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.HashMap;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * BaseDaoクラス
  * @author Tsuji
  * @version 1.0
  */
 public class BaseDao {
+
+	protected enum LogicalOperatorType {
+
+		/**
+		 * 論理積
+		 */
+		AND,
+		/**
+		 * 論理和
+		 */
+		OR,
+		;
+	}
 
 	/**
 	 * SQLパラメータ設定
@@ -60,5 +75,30 @@ public class BaseDao {
 		ret.put("value", value);
 		ret.put("dataType", dataType);
 		return ret;
+	}
+
+	/**
+	 * SQL句内容作成
+	 * @param value 値
+	 * @param clauseContents 句内容
+	 * @param logicalOperatorType 論理演算子種別
+	 * @return SQL句内容
+	 */
+	protected String createSqlClauseContent(String value, String clauseContents, LogicalOperatorType logicalOperatorType) {
+		if(StringUtils.isEmpty(clauseContents)) {
+			return value;
+		}
+
+		switch(logicalOperatorType) {
+			case AND:
+				clauseContents += " " + LogicalOperatorType.AND.toString() + " " + value;
+				break;
+			case OR:
+				clauseContents += " " + LogicalOperatorType.OR.toString() + " " + value;
+				break;
+			default:
+				break;
+		}
+		return clauseContents;
 	}
 }

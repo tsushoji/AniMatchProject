@@ -13,6 +13,7 @@ import com.mysql.cj.util.StringUtils;
 import com.web01.animatch.dao.DBConnection;
 import com.web01.animatch.dao.ReadDao;
 import com.web01.animatch.dto.OwnerInfo;
+import com.web01.animatch.dto.SearchForm;
 import com.web01.animatch.dto.TrimmerInfo;
 import com.web01.animatch.dto.TrimmerInfoBusinessHours;
 
@@ -83,9 +84,10 @@ public class SearchService extends BaseService{
 	 * @param request リクエストオブジェクト
 	 * @param targetPage 遷移するページ番号
 	 * @param startPageIndex ページリンク開始番号
+	 * @param searchForm 検索フォームオブジェクト
 	 * @return ページング成功可否
 	 */
-	public boolean setPageAttribute(HttpServletRequest request, int targetPage, int startPageIndex) {
+	public boolean setPageAttribute(HttpServletRequest request, int targetPage, int startPageIndex, SearchForm searchForm) {
 		setInitPropertiesKey(request);
 		String searchTypeId = null;
 		switch(this.searchType) {
@@ -99,9 +101,9 @@ public class SearchService extends BaseService{
 			break;
 		}
 		request.setAttribute("searchType", searchTypeId);
-		setSearchData(request, targetPage);
+		setSearchData(request, targetPage, searchForm);
 		if(this.isPaging) {
-			setPageLink(request, targetPage, startPageIndex);
+			setPageLink(request, targetPage, startPageIndex, searchForm);
 		}
 		return this.isPaging;
 	}
@@ -113,13 +115,16 @@ public class SearchService extends BaseService{
 	private void setInitPropertiesKey(HttpServletRequest request) {
 		Map<String, String> prefecturesMap = new HashMap<>();
 		Map<String, String> petTypeMap = new HashMap<>();
+		Map<String, String> petSexMap = new HashMap<>();
 		Map<String, String> weekdayMap = new HashMap<>();
 		prefecturesMap = this.propertiesService.getValues(PropertiesService.PREFECTURES_KEY_INIT_STR);
 		petTypeMap = this.propertiesService.getValues(PropertiesService.PET_TYPE_KEY_INIT_STR);
+		petSexMap = this.propertiesService.getValues(PropertiesService.PET_SEX_KEY_INIT_STR);
 		weekdayMap = this.propertiesService.getValues(PropertiesService.WEEKDAY_KEY_INIT_STR);
 
 		request.setAttribute("prefecturesMap", prefecturesMap);
 		request.setAttribute("petTypeMap", petTypeMap);
+		request.setAttribute("petSexMap", petSexMap);
 		request.setAttribute("weekdayMap", weekdayMap);
 	}
 
@@ -127,8 +132,9 @@ public class SearchService extends BaseService{
 	 * 検索データ設定
 	 * @param request リクエストオブジェクト
 	 * @param targetPage 遷移するページ番号
+	 * @param searchForm 検索フォームオブジェクト
 	 */
-	private void setSearchData(HttpServletRequest request, int targetPage) {
+	private void setSearchData(HttpServletRequest request, int targetPage, SearchForm searchForm) {
 		DBConnection con = new DBConnection();
 		ReadDao readDao = new ReadDao(con.getConnection());
 		// 初期ページ番号より小さいパラメータページ番号が渡されたときの対策
@@ -145,7 +151,7 @@ public class SearchService extends BaseService{
 			switch(this.searchType) {
 				//飼い主の場合
 				case OWNER:
-					List<TrimmerInfo> trimmerInfoList = readDao.findTrimmerInfoByPaging(this, searchStartDataPos, searchEndDataPos);
+					List<TrimmerInfo> trimmerInfoList = readDao.findTrimmerInfoByStartDataRowNumAndEndDataRowNumAndSearchForm(this, searchStartDataPos, searchEndDataPos, searchForm);
 
 					for(TrimmerInfo trimmerInfo:trimmerInfoList) {
 						//画像をBase64化
@@ -169,7 +175,7 @@ public class SearchService extends BaseService{
 					break;
 				//トリマーの場合
 				case TRIMMER:
-					List<OwnerInfo> ownerInfoList = readDao.findOwnerInfoByPaging(this, searchStartDataPos, searchEndDataPos);
+					List<OwnerInfo> ownerInfoList = readDao.findOwnerInfoByStartDataRowNumAndEndDataRowNumAndSearchForm(this, searchStartDataPos, searchEndDataPos, searchForm);
 
 					//画像をBase64化
 					for(OwnerInfo ownerInfo:ownerInfoList) {
@@ -181,6 +187,7 @@ public class SearchService extends BaseService{
 					break;
 			}
 			request.setAttribute("searchCount", this.searchCount);
+			request.setAttribute("searchForm", searchForm);
 		}catch(SQLException e) {
 			e.printStackTrace();
 		}finally {
@@ -192,8 +199,9 @@ public class SearchService extends BaseService{
 	 * ページリンク設定
 	 * @param request リクエストオブジェクト
 	 * @param targetPage 遷移するページ番号
+	 * @param searchForm 検索フォームオブジェクト
 	 */
-	private void setPageLink(HttpServletRequest request, int targetPage, int startPageIndex) {
+	private void setPageLink(HttpServletRequest request, int targetPage, int startPageIndex, SearchForm searchForm) {
 		int endPage = this.searchCount == 0?1:(this.searchCount%DISPLAY_DATA_NUM == 0?this.searchCount/DISPLAY_DATA_NUM:this.searchCount/DISPLAY_DATA_NUM+1);
 		// 最終ページ番号より大きいパラメータページ番号が渡されたときの対策
 		if(endPage < targetPage) {

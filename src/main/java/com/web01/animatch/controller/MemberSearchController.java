@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.web01.animatch.dto.SearchForm;
 import com.web01.animatch.service.SearchService;
 
 /**
@@ -25,13 +26,10 @@ public class MemberSearchController extends HttpServlet {
 	 */
 	private static final long serialVersionUID = 1L;
 	/**
-	 * 画面遷移ページ番号パラメータ名
+	 * デフォルト値
 	 */
-	private static final String URLPARAM_NAME_TARGET_PAGE = "targetPage";
-	/**
-	 * 画面遷移ページ番号パラメータ名
-	 */
-	private static final String URLPARAM_NAME_START_PAGE = "startPage";
+	private static final String SELECT_DEFAULT_VALUE = "000";
+
 
 	/**
 	 * デフォルトコンストラクタ
@@ -50,27 +48,68 @@ public class MemberSearchController extends HttpServlet {
 		SearchService searchService = new SearchService(reqURL.substring(reqURL.lastIndexOf("/") + 1, reqURL.length()));
 		int targetPage = 1;
 		int startPage = 1;
-		String tmpTargetPage = request.getParameter(URLPARAM_NAME_TARGET_PAGE);
-		String tmpStartPage = request.getParameter(URLPARAM_NAME_START_PAGE);
+		String tmpTargetPage = request.getParameter("targetPage");
+		String tmpStartPage = request.getParameter("startPage");
 		if(StringUtils.isNotEmpty(tmpTargetPage) && StringUtils.isNotEmpty(tmpStartPage) && StringUtils.isNumeric(tmpTargetPage) && StringUtils.isNumeric(tmpStartPage)) {
 			targetPage = Integer.parseInt(tmpTargetPage);
 			startPage = Integer.parseInt(tmpStartPage);
 		}
-		if(searchService.setPageAttribute(request, targetPage, startPage)) {
+
+		SearchForm searchForm = new SearchForm();
+
+		String tmpUserId = request.getParameter("userId");
+		String tmpPrefectures = request.getParameter("prefectures");
+		String tmpCities = request.getParameter("cities");
+
+		String tmpPetType = request.getParameter("petType");
+		String tmpPetSex = request.getParameter("petSex");
+
+		String tmpBusinessHoursWeekday = request.getParameter("businessHoursWeekday");
+		String tmpBusinessHoursStartTime = request.getParameter("businessHoursStartTime");
+		String tmpBusinessHoursEndTime = request.getParameter("businessHoursEndTime");
+
+		String tmpSearchContents = request.getParameter("searchContents");
+
+		if(StringUtils.isNotEmpty(tmpUserId)) {
+			searchForm.setUserId(tmpUserId);
+		}
+		if(StringUtils.isNotEmpty(tmpPrefectures)) {
+			searchForm.setPrefectures(tmpPrefectures);
+		}else {
+			searchForm.setPrefectures(SELECT_DEFAULT_VALUE);
+		}
+
+		if(StringUtils.isNotEmpty(tmpCities)) {
+			searchForm.setCities(tmpCities);
+		}else {
+			searchForm.setCities(SELECT_DEFAULT_VALUE);
+		}
+
+		if(StringUtils.isNotEmpty(tmpPetType)) {
+			searchForm.setPetType(tmpPetType);
+		}else {
+			searchForm.setPetType(SELECT_DEFAULT_VALUE);
+		}
+
+		if(StringUtils.isNotEmpty(tmpPetSex)) {
+			searchForm.setPetSex(tmpPetSex);
+		}else {
+			searchForm.setPetSex(SELECT_DEFAULT_VALUE);
+		}
+
+		searchForm.setBusinessHoursInputValue(tmpBusinessHoursWeekday);
+
+		searchForm.setBusinessHoursStartTime(tmpBusinessHoursStartTime);
+		searchForm.setBusinessHoursEndTime(tmpBusinessHoursEndTime);
+
+		searchForm.setSearchContents(tmpSearchContents);
+
+		if(searchService.setPageAttribute(request, targetPage, startPage, searchForm)) {
 			// ページリンクに使用
 			request.setAttribute("requestURL", reqURL);
 			String path = "/WEB-INF/jsp/member/search/search.jsp";
 			RequestDispatcher dispatcher = request.getRequestDispatcher(path);
 			dispatcher.forward(request, response);
 		}
-	}
-
-	/**
-	 * post送信
-	 * @param request リクエストオブジェクト
-	 * @param response レスポンスオブジェクト
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		doGet(request, response);
 	}
 }
