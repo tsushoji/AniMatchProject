@@ -46,16 +46,16 @@ $(document).ready(function(){
 	//アクション:「検索」、「絞り込み」ボタン押下
     $('.filter-btn').click(function() {
 		//飼い主区分
-    	const ownerType = '001';
+    	const owner = '001';
     	//トリマー区分
-    	const trimmerType = '002';
+    	const trimmer = '002';
 
 		let reqURL = "/animatch/member/search/";
 		let inputCount = 0;
 
-		let registType = $('#search-type').val();
+		let searchType = $('#search-type').val();
 
-		if(registType === ownerType){
+		if(searchType === owner){
 			reqURL += "owner";
 			let businessHoursWeekday = $('input[name="business-hours"]').val();
 			if(businessHoursWeekday){
@@ -72,7 +72,7 @@ $(document).ready(function(){
 				reqURL = setReqURLParam(reqURL, 'businessHoursEndTime', businessHoursEndTime);
 				inputCount++;
 			}
-		}else if(registType === trimmerType){
+		}else if(searchType === trimmer){
 			reqURL += "trimmer";
 			let petType = $('#type-pet option:selected').val();
 			if(petType){
@@ -109,7 +109,6 @@ $(document).ready(function(){
 		}
 
 		if(inputCount > 0){
-			console.log(reqURL);
 			location.href = reqURL;
 		}
     });
