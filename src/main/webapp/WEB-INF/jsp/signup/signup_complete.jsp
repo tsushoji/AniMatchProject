@@ -25,8 +25,6 @@
 
 	<body>
 
-		<fmt:setBundle basename="animatch" var="resource"/>
-
 		<!--グリッドシステム-->
 	    <div class="container">
 
