@@ -51,7 +51,7 @@ $(document).ready(function(){
     	const trimmer = '002';
 
 		let reqURL = "/animatch/member/search/";
-		let inputCount = 0;
+		let queryParam = '';
 
 		let searchType = $('#search-type').val();
 
@@ -59,57 +59,48 @@ $(document).ready(function(){
 			reqURL += "owner";
 			let businessHoursWeekday = $('input[name="business-hours"]').val();
 			if(businessHoursWeekday){
-				reqURL = setReqURLParam(reqURL, 'businessHoursWeekday', businessHoursWeekday);
-				inputCount++;
+				queryParam = setReqURLParam(queryParam, 'businessHoursWeekday', businessHoursWeekday);
 			}
 			let businessHoursStartTime = $('#businessHours-start-time').val();
 			if(businessHoursStartTime){
-				reqURL = setReqURLParam(reqURL, 'businessHoursStartTime', businessHoursStartTime);
-				inputCount++;
+				queryParam = setReqURLParam(queryParam, 'businessHoursStartTime', businessHoursStartTime);
 			}
 			let businessHoursEndTime = $('#businessHours-end-time').val();
 			if(businessHoursEndTime){
-				reqURL = setReqURLParam(reqURL, 'businessHoursEndTime', businessHoursEndTime);
-				inputCount++;
+				queryParam = setReqURLParam(queryParam, 'businessHoursEndTime', businessHoursEndTime);
 			}
 		}else if(searchType === trimmer){
 			reqURL += "trimmer";
 			let petType = $('#type-pet option:selected').val();
 			if(petType){
-				reqURL = setReqURLParam(reqURL, 'petType', petType);
-				inputCount++;
+				queryParam = setReqURLParam(queryParam, 'petType', petType);
 			}
 			let petSex = $('#sex-pet option:selected').val();
 			if(petSex){
-				reqURL = setReqURLParam(reqURL, 'petSex', petSex);
-				inputCount++;
+				queryParam = setReqURLParam(queryParam, 'petSex', petSex);
 			}
 		}
 
 		let userId = $('#user-id').val();
 		if(userId){
-			reqURL = setReqURLParam(reqURL, 'userId', userId);
-			inputCount++;
+			queryParam = setReqURLParam(queryParam, 'userId', userId);
 		}
 		let prefectures = $('#prefectures option:selected').val();
 		if(prefectures){
-			reqURL = setReqURLParam(reqURL, 'prefectures', prefectures)
-			inputCount++;;
+			queryParam = setReqURLParam(queryParam, 'prefectures', prefectures)
 		}
 		let cities = $('#cities option:selected').val();
 		if(prefectures){
-			reqURL = setReqURLParam(reqURL, 'cities', cities);
-			inputCount++;
+			queryParam = setReqURLParam(queryParam, 'cities', cities);
 		}
 
 		let searchContents = $('search-contents').val();
 		if(searchContents){
-			reqURL = setReqURLParam(reqURL, 'searchContents', searchContents);
-			inputCount++;
+			queryParam = setReqURLParam(queryParam, 'searchContents', searchContents);
 		}
 
-		if(inputCount > 0){
-			location.href = reqURL;
+		if(queryParam){
+			location.href = reqURL + queryParam;
 		}
     });
 
