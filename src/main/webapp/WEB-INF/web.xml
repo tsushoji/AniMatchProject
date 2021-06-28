@@ -47,13 +47,13 @@
   	<servlet-name>MemberDetailOwnerController</servlet-name>
   	<display-name>MemberDetailOwnerController</display-name>
   	<description></description>
-  	<servlet-class>com.web01.animatch.controller.MemberDetailOwnerController</servlet-class>
+  	<servlet-class>com.web01.animatch.controller.MemberDetailController</servlet-class>
   </servlet>
   <servlet>
   	<servlet-name>MemberDetailTrimmerController</servlet-name>
   	<display-name>MemberDetailTrimmerController</display-name>
   	<description></description>
-  	<servlet-class>com.web01.animatch.controller.MemberDetailTrimmerController</servlet-class>
+  	<servlet-class>com.web01.animatch.controller.MemberDetailController</servlet-class>
   </servlet>
   <servlet>
   	<servlet-name>MemberDmessageListController</servlet-name>
@@ -95,11 +95,11 @@
   </servlet-mapping>
   <servlet-mapping>
   	<servlet-name>MemberDetailOwnerController</servlet-name>
-  	<url-pattern>/member/detail/owner</url-pattern>
+  	<url-pattern>/member/detail/owner/*</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
   	<servlet-name>MemberDetailTrimmerController</servlet-name>
-  	<url-pattern>/member/detail/trimmer</url-pattern>
+  	<url-pattern>/member/detail/trimmer/*</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
   	<servlet-name>MemberDmessageListController</servlet-name>

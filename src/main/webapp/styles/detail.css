@@ -6,3 +6,34 @@
 main {
     background-color:rgb(252, 247, 247);
 }
+
+.main-details-left img {
+	height:650px;
+    width:440px;
+}
+
+/*画面サイズが1199pxまではここを読み込む*/
+@media screen and (max-width:1196px) {
+    /* ヘッダー */
+    .main-details-left img {
+    	height:600px;
+    	width:350px;
+    }
+}
+
+/*画面サイズが991pxまではここを読み込む*/
+@media screen and (max-width:991px) {
+    /* ヘッダー */
+    .main-details-left img {
+    	width:250px;
+    	height:450px;
+    }
+}
+
+/*画面サイズが767pxまではここを読み込む*/
+@media screen and (max-width:767px) {
+    .main-details-left img {
+    	width:500px;
+    	height:200px;
+    }
+}
