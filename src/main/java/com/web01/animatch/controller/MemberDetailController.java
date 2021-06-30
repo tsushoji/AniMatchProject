@@ -47,6 +47,10 @@ public class MemberDetailController extends HttpServlet{
 			String path = "/WEB-INF/jsp/member/detail/detail.jsp";
 			RequestDispatcher dispatcher = request.getRequestDispatcher(path);
 			dispatcher.forward(request, response);
+		}else {
+			//ホーム画面へリダイレクト
+			String URL = "/animatch/index";
+			response.sendRedirect(URL);
 		}
 	}
 }
