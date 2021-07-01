@@ -419,7 +419,7 @@ public class ReadDao extends BaseDao{
 	 * @return 飼い主情報オブジェクト
 	 */
 	public OwnerInfo findOwnerInfoByUserId(int userId) throws SQLException {
-		OwnerInfo ownerInfo = new OwnerInfo();
+		OwnerInfo ownerInfo = null;
 		List<HashMap<String, Object>> registFormDataList = new ArrayList<>();
 		String whereStr = null;
 
@@ -430,6 +430,7 @@ public class ReadDao extends BaseDao{
 			ResultSet rs = pstmt.executeQuery();
 
 			while(rs.next()) {
+				ownerInfo = new OwnerInfo();
 				ownerInfo.setUserId(rs.getInt("user_id") == 0?null:rs.getInt("user_id"));
 				ownerInfo.setUserName(rs.getString("user_name"));
 				ownerInfo.setPassword(rs.getString("password"));
@@ -459,7 +460,7 @@ public class ReadDao extends BaseDao{
 	 * @return トリマー情報オブジェクト
 	 */
 	public TrimmerInfo findTrimmerInfoByUserId(int userId) throws SQLException {
-		TrimmerInfo trimmerInfo = new TrimmerInfo();
+		TrimmerInfo trimmerInfo = null;
 		List<HashMap<String, Object>> registFormDataList = new ArrayList<>();
 		String whereStr = null;
 
@@ -471,6 +472,7 @@ public class ReadDao extends BaseDao{
 
 			while(rs.next()) {
 				int storeId = rs.getInt("store_id");
+				trimmerInfo = new TrimmerInfo();
 				trimmerInfo.setUserId(rs.getInt("user_id") == 0?null:rs.getInt("user_id"));
 				trimmerInfo.setUserName(rs.getString("user_name"));
 				trimmerInfo.setPassword(rs.getString("password"));

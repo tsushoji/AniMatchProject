@@ -54,70 +54,78 @@ public class DetailService extends BaseService {
 	 * 検索詳細データ設定
 	 * @param request リクエストオブジェクト
 	 * @param userId ユーザID
+	 * @return 設定可否
 	 */
-	private void setSearchDetailData(HttpServletRequest request, String userId) {
+	private boolean setSearchDetailData(HttpServletRequest request, String userId) throws SQLException {
 		DBConnection con = new DBConnection();
 		ReadDao readDao = new ReadDao(con.getConnection());
 		try {
+			if(!StringUtils.isNumeric(userId)) {
+				return false;
+			}
+
 			switch(this.searchDetailType) {
 				//飼い主の場合
 				case OWNER:
-					TrimmerInfo trimmerInfo = new TrimmerInfo();
-					if(StringUtils.isNumeric(userId)) {
-						trimmerInfo = readDao.findTrimmerInfoByUserId(Integer.parseInt(userId));
+					TrimmerInfo trimmerInfo = readDao.findTrimmerInfoByUserId(Integer.parseInt(userId));
 
-						//画像をBase64化
-						trimmerInfo.setStoreImageBase64(convertByteAryToBase64(trimmerInfo.getStoreImage()));
-
-						//表示する営業時間文字列作成
-						List<TrimmerInfoBusinessHours> trimmerInfoBusinessHoursList = trimmerInfo.getTrimmerInfoBusinessHoursList();
-						for(TrimmerInfoBusinessHours trimmerInfoBusinessHours:trimmerInfoBusinessHoursList) {
-							//曜日、時間が設定されているデータのみ文字列結合
-							String businessDay = trimmerInfoBusinessHours.getBusinessDay();
-							LocalTime startBusinessTime = trimmerInfoBusinessHours.getStartBusinessTime();
-							LocalTime endBusinessTime = trimmerInfoBusinessHours.getEndBusinessTime();
-							if(!StringUtils.isEmpty(businessDay) && startBusinessTime != null && endBusinessTime != null) {
-								trimmerInfoBusinessHours.setDisplayBusinessHours(this.propertiesService.getValue(PropertiesService.WEEKDAY_KEY_INIT_STR + businessDay));
-								trimmerInfoBusinessHours.setDisplayStartBusinessTime(startBusinessTime.format(DateTimeFormatter.ofPattern("HH:mm")));
-								trimmerInfoBusinessHours.setDisplayEndBusinessTime(endBusinessTime.format(DateTimeFormatter.ofPattern("HH:mm")));
-							}
-						}
+					if(trimmerInfo == null) {
+						return false;
 					}
 
+					//画像をBase64化
+					trimmerInfo.setStoreImageBase64(convertByteAryToBase64(trimmerInfo.getStoreImage()));
+
+					//表示する営業時間文字列作成
+					List<TrimmerInfoBusinessHours> trimmerInfoBusinessHoursList = trimmerInfo.getTrimmerInfoBusinessHoursList();
+					for(TrimmerInfoBusinessHours trimmerInfoBusinessHours:trimmerInfoBusinessHoursList) {
+						//曜日、時間が設定されているデータのみ文字列結合
+						String businessDay = trimmerInfoBusinessHours.getBusinessDay();
+						LocalTime startBusinessTime = trimmerInfoBusinessHours.getStartBusinessTime();
+						LocalTime endBusinessTime = trimmerInfoBusinessHours.getEndBusinessTime();
+						if(!StringUtils.isEmpty(businessDay) && startBusinessTime != null && endBusinessTime != null) {
+							trimmerInfoBusinessHours.setDisplayBusinessHours(this.propertiesService.getValue(PropertiesService.WEEKDAY_KEY_INIT_STR + businessDay));
+							trimmerInfoBusinessHours.setDisplayStartBusinessTime(startBusinessTime.format(DateTimeFormatter.ofPattern("HH:mm")));
+							trimmerInfoBusinessHours.setDisplayEndBusinessTime(endBusinessTime.format(DateTimeFormatter.ofPattern("HH:mm")));
+						}
+					}
 					request.setAttribute("trimmerInfo", trimmerInfo);
+
 					break;
 				//トリマーの場合
 				case TRIMMER:
-					OwnerInfo ownerInfo = new OwnerInfo();
-					if(StringUtils.isNumeric(userId)) {
-						ownerInfo = readDao.findOwnerInfoByUserId(Integer.parseInt(userId));
+					OwnerInfo ownerInfo = readDao.findOwnerInfoByUserId(Integer.parseInt(userId));
 
-						//画像をBase64化
-						ownerInfo.setPetImageBase64(convertByteAryToBase64(ownerInfo.getPetImage()));
-						//会員検索画面表示文字セット
-						ownerInfo.setPetType(this.propertiesService.getValue(PropertiesService.PET_TYPE_KEY_INIT_STR + ownerInfo.getPetType()));
-						ownerInfo.setPetSex(this.propertiesService.getValue(PropertiesService.PET_SEX_KEY_INIT_STR + ownerInfo.getPetSex()));
+					if(ownerInfo == null) {
+						return false;
 					}
 
+					//画像をBase64化
+					ownerInfo.setPetImageBase64(convertByteAryToBase64(ownerInfo.getPetImage()));
+					//会員検索画面表示文字セット
+					ownerInfo.setPetType(this.propertiesService.getValue(PropertiesService.PET_TYPE_KEY_INIT_STR + ownerInfo.getPetType()));
+					ownerInfo.setPetSex(this.propertiesService.getValue(PropertiesService.PET_SEX_KEY_INIT_STR + ownerInfo.getPetSex()));
 					request.setAttribute("ownerInfo", ownerInfo);
 					break;
 				default:
-					break;
+					return false;
 			}
-
 		}catch(SQLException e) {
-			e.printStackTrace();
+			throw e;
 		}finally {
 			con.close();
 		}
+
+		return true;
 	}
 
 	/**
 	 * 画面属性設定
 	 * @param request リクエストオブジェクト
 	 * @param userId ユーザID
+	 * @return 設定可否
 	 */
-	public void setDisplayAttribute(HttpServletRequest request, String userId) {
+	public boolean setDisplayAttribute(HttpServletRequest request, String userId) {
 		String searchDetailTypeId = null;
 		switch(this.searchDetailType) {
 		case OWNER:
@@ -129,7 +137,15 @@ public class DetailService extends BaseService {
 		default:
 			break;
 		}
-		request.setAttribute("searchDetailTypeId", searchDetailTypeId);
-		setSearchDetailData(request, userId);
+		try {
+			if(setSearchDetailData(request, userId)) {
+				request.setAttribute("searchDetailTypeId", searchDetailTypeId);
+				return true;
+			}
+		} catch (SQLException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		}
+		return false;
 	}
 }

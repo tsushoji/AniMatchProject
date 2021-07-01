@@ -8,8 +8,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.web01.animatch.service.DetailService;
 
 /**
@@ -40,10 +38,9 @@ public class MemberDetailController extends HttpServlet{
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String reqURL = request.getRequestURI();
 		String userId = reqURL.substring(reqURL.lastIndexOf("/") + 1, reqURL.length());
-		if(StringUtils.isNumeric(userId)) {
-			String tmpReqURL = reqURL.substring(0, reqURL.lastIndexOf("/"));
-			DetailService detailService = new DetailService(tmpReqURL.substring(tmpReqURL.lastIndexOf("/") + 1, tmpReqURL.length()));
-			detailService.setDisplayAttribute(request, userId);
+		String tmpReqURL = reqURL.substring(0, reqURL.lastIndexOf("/"));
+		DetailService detailService = new DetailService(tmpReqURL.substring(tmpReqURL.lastIndexOf("/") + 1, tmpReqURL.length()));
+		if(detailService.setDisplayAttribute(request, userId)) {
 			String path = "/WEB-INF/jsp/member/detail/detail.jsp";
 			RequestDispatcher dispatcher = request.getRequestDispatcher(path);
 			dispatcher.forward(request, response);
