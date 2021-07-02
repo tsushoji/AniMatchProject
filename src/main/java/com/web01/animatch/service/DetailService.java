@@ -14,6 +14,7 @@ import com.web01.animatch.dao.ReadDao;
 import com.web01.animatch.dto.OwnerInfo;
 import com.web01.animatch.dto.TrimmerInfo;
 import com.web01.animatch.dto.TrimmerInfoBusinessHours;
+import com.web01.animatch.exception.MyException;
 
 /**
  * 詳細サービスクラス
@@ -31,6 +32,10 @@ public class DetailService extends BaseService {
 	 * プロパティーサービスオブジェクト
 	 */
 	private PropertiesService propertiesService;
+	/**
+	 * メッセージサービスオブジェクト
+	 */
+	private MessageService messageService;
 
 	/**
 	 * 引数付きコンストラクタ
@@ -38,6 +43,7 @@ public class DetailService extends BaseService {
 	 */
 	public DetailService(String searchDetailType) {
 		this.propertiesService = new PropertiesService();
+		this.messageService = new MessageService();
 		switch(UserType.getEnumFromEnumName(searchDetailType.toUpperCase())) {
 			case OWNER:
 				this.searchDetailType = UserType.OWNER;
@@ -54,14 +60,13 @@ public class DetailService extends BaseService {
 	 * 検索詳細データ設定
 	 * @param request リクエストオブジェクト
 	 * @param userId ユーザID
-	 * @return 設定可否
 	 */
-	private boolean setSearchDetailData(HttpServletRequest request, String userId) throws SQLException {
+	private void setSearchDetailData(HttpServletRequest request, String userId) throws MyException {
 		DBConnection con = new DBConnection();
 		ReadDao readDao = new ReadDao(con.getConnection());
 		try {
 			if(!StringUtils.isNumeric(userId)) {
-				return false;
+				throw new MyException("msg.error.003", this.messageService.getMessage(MessageService.MessageType.ERROR, "003", "パラメータのユーザID"));
 			}
 
 			switch(this.searchDetailType) {
@@ -70,7 +75,7 @@ public class DetailService extends BaseService {
 					TrimmerInfo trimmerInfo = readDao.findTrimmerInfoByUserId(Integer.parseInt(userId));
 
 					if(trimmerInfo == null) {
-						return false;
+						throw new MyException("msg.error.008", this.messageService.getMessage(MessageService.MessageType.ERROR, "008"));
 					}
 
 					//画像をBase64化
@@ -97,7 +102,7 @@ public class DetailService extends BaseService {
 					OwnerInfo ownerInfo = readDao.findOwnerInfoByUserId(Integer.parseInt(userId));
 
 					if(ownerInfo == null) {
-						return false;
+						throw new MyException("msg.error.008", this.messageService.getMessage(MessageService.MessageType.ERROR, "008"));
 					}
 
 					//画像をBase64化
@@ -108,24 +113,21 @@ public class DetailService extends BaseService {
 					request.setAttribute("ownerInfo", ownerInfo);
 					break;
 				default:
-					return false;
+					break;
 			}
 		}catch(SQLException e) {
-			throw e;
+			e.printStackTrace();
 		}finally {
 			con.close();
 		}
-
-		return true;
 	}
 
 	/**
 	 * 画面属性設定
 	 * @param request リクエストオブジェクト
 	 * @param userId ユーザID
-	 * @return 設定可否
 	 */
-	public boolean setDisplayAttribute(HttpServletRequest request, String userId) {
+	public void setDisplayAttribute(HttpServletRequest request, String userId) throws MyException {
 		String searchDetailTypeId = null;
 		switch(this.searchDetailType) {
 		case OWNER:
@@ -138,14 +140,10 @@ public class DetailService extends BaseService {
 			break;
 		}
 		try {
-			if(setSearchDetailData(request, userId)) {
-				request.setAttribute("searchDetailTypeId", searchDetailTypeId);
-				return true;
-			}
-		} catch (SQLException e) {
-			// TODO 自動生成された catch ブロック
-			e.printStackTrace();
+			setSearchDetailData(request, userId);
+			request.setAttribute("searchDetailTypeId", searchDetailTypeId);
+		} catch (MyException e) {
+			throw e;
 		}
-		return false;
 	}
 }

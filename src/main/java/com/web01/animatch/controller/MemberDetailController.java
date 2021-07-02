@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.web01.animatch.exception.MyException;
 import com.web01.animatch.service.DetailService;
 
 /**
@@ -40,11 +41,14 @@ public class MemberDetailController extends HttpServlet{
 		String userId = reqURL.substring(reqURL.lastIndexOf("/") + 1, reqURL.length());
 		String tmpReqURL = reqURL.substring(0, reqURL.lastIndexOf("/"));
 		DetailService detailService = new DetailService(tmpReqURL.substring(tmpReqURL.lastIndexOf("/") + 1, tmpReqURL.length()));
-		if(detailService.setDisplayAttribute(request, userId)) {
+		try {
+			detailService.setDisplayAttribute(request, userId);
 			String path = "/WEB-INF/jsp/member/detail/detail.jsp";
 			RequestDispatcher dispatcher = request.getRequestDispatcher(path);
 			dispatcher.forward(request, response);
-		}else {
+		} catch (MyException e) {
+			System.out.println("エラーコード:" + e.getCode());
+			System.out.println("エラーメッセージ:" + e.getMessage());
 			//ホーム画面へリダイレクト
 			String URL = "/animatch/index";
 			response.sendRedirect(URL);
