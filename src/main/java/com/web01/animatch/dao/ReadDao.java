@@ -414,6 +414,89 @@ public class ReadDao extends BaseDao{
 	}
 
 	/**
+	 * 会員詳細用飼い主情報抽出
+	 * @param userId ユーザID
+	 * @return 飼い主情報オブジェクト
+	 */
+	public OwnerInfo findOwnerInfoByUserId(int userId) throws SQLException {
+		OwnerInfo ownerInfo = null;
+		List<HashMap<String, Object>> registFormDataList = new ArrayList<>();
+		String whereStr = null;
+
+		whereStr = createSqlClauseContent("user_id = ?", whereStr, LogicalOperatorType.AND);
+		registFormDataList.add(createSqlParatemerMap(userId, Types.INTEGER));
+
+		try (PreparedStatement pstmt = createSelectStatement(null, "v_owner_info", whereStr, null, null, registFormDataList);){
+			ResultSet rs = pstmt.executeQuery();
+
+			while(rs.next()) {
+				ownerInfo = new OwnerInfo();
+				ownerInfo.setUserId(rs.getInt("user_id") == 0?null:rs.getInt("user_id"));
+				ownerInfo.setUserName(rs.getString("user_name"));
+				ownerInfo.setPassword(rs.getString("password"));
+				ownerInfo.setSex(rs.getString("sex"));
+				ownerInfo.setBirthday(rs.getDate("birthday"));
+				ownerInfo.setPostalCode(rs.getString("postal_code"));
+				ownerInfo.setStreetAddress(rs.getString("street_address"));
+				ownerInfo.setEmailAddress(rs.getString("email_address"));
+				ownerInfo.setTelephoneNumber(rs.getString("telephone_number"));
+				ownerInfo.setPetId(rs.getInt("pet_id") == 0?null:rs.getInt("pet_id"));
+				ownerInfo.setPetImage(rs.getBytes("pet_image"));
+				ownerInfo.setPetNickName(rs.getString("pet_nickname"));
+				ownerInfo.setPetSex(rs.getString("pet_sex"));
+				ownerInfo.setPetType(rs.getString("pet_type"));
+				ownerInfo.setPetWeight(rs.getFloat("pet_weight") == 0?null:rs.getFloat("pet_weight"));
+				ownerInfo.setPetRemarks(rs.getString("pet_remarks"));
+			}
+		} catch(SQLException e) {
+			throw e;
+		}
+		return ownerInfo;
+	}
+
+	/**
+	 * 会員詳細用トリマー情報抽出
+	 * @param userId ユーザID
+	 * @return トリマー情報オブジェクト
+	 */
+	public TrimmerInfo findTrimmerInfoByUserId(int userId) throws SQLException {
+		TrimmerInfo trimmerInfo = null;
+		List<HashMap<String, Object>> registFormDataList = new ArrayList<>();
+		String whereStr = null;
+
+		whereStr = createSqlClauseContent("user_id = ?", whereStr, LogicalOperatorType.AND);
+		registFormDataList.add(createSqlParatemerMap(userId, Types.INTEGER));
+
+		try (PreparedStatement pstmt = createSelectStatement(null, "v_trimmer_info", whereStr, null, null, registFormDataList);){
+			ResultSet rs = pstmt.executeQuery();
+
+			while(rs.next()) {
+				int storeId = rs.getInt("store_id");
+				trimmerInfo = new TrimmerInfo();
+				trimmerInfo.setUserId(rs.getInt("user_id") == 0?null:rs.getInt("user_id"));
+				trimmerInfo.setUserName(rs.getString("user_name"));
+				trimmerInfo.setPassword(rs.getString("password"));
+				trimmerInfo.setSex(rs.getString("sex"));
+				trimmerInfo.setBirthday(rs.getDate("birthday"));
+				trimmerInfo.setPostalCode(rs.getString("postal_code"));
+				trimmerInfo.setStreetAddress(rs.getString("street_address"));
+				trimmerInfo.setEmailAddress(rs.getString("email_address"));
+				trimmerInfo.setTelephoneNumber(rs.getString("telephone_number"));
+				trimmerInfo.setStoreId(storeId == 0?null:storeId);
+				trimmerInfo.setStoreImage(rs.getBytes("store_image"));
+				trimmerInfo.setStoreName(rs.getString("store_name"));
+				trimmerInfo.setStoreEmployeesNumber(rs.getInt("store_employees_number") == 0?null:rs.getInt("store_employees_number"));
+				trimmerInfo.setStoreCourseInfo(rs.getString("store_course_info"));
+				trimmerInfo.setStoreCommitment(rs.getString("store_commitment"));
+				trimmerInfo.setTrimmerInfoBusinessHoursList(findBusinessHoursByStoreId(storeId));
+			}
+		} catch(SQLException e) {
+			throw e;
+		}
+		return trimmerInfo;
+	}
+
+	/**
 	 * テーブル抽出
 	 * @param columnStr 検索文字列
 	 * @param tableName テーブル名
