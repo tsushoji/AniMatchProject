@@ -1,17 +1,16 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 <!DOCTYPE html>
 <html>
 
-	<head>
-		<title>logout</title>
+<head>
+<title>logout</title>
 
-		<%@ include file="/WEB-INF/jsp/head.jsp" %>
-    </head>
+<%@ include file="/WEB-INF/jsp/head.jsp"%>
+</head>
 
-	<body>
+<body>
 
-	</body>
+</body>
 
 </html>

@@ -1,54 +1,54 @@
 /* 全体 */
 html {
-    overflow-y:scroll;
+ overflow-y: scroll;
 }
 
 body {
-    font-family:Meiryo;
-    font-size:80%;
-    color:rgb(0, 0, 0);
+ font-family: Meiryo;
+ font-size: 80%;
+ color: rgb(0, 0, 0);
 }
 
 a {
-    color:rgb(0, 0, 0);
-    text-decoration:none;
+ color: rgb(0, 0, 0);
+ text-decoration: none;
 }
 
 .row {
-    margin-right:0;
-    margin-left:0;
+ margin-right: 0;
+ margin-left: 0;
 }
 
 img {
-    border:0;
+ border: 0;
 }
 
 /* フッター */
 footer {
-    background-color:rgb(255, 255, 200);
+ background-color: rgb(255, 255, 200);
 }
 
 .footer-top {
-    min-height:30px;
+ min-height: 30px;
 }
 
 /* 下線 */
 .under-line {
-	text-decoration:underline;
-	text-decoration-color:rgb(0, 0, 0);
+ text-decoration: underline;
+ text-decoration-color: rgb(0, 0, 0);
 }
 
 /* 非表示 */
 .is-hidden {
-	display:none;
+ display: none;
 }
 
 /* 領域を超えたら、改行 */
 .line-break {
-	word-wrap:break-word;
+ word-wrap: break-word;
 }
 
 /* マウスポインター */
 .cursor-pointer {
-	cursor: pointer;
+ cursor: pointer;
 }

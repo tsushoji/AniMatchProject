@@ -12,19 +12,19 @@ import lombok.Data;
 @Data
 public class BaseDto {
 
-	//メンバー
-	/**
-	 * 削除ステータス
-	 */
-	private Integer isDeleted;
+ //メンバー
+ /**
+  * 削除ステータス
+  */
+ private Integer isDeleted;
 
-	/**
-	 * 新規登録時間
-	 */
-	private LocalDateTime insertedTime;
+ /**
+  * 新規登録時間
+  */
+ private LocalDateTime insertedTime;
 
-	/**
-	 * 更新時間
-	 */
-	private LocalDateTime updatedTime;
+ /**
+  * 更新時間
+  */
+ private LocalDateTime updatedTime;
 }

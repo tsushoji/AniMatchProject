@@ -9,26 +9,26 @@ import lombok.Getter;
  */
 public class MyException extends Exception {
 
-	//メンバー
-	/**
-	 * エラーコード
-	 */
-	@Getter
-	private String code;
+ //メンバー
+ /**
+  * エラーコード
+  */
+ @Getter
+ private String code;
 
-	/**
-	 * エラーメッセージ
-	 */
-	@Getter
-	private String message;
+ /**
+  * エラーメッセージ
+  */
+ @Getter
+ private String message;
 
-	/**
-	 * 引数付きコンストラクタ
-	 * @param code エラーコード
-	 * @param message エラーメッセージ
-	 */
-	public MyException(String code, String message) {
-		this.code = code;
-		this.message = message;
-	}
+ /**
+  * 引数付きコンストラクタ
+  * @param code エラーコード
+  * @param message エラーメッセージ
+  */
+ public MyException(String code, String message) {
+  this.code = code;
+  this.message = message;
+ }
 }

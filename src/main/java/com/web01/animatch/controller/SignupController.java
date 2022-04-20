@@ -19,48 +19,48 @@ import com.web01.animatch.service.SignupService;
 @MultipartConfig
 public class SignupController extends HttpServlet {
 
-	//定数
-	/**
-	 * シリアライズバージョンID
-	 */
-	private static final long serialVersionUID = 1L;
+ //定数
+ /**
+  * シリアライズバージョンID
+  */
+ private static final long serialVersionUID = 1L;
 
-	/**
-	 * デフォルトコンストラクタ
-	 */
-    public SignupController() {
-        super();
-    }
+ /**
+  * デフォルトコンストラクタ
+  */
+ public SignupController() {
+  super();
+ }
 
-    /**
-	 * get送信
-	 * @param request リクエストオブジェクト
-	 * @param response レスポンスオブジェクト
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		SignupService signupService = new SignupService();
-		signupService.setInitPropertiesKey(request);
-		String path = "/WEB-INF/jsp/signup/signup.jsp";
-		RequestDispatcher dispatcher = request.getRequestDispatcher(path);
-		dispatcher.forward(request, response);
-	}
+ /**
+  * get送信
+  * @param request リクエストオブジェクト
+  * @param response レスポンスオブジェクト
+  */
+ protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+  SignupService signupService = new SignupService();
+  signupService.setInitPropertiesKey(request);
+  String path = "/WEB-INF/jsp/signup/signup.jsp";
+  RequestDispatcher dispatcher = request.getRequestDispatcher(path);
+  dispatcher.forward(request, response);
+ }
 
-	/**
-	 * post送信
-	 * @param request リクエストオブジェクト
-	 * @param response レスポンスオブジェクト
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		//登録区分取得
-		String registType = request.getParameter("regist-type");
-		SignupService signupService = new SignupService(registType);
-		if(signupService.regist(request)) {
-			String path = "/WEB-INF/jsp/signup/signup_complete.jsp";
-			RequestDispatcher dispatcher = request.getRequestDispatcher(path);
-			dispatcher.forward(request, response);
-		}else {
-			//登録に失敗した場合
-			doGet(request, response);
-		}
-	}
+ /**
+  * post送信
+  * @param request リクエストオブジェクト
+  * @param response レスポンスオブジェクト
+  */
+ protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+  //登録区分取得
+  String registType = request.getParameter("regist-type");
+  SignupService signupService = new SignupService(registType);
+  if (signupService.regist(request)) {
+   String path = "/WEB-INF/jsp/signup/signup_complete.jsp";
+   RequestDispatcher dispatcher = request.getRequestDispatcher(path);
+   dispatcher.forward(request, response);
+  } else {
+   //登録に失敗した場合
+   doGet(request, response);
+  }
+ }
 }

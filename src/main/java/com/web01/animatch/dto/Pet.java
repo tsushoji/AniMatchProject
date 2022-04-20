@@ -10,37 +10,37 @@ import lombok.ToString;
  * @version 1.0
  */
 @Data
-@EqualsAndHashCode(callSuper=true)
+@EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public class Pet extends BaseDto{
+public class Pet extends BaseDto {
 
-	//メンバー
-	/**
-	 * ペットID
-	 */
-	private Integer petId;
-	/**
-	 * 画像
-	 */
-	private byte[] image;
-	/**
-	 * ニックネーム
-	 */
-	private String nickName;
-	/**
-	 * 性別
-	 */
-	private String sex;
-	/**
-	 * 種類
-	 */
-	private String type;
-	/**
-	 * 体重
-	 */
-	private Float weight;
-	/**
-	 * 補足
-	 */
-	private String remarks;
+ //メンバー
+ /**
+  * ペットID
+  */
+ private Integer petId;
+ /**
+  * 画像
+  */
+ private byte[] image;
+ /**
+  * ニックネーム
+  */
+ private String nickName;
+ /**
+  * 性別
+  */
+ private String sex;
+ /**
+  * 種類
+  */
+ private String type;
+ /**
+  * 体重
+  */
+ private Float weight;
+ /**
+  * 補足
+  */
+ private String remarks;
 }

@@ -10,21 +10,21 @@ import lombok.ToString;
  * @version 1.0
  */
 @Data
-@EqualsAndHashCode(callSuper=true)
+@EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public class TrimmerInfoBusinessHours extends BusinessHours{
+public class TrimmerInfoBusinessHours extends BusinessHours {
 
-	//メンバー
-	/**
-	 * 表示営業日
-	 */
-	private String displayBusinessHours;
-	/**
-	 * 表示営業開始時間
-	 */
-	private String displayStartBusinessTime;
-	/**
-	 * 表示営業終了時間
-	 */
-	private String displayEndBusinessTime;
+ //メンバー
+ /**
+  * 表示営業日
+  */
+ private String displayBusinessHours;
+ /**
+  * 表示営業開始時間
+  */
+ private String displayStartBusinessTime;
+ /**
+  * 表示営業終了時間
+  */
+ private String displayEndBusinessTime;
 }

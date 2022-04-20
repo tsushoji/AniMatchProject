@@ -15,36 +15,36 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class MemberDmessageDetailController extends HttpServlet {
 
-	//定数
-	/**
-	 * シリアライズバージョンID
-	 */
-	private static final long serialVersionUID = 1L;
+ //定数
+ /**
+  * シリアライズバージョンID
+  */
+ private static final long serialVersionUID = 1L;
 
-	/**
-	 * デフォルトコンストラクタ
-	 */
-    public MemberDmessageDetailController() {
-        super();
-    }
+ /**
+  * デフォルトコンストラクタ
+  */
+ public MemberDmessageDetailController() {
+  super();
+ }
 
-    /**
-	 * get送信
-	 * @param request リクエストオブジェクト
-	 * @param response レスポンスオブジェクト
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String path = "/WEB-INF/jsp/member/dmessage/dmessage_detail.jsp";
-		RequestDispatcher dispatcher = request.getRequestDispatcher(path);
-		dispatcher.forward(request, response);
-	}
+ /**
+  * get送信
+  * @param request リクエストオブジェクト
+  * @param response レスポンスオブジェクト
+  */
+ protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+  String path = "/WEB-INF/jsp/member/dmessage/dmessage_detail.jsp";
+  RequestDispatcher dispatcher = request.getRequestDispatcher(path);
+  dispatcher.forward(request, response);
+ }
 
-	/**
-	 * post送信
-	 * @param request リクエストオブジェクト
-	 * @param response レスポンスオブジェクト
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		doGet(request, response);
-	}
+ /**
+  * post送信
+  * @param request リクエストオブジェクト
+  * @param response レスポンスオブジェクト
+  */
+ protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+  doGet(request, response);
+ }
 }
