@@ -1,0 +1,67 @@
+/* メイン */
+.main-section-content-search, .main-section-content-message:hover {
+ cursor: pointer;
+}
+
+main {
+ background-color: rgb(255, 255, 255);
+}
+
+.jumbotron {
+ height: 650px;
+ background-image: url("/animatch/images/banner.jpg");
+ background-size: cover;
+ background-position: center 50%;
+ margin-bottom: 0;
+}
+
+.jumbotron-content-message-img {
+ zoom: 2;
+}
+
+.jumbotron-content-message-writing {
+ display: inline-block;
+ position: absolute;
+ left: 33%;
+ bottom: 0;
+}
+
+.main-center-block:hover {
+ cursor: pointer;
+}
+
+.main-center {
+ background-color: rgb(255, 255, 200);
+}
+
+.main-center-header-content {
+ background: linear-gradient(transparent 50%, yellow 50%);
+}
+
+.main-center-explation-img-content {
+ max-height: 200px;
+}
+
+.main-center-explation-content {
+ font-size: 180%;
+}
+
+/* 画面サイズが767pxまではここを読み込む */
+@media screen and (max-width:767px) {
+ /* ヘッダー */
+ .collapse-item {
+  text-align: right;
+ }
+ .collapse-item-btn-search {
+  margin-bottom: 5px
+ }
+ .collapse-item-btn-search {
+  margin-top: 5px;
+  margin-bottom: 10px;
+ }
+
+ /* メイン */
+ .jumbotron {
+  height: 420px;
+ }
+}

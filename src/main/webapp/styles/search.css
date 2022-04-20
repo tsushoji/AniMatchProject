@@ -1,0 +1,73 @@
+/* メイン */
+main {
+ background-color: rgb(233, 233, 66);
+}
+
+.main-search-left, .main-search-right, .main-search-right-form,
+ .main-search-right-list {
+ border: solid 1px rgb(163, 161, 161);
+ background-color: rgb(255, 255, 255);
+ font-size: 85%;
+}
+
+.main-search-header-img {
+ height: 100px;
+ width: 100px;
+}
+
+.plugin-multipicker li {
+ color: rgb(0, 0, 0);
+}
+
+.main-search-right-list-img {
+ height: 100px;
+}
+
+.main-search-right-list-img img {
+ height: 100px;
+ width: 130px;
+ padding: 2px;
+ display: block;
+}
+
+.main-search-right-list-private-info-contents {
+ font-weight: bold;
+ height: 35px;
+}
+
+.page-link {
+ color: rgb(0, 0, 0);
+}
+
+#page-item-pre a, #page-item-next a {
+ cursor: pointer;
+}
+
+.main-search-left-clear {
+ font-size: 150%;
+}
+
+.main-search-left-clear, .is-show-details-owner,
+ .is-show-details-trimmer:hover {
+ cursor: pointer;
+}
+
+.main-search-left-select-btn {
+ color: rgb(0, 0, 0);
+}
+
+/* 画面サイズが1023pxまではここを読み込む */
+@media screen and (max-width:1023px) {
+ /* ヘッダー */
+ .main-search-header-img {
+  height: 50px;
+  width: 50px;
+ }
+
+ /* 画面サイズが575pxまではここを読み込む */
+ @media screen and (max-width:575px) {
+  .main-search-right-list-img img {
+   width: 100px;
+  }
+ }
+}
