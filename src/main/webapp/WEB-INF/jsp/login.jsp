@@ -32,6 +32,9 @@
 
   </form>
 
+  <div class="text-center py-3">
+   <span class="mr-1">登録がお済でない方は</span><a href="/animatch/signup/" class="under-line"><strong>こちらへ</strong></a>
+  </div>
  </div>
 
  <%@ include file="/WEB-INF/jsp/footer02.jsp"%>
