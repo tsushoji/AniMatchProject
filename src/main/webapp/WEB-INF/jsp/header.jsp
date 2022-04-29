@@ -1,5 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
+<%@ page isELIgnored="false"%>
+
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
 <!DOCTYPE html>
 <html>
 
@@ -30,12 +34,24 @@
    </ul>
 
    <ul class="navbar-nav">
-    <li class="nav-item ml-auto mr-md-3 collapse-item-btn-search">
-     <a class="nav-link btn btn-outline-info" type="submit" href="/animatch/signup/">新規会員登録</a>
-    </li>
-    <li class="nav-item ml-auto mr-md-2 collapse-item-btn-login">
-     <a class="nav-link btn btn-outline-success" type="submit" target="_blank" href="/animatch/login/">ログイン</a>
-    </li>
+    <c:choose>
+     <c:when test="${not empty userSession and not empty userSession.userId}">
+      <li class="nav-item ml-auto mr-md-2 collapse-item-btn-login">
+       <!--javascriptでは「-」の命名規則は使用できない-->
+       <form name="logoutForm" method="post" action="/animatch/logout/">
+        <a class="nav-link btn btn-outline-success" href="javascript:logoutForm.submit()">ログアウト</a>
+       </form>
+      </li>
+     </c:when>
+     <c:otherwise>
+      <li class="nav-item ml-auto mr-md-3 collapse-item-btn-search">
+       <a class="nav-link btn btn-outline-info" type="submit" href="/animatch/signup/">新規会員登録</a>
+      </li>
+      <li class="nav-item ml-auto mr-md-2 collapse-item-btn-login">
+       <a class="nav-link btn btn-outline-success" type="submit" href="/animatch/login/">ログイン</a>
+      </li>
+     </c:otherwise>
+    </c:choose>
    </ul>
   </div>
  </nav>
