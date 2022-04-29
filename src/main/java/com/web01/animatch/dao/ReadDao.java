@@ -15,9 +15,12 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 import com.web01.animatch.dto.OwnerInfo;
+import com.web01.animatch.dto.Pet;
 import com.web01.animatch.dto.SearchForm;
+import com.web01.animatch.dto.Store;
 import com.web01.animatch.dto.TrimmerInfo;
 import com.web01.animatch.dto.TrimmerInfoBusinessHours;
+import com.web01.animatch.dto.User;
 import com.web01.animatch.service.PropertiesService;
 import com.web01.animatch.service.SearchService;
 
@@ -46,6 +49,50 @@ public class ReadDao extends BaseDao {
   */
  public ReadDao(Connection con) {
   this.con = con;
+ }
+
+ /**
+  * ユーザー情報抽出
+  * @param userId ユーザーID
+  * @param password パスワード
+  * @return ユーザー情報オブジェクトリスト
+  */
+ public List<User> findUserByUserIdAndPassword(int userId, String password) throws SQLException {
+  List<User> userList = new ArrayList<>();
+  List<HashMap<String, Object>> userDataList = new ArrayList<>();
+
+  String whereStr = createWhereOfUserIdAndPassword(userId, password, userDataList);
+  if(whereStr == null) {
+   throw new SQLException();
+  }
+
+  try (PreparedStatement pstmt = createSelectStatement(null, "t_user", whereStr, null, null, userDataList);) {
+   ResultSet rs = pstmt.executeQuery();
+
+   while (rs.next()) {
+    User user = new User();
+    user.setUserId(rs.getInt("user_id") == 0 ? null : rs.getInt("user_id"));
+    user.setUserName(rs.getString("user_name"));
+    user.setPassword(rs.getString("password"));
+    user.setSex(rs.getString("sex"));
+    user.setBirthday(rs.getDate("birthday"));
+    user.setPostalCode(rs.getString("postal_code"));
+    user.setStreetAddress(rs.getString("street_address"));
+    user.setEmailAddress(rs.getString("email_address"));
+    user.setTelephoneNumber(rs.getString("telephone_number"));
+    Pet pet = new Pet();
+    pet.setPetId(rs.getInt("pet_info_id") == 0 ? null : rs.getInt("pet_info_id"));
+    user.setPet(pet);
+    Store store = new Store();
+    store.setStoreId(rs.getInt("store_info_id") == 0 ? null : rs.getInt("store_info_id"));
+    user.setStore(store);
+    userList.add(user);
+   }
+  } catch (SQLException e) {
+   throw e;
+  }
+
+  return userList;
  }
 
  /**
@@ -349,6 +396,26 @@ public class ReadDao extends BaseDao {
  }
 
  /**
+  * ユーザID、パスワードWhere句作成
+  * @param userId ユーザID
+  * @param password パスワード
+  * @param paramDataList SQLパラメータデータリスト
+  * @return ユーザID、パスワードWhere句
+  */
+ private String createWhereOfUserIdAndPassword(int userId, String password, List<HashMap<String, Object>> paramDataList) {
+  String whereOfUserIdAndPassword = null;
+
+  if (StringUtils.isNotEmpty(password)) {
+   whereOfUserIdAndPassword = "user_id = ?";
+   paramDataList.add(createSqlParatemerMap(userId, Types.INTEGER));
+   whereOfUserIdAndPassword = createSqlClauseContent("password = ?", whereOfUserIdAndPassword, LogicalOperatorType.AND);
+   paramDataList.add(createSqlParatemerMap(password, Types.VARCHAR));
+  }
+
+  return whereOfUserIdAndPassword;
+ }
+
+ /**
   * 都道府県、市区町村Where句作成
   * @param searchForm 検索フォームオブジェクト
   * @param paramDataList SQLパラメータデータリスト
@@ -523,6 +590,51 @@ public class ReadDao extends BaseDao {
    throw e;
   }
   return trimmerInfo;
+ }
+
+ /**
+  * ダイジェスト抽出
+  * @param searchService ユーザーID
+  * @return ダイジェスト
+  */
+ public String findDigestByUserId(int userId) throws SQLException {
+  // 追加
+  String digest = null;
+  List<User> userList = new ArrayList<>();
+  List<HashMap<String, Object>> userDataList = new ArrayList<>();
+
+  String whereStr = null;
+  if(whereStr == null) {
+   throw new SQLException();
+  }
+
+  try (PreparedStatement pstmt = createSelectStatement(null, "t_user", whereStr, null, null, userDataList);) {
+   ResultSet rs = pstmt.executeQuery();
+
+   while (rs.next()) {
+    User user = new User();
+    user.setUserId(rs.getInt("user_id") == 0 ? null : rs.getInt("user_id"));
+    user.setUserName(rs.getString("user_name"));
+    user.setPassword(rs.getString("password"));
+    user.setSex(rs.getString("sex"));
+    user.setBirthday(rs.getDate("birthday"));
+    user.setPostalCode(rs.getString("postal_code"));
+    user.setStreetAddress(rs.getString("street_address"));
+    user.setEmailAddress(rs.getString("email_address"));
+    user.setTelephoneNumber(rs.getString("telephone_number"));
+    Pet pet = new Pet();
+    pet.setPetId(rs.getInt("pet_info_id") == 0 ? null : rs.getInt("pet_info_id"));
+    user.setPet(pet);
+    Store store = new Store();
+    store.setStoreId(rs.getInt("store_info_id") == 0 ? null : rs.getInt("store_info_id"));
+    user.setStore(store);
+    userList.add(user);
+   }
+  } catch (SQLException e) {
+   throw e;
+  }
+
+  return digest;
  }
 
  /**
