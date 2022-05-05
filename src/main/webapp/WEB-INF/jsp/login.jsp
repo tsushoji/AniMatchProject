@@ -4,6 +4,8 @@
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
+<c:set var="savedUserInfoCheckBox" value="saved-user-info" />
+
 <!DOCTYPE html>
 <html>
 
@@ -28,8 +30,9 @@
    <input type="password" class="form-control" placeholder="パスワード" name="password" value="<c:out value="${loginForm.password}"/>">
 
    <div class="text-left mt-2">
-    <input type="checkbox" id="saved-username-check" class="" name="saved-username-check" value="1">
-    <label for="saved-username-check" class="saved-username-check-label">ユーザーIDを保存する</label>
+    <input type="checkbox" id="saved-username-check" name="saved-username-check" value="saved-user-info"
+    <c:if test="${not empty loginForm.savedUserInfo and loginForm.savedUserInfo == savedUserInfoCheckBox}">checked</c:if>>
+    <label for="saved-username-check" class="saved-username-check-label">ユーザーIDを保存する(保存期間2週間)</label>
    </div>
 
    <c:if test="${not empty msgMap['001']}">

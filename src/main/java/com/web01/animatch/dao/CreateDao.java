@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.web01.animatch.dto.AutoLoginInfo;
 import com.web01.animatch.dto.BusinessHours;
 import com.web01.animatch.dto.Pet;
 import com.web01.animatch.dto.Store;
@@ -215,6 +216,35 @@ public class CreateDao extends BaseDao {
    if (pstmt != null) {
     pstmt.close();
    }
+  }
+
+  return true;
+ }
+
+ /**
+  * 飼い主DB登録
+  * @param autoLoginInfo 自動ログイン情報オブジェクト
+  * @return DB登録成功失敗
+  */
+ public boolean registAutoLoginInfo(AutoLoginInfo autoLoginInfo) throws SQLException {
+
+  List<HashMap<String, Object>> autoLoginDataList = new ArrayList<>();
+
+  // t_auto_login
+  autoLoginDataList.add(createSqlParatemerMap(null, Types.INTEGER));
+  autoLoginDataList.add(createSqlParatemerMap(autoLoginInfo.getUserId(), Types.INTEGER));
+  autoLoginDataList.add(createSqlParatemerMap(autoLoginInfo.getToken(), Types.VARCHAR));
+  autoLoginDataList.add(createSqlParatemerMap(autoLoginInfo.getDigest(), Types.VARCHAR));
+  autoLoginDataList.add(createSqlParatemerMap(autoLoginInfo.getIsDeleted(), Types.INTEGER));
+  autoLoginDataList.add(createSqlParatemerMap(Timestamp.valueOf(autoLoginInfo.getInsertedTime()), Types.TIMESTAMP));
+  autoLoginDataList.add(createSqlParatemerMap(Timestamp.valueOf(autoLoginInfo.getUpdatedTime()), Types.TIMESTAMP));
+
+  try (PreparedStatement pstmt = createInsetStatement("t_auto_login", autoLoginDataList, true);) {
+   pstmt.executeUpdate();
+   this.con.commit();
+
+  } catch (SQLException e) {
+   throw e;
   }
 
   return true;

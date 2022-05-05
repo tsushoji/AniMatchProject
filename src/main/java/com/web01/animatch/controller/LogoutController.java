@@ -7,6 +7,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.web01.animatch.dto.UserSession;
+import com.web01.animatch.service.AuthService;
 import com.web01.animatch.service.SessionService;
 
 /**
@@ -46,9 +48,12 @@ public class LogoutController extends HttpServlet {
   * @param response レスポンスオブジェクト
   */
  protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-  new SessionService().invalidateSession(request);
-  // 修正
-  // トークンテーブルデータ削除
+  SessionService sessionService = new SessionService();
+  UserSession userSession = (UserSession)sessionService.getBindingKeySessionValue(request, AuthService.USER_SESSION_KEY_NAME);
+  if(userSession != null && userSession.getUserId() != null){
+   new AuthService().deleteAutoLoginInfo(request, response, userSession.getUserId());
+  }
+  sessionService.invalidateSession(request);
   doGet(request, response);
  }
 }

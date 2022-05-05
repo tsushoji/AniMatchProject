@@ -41,18 +41,23 @@ public class AuthFilter implements Filter {
   */
  public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
   String path = ((HttpServletRequest) request).getServletPath();
+  AuthService authService = new AuthService();
+  SessionService sessionService = new SessionService();
 
-  if(judgePageURL(path) && !(new SessionService().isBindingKeySession((HttpServletRequest)request, AuthService.USER_SESSION_KEY_NAME))) {
-   // 修正
-   if(new AuthService().autoLoginAuth((HttpServletRequest)request)) {
-    // セッション付与
+  if(judgeSessionPageURL(path) && !(sessionService.isBindingKeySession((HttpServletRequest)request, AuthService.USER_SESSION_KEY_NAME)) && authService.autoLoginAuth((HttpServletRequest)request)) {
+   authService.setUserSessionWithCookie((HttpServletRequest)request);
+   chain.doFilter(request, response);
+  }
+
+  if(judgeAuthURL(path) && !(sessionService.isBindingKeySession((HttpServletRequest)request, AuthService.USER_SESSION_KEY_NAME))) {
+   if(authService.autoLoginAuth((HttpServletRequest)request)) {
+    authService.setUserSessionWithCookie((HttpServletRequest)request);
+    chain.doFilter(request, response);
    }else {
-    if(judgeAuthURL(path)) {
-     //ログイン画面へリダイレクト
-     String URL = "/animatch/login/";
-     ((HttpServletResponse)response).sendRedirect(URL);
-     return;
-    }
+    //ログイン画面へリダイレクト
+    String URL = "/animatch/login/";
+    ((HttpServletResponse)response).sendRedirect(URL);
+    return;
    }
   }
   chain.doFilter(request, response);
@@ -66,13 +71,31 @@ public class AuthFilter implements Filter {
  }
 
  /**
-  * ページURLパターン判定
+  * セッション制御ページURLパターン判定
   * @param path パス
-  * @return ページURLパターンである場合、true
+  * @return セッション制御ページURLパターンである場合、true
   * そうでない場合、false
   */
- public boolean judgePageURL(String path) throws ServletException {
-  // 追加
+ public boolean judgeSessionPageURL(String path) throws ServletException {
+  if (path.equals("/index")) {
+   return true;
+  }
+
+  if (path.equals("/member/search/owner")) {
+   return true;
+  }
+
+  if (path.equals("/member/search/trimmer")) {
+   return true;
+  }
+
+  if (path.startsWith("/member/detail/owner/")) {
+   return true;
+  }
+
+  if (path.startsWith("/member/detail/trimmer/")) {
+   return true;
+  }
 
   return false;
  }

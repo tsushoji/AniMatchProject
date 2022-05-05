@@ -19,4 +19,8 @@ public class LoginForm {
   * パスワード
   */
  private String password;
+ /**
+  * ユーザー保存するか
+  */
+ private String savedUserInfo;
 }

@@ -633,7 +633,6 @@ public class SignupService extends BaseService {
  /**
   * パラメータセットユーザオブジェクト取得
   * @param registForm 登録フォームオブジェクト
-  * @param RegistDao 登録DB処理オブジェクト
   * @return ユーザオブジェクト
   */
  private User getParameterUserDto(RegistForm registForm) throws SQLException, ParseException {

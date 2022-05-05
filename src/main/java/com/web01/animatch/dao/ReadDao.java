@@ -5,7 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Time;
+import java.sql.Timestamp;
 import java.sql.Types;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,6 +16,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.web01.animatch.dto.AutoLoginInfo;
 import com.web01.animatch.dto.OwnerInfo;
 import com.web01.animatch.dto.Pet;
 import com.web01.animatch.dto.SearchForm;
@@ -54,17 +57,13 @@ public class ReadDao extends BaseDao {
  /**
   * ユーザー情報抽出
   * @param userId ユーザーID
-  * @param password パスワード
   * @return ユーザー情報オブジェクトリスト
   */
- public List<User> findUserByUserIdAndPassword(int userId, String password) throws SQLException {
+ public List<User> findUserByUserId(int userId) throws SQLException {
   List<User> userList = new ArrayList<>();
   List<HashMap<String, Object>> userDataList = new ArrayList<>();
 
-  String whereStr = createWhereOfUserIdAndPassword(userId, password, userDataList);
-  if(whereStr == null) {
-   throw new SQLException();
-  }
+  String whereStr = createWhereOfUserId(userId, userDataList);
 
   try (PreparedStatement pstmt = createSelectStatement(null, "t_user", whereStr, null, null, userDataList);) {
    ResultSet rs = pstmt.executeQuery();
@@ -93,6 +92,50 @@ public class ReadDao extends BaseDao {
   }
 
   return userList;
+ }
+
+ /**
+  * ユーザー情報抽出
+  * @param userId ユーザーID
+  * @param password パスワード
+  * @return ユーザー情報オブジェクトリスト
+  */
+ public List<User> findUserByUserIdAndPassword(int userId, String password) throws SQLException {
+	 List<User> userList = new ArrayList<>();
+	 List<HashMap<String, Object>> userDataList = new ArrayList<>();
+	 
+	 String whereStr = createWhereOfUserIdAndPassword(userId, password, userDataList);
+	 if(whereStr == null) {
+		 throw new SQLException();
+	 }
+	 
+	 try (PreparedStatement pstmt = createSelectStatement(null, "t_user", whereStr, null, null, userDataList);) {
+		 ResultSet rs = pstmt.executeQuery();
+		 
+		 while (rs.next()) {
+			 User user = new User();
+			 user.setUserId(rs.getInt("user_id") == 0 ? null : rs.getInt("user_id"));
+			 user.setUserName(rs.getString("user_name"));
+			 user.setPassword(rs.getString("password"));
+			 user.setSex(rs.getString("sex"));
+			 user.setBirthday(rs.getDate("birthday"));
+			 user.setPostalCode(rs.getString("postal_code"));
+			 user.setStreetAddress(rs.getString("street_address"));
+			 user.setEmailAddress(rs.getString("email_address"));
+			 user.setTelephoneNumber(rs.getString("telephone_number"));
+			 Pet pet = new Pet();
+			 pet.setPetId(rs.getInt("pet_info_id") == 0 ? null : rs.getInt("pet_info_id"));
+			 user.setPet(pet);
+			 Store store = new Store();
+			 store.setStoreId(rs.getInt("store_info_id") == 0 ? null : rs.getInt("store_info_id"));
+			 user.setStore(store);
+			 userList.add(user);
+		 }
+	 } catch (SQLException e) {
+		 throw e;
+	 }
+	 
+	 return userList;
  }
 
  /**
@@ -384,15 +427,15 @@ public class ReadDao extends BaseDao {
   * @return ユーザIDWhere句
   */
  private String createWhereOfUserId(SearchForm searchForm, List<HashMap<String, Object>> paramDataList) {
-  String whereOfUserId = null;
-
-  String userId = searchForm.getUserId();
-  if (StringUtils.isNotEmpty(userId) && StringUtils.isNumeric(userId)) {
-   whereOfUserId = "user_id = ?";
-   paramDataList.add(createSqlParatemerMap(Integer.parseInt(userId), Types.INTEGER));
-  }
-
-  return whereOfUserId;
+	 String whereOfUserId = null;
+	 
+	 String userId = searchForm.getUserId();
+	 if (StringUtils.isNotEmpty(userId) && StringUtils.isNumeric(userId)) {
+		 whereOfUserId = "user_id = ?";
+		 paramDataList.add(createSqlParatemerMap(Integer.parseInt(userId), Types.INTEGER));
+	 }
+	 
+	 return whereOfUserId;
  }
 
  /**
@@ -413,6 +456,22 @@ public class ReadDao extends BaseDao {
   }
 
   return whereOfUserIdAndPassword;
+ }
+
+ /**
+  * ユーザID、更新日付Where句作成
+  * @param userId ユーザID
+  * @param updatedTime 更新日付
+  * @param paramDataList SQLパラメータデータリスト
+  * @return ユーザID、パスワードWhere句
+  */
+ private String createWhereOfUserIdAndUpdatedTime(int userId, Timestamp updatedTime, List<HashMap<String, Object>> paramDataList) {
+  String whereOfUserIdAndUpdatedTime = "user_id = ?";
+  paramDataList.add(createSqlParatemerMap(userId, Types.INTEGER));
+  whereOfUserIdAndUpdatedTime = createSqlClauseContent("updated_time > ?", whereOfUserIdAndUpdatedTime, LogicalOperatorType.AND);
+  paramDataList.add(createSqlParatemerMap(updatedTime, Types.TIMESTAMP));
+
+  return whereOfUserIdAndUpdatedTime;
  }
 
  /**
@@ -593,48 +652,32 @@ public class ReadDao extends BaseDao {
  }
 
  /**
-  * ダイジェスト抽出
+  * 自動ログイン情報抽出
   * @param searchService ユーザーID
-  * @return ダイジェスト
+  * @param searchTime 抽出日付時刻
+  * @return 自動ログイン情報
   */
- public String findDigestByUserId(int userId) throws SQLException {
-  // 追加
-  String digest = null;
-  List<User> userList = new ArrayList<>();
-  List<HashMap<String, Object>> userDataList = new ArrayList<>();
+ public AutoLoginInfo findAutoLoginInfoByUserIdAndNow(int userId, LocalDateTime searchTime) throws SQLException {
+  AutoLoginInfo autoLoginInfo = null;
+  List<HashMap<String, Object>> autoLoginDataList = new ArrayList<>();
 
-  String whereStr = null;
-  if(whereStr == null) {
-   throw new SQLException();
-  }
+  String whereStr = createWhereOfUserIdAndUpdatedTime(userId, Timestamp.valueOf(searchTime), autoLoginDataList);
 
-  try (PreparedStatement pstmt = createSelectStatement(null, "t_user", whereStr, null, null, userDataList);) {
+  try (PreparedStatement pstmt = createSelectStatement(null, "t_auto_login", whereStr, null, null, autoLoginDataList);) {
    ResultSet rs = pstmt.executeQuery();
 
    while (rs.next()) {
-    User user = new User();
-    user.setUserId(rs.getInt("user_id") == 0 ? null : rs.getInt("user_id"));
-    user.setUserName(rs.getString("user_name"));
-    user.setPassword(rs.getString("password"));
-    user.setSex(rs.getString("sex"));
-    user.setBirthday(rs.getDate("birthday"));
-    user.setPostalCode(rs.getString("postal_code"));
-    user.setStreetAddress(rs.getString("street_address"));
-    user.setEmailAddress(rs.getString("email_address"));
-    user.setTelephoneNumber(rs.getString("telephone_number"));
-    Pet pet = new Pet();
-    pet.setPetId(rs.getInt("pet_info_id") == 0 ? null : rs.getInt("pet_info_id"));
-    user.setPet(pet);
-    Store store = new Store();
-    store.setStoreId(rs.getInt("store_info_id") == 0 ? null : rs.getInt("store_info_id"));
-    user.setStore(store);
-    userList.add(user);
+    autoLoginInfo = new AutoLoginInfo();
+    autoLoginInfo.setAutoLoginId(rs.getInt("auto_login_id") == 0 ? null : rs.getInt("auto_login_id"));
+    autoLoginInfo.setUserId(rs.getInt("user_id") == 0 ? null : rs.getInt("user_id"));
+    autoLoginInfo.setToken(rs.getString("token"));
+    autoLoginInfo.setDigest(rs.getString("digest"));
    }
   } catch (SQLException e) {
    throw e;
   }
 
-  return digest;
+  return autoLoginInfo;
  }
 
  /**

@@ -45,6 +45,23 @@ public class SessionService {
  }
 
  /**
+  * セッションにバインドされているキーの値を取得
+  * @param request リクエストオブジェクト
+  * @param key セッションキー
+  * @return セッションキーがセッションにバインドされている値
+  * バインドされていない場合、null
+  */
+ public Object getBindingKeySessionValue(HttpServletRequest request, String key) {
+  HttpSession session = request.getSession(false);
+
+  if(session == null) {
+   return null;
+  }
+
+  return session.getAttribute(key);
+ }
+
+ /**
   * キーがセッションにバインドされているか
   * @param request リクエストオブジェクト
   * @param key セッションキー

@@ -47,8 +47,8 @@ public class LoginController extends HttpServlet {
   * @param response レスポンスオブジェクト
   */
  protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-  if(new AuthService().loginAuth(request)) {
-   //ホーム画面へリダイレクト
+  if(new AuthService().loginAuth(request, response)) {
+   // ホーム画面へリダイレクト
    String URL = "/animatch/index";
    response.sendRedirect(URL);
   }else {
