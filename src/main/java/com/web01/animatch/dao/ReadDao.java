@@ -101,41 +101,41 @@ public class ReadDao extends BaseDao {
   * @return ユーザー情報オブジェクトリスト
   */
  public List<User> findUserByUserIdAndPassword(int userId, String password) throws SQLException {
-	 List<User> userList = new ArrayList<>();
-	 List<HashMap<String, Object>> userDataList = new ArrayList<>();
-	 
-	 String whereStr = createWhereOfUserIdAndPassword(userId, password, userDataList);
-	 if(whereStr == null) {
-		 throw new SQLException();
-	 }
-	 
-	 try (PreparedStatement pstmt = createSelectStatement(null, "t_user", whereStr, null, null, userDataList);) {
-		 ResultSet rs = pstmt.executeQuery();
-		 
-		 while (rs.next()) {
-			 User user = new User();
-			 user.setUserId(rs.getInt("user_id") == 0 ? null : rs.getInt("user_id"));
-			 user.setUserName(rs.getString("user_name"));
-			 user.setPassword(rs.getString("password"));
-			 user.setSex(rs.getString("sex"));
-			 user.setBirthday(rs.getDate("birthday"));
-			 user.setPostalCode(rs.getString("postal_code"));
-			 user.setStreetAddress(rs.getString("street_address"));
-			 user.setEmailAddress(rs.getString("email_address"));
-			 user.setTelephoneNumber(rs.getString("telephone_number"));
-			 Pet pet = new Pet();
-			 pet.setPetId(rs.getInt("pet_info_id") == 0 ? null : rs.getInt("pet_info_id"));
-			 user.setPet(pet);
-			 Store store = new Store();
-			 store.setStoreId(rs.getInt("store_info_id") == 0 ? null : rs.getInt("store_info_id"));
-			 user.setStore(store);
-			 userList.add(user);
-		 }
-	 } catch (SQLException e) {
-		 throw e;
-	 }
-	 
-	 return userList;
+  List<User> userList = new ArrayList<>();
+  List<HashMap<String, Object>> userDataList = new ArrayList<>();
+  
+  String whereStr = createWhereOfUserIdAndPassword(userId, password, userDataList);
+  if(whereStr == null) {
+   throw new SQLException();
+  }
+  
+  try (PreparedStatement pstmt = createSelectStatement(null, "t_user", whereStr, null, null, userDataList);) {
+   ResultSet rs = pstmt.executeQuery();
+   
+   while (rs.next()) {
+    User user = new User();
+    user.setUserId(rs.getInt("user_id") == 0 ? null : rs.getInt("user_id"));
+    user.setUserName(rs.getString("user_name"));
+    user.setPassword(rs.getString("password"));
+    user.setSex(rs.getString("sex"));
+    user.setBirthday(rs.getDate("birthday"));
+    user.setPostalCode(rs.getString("postal_code"));
+    user.setStreetAddress(rs.getString("street_address"));
+    user.setEmailAddress(rs.getString("email_address"));
+    user.setTelephoneNumber(rs.getString("telephone_number"));
+    Pet pet = new Pet();
+    pet.setPetId(rs.getInt("pet_info_id") == 0 ? null : rs.getInt("pet_info_id"));
+    user.setPet(pet);
+    Store store = new Store();
+    store.setStoreId(rs.getInt("store_info_id") == 0 ? null : rs.getInt("store_info_id"));
+    user.setStore(store);
+    userList.add(user);
+   }
+  } catch (SQLException e) {
+   throw e;
+  }
+  
+  return userList;
  }
 
  /**
@@ -427,15 +427,15 @@ public class ReadDao extends BaseDao {
   * @return ユーザIDWhere句
   */
  private String createWhereOfUserId(SearchForm searchForm, List<HashMap<String, Object>> paramDataList) {
-	 String whereOfUserId = null;
-	 
-	 String userId = searchForm.getUserId();
-	 if (StringUtils.isNotEmpty(userId) && StringUtils.isNumeric(userId)) {
-		 whereOfUserId = "user_id = ?";
-		 paramDataList.add(createSqlParatemerMap(Integer.parseInt(userId), Types.INTEGER));
-	 }
-	 
-	 return whereOfUserId;
+  String whereOfUserId = null;
+ 
+  String userId = searchForm.getUserId();
+  if (StringUtils.isNotEmpty(userId) && StringUtils.isNumeric(userId)) {
+   whereOfUserId = "user_id = ?";
+   paramDataList.add(createSqlParatemerMap(Integer.parseInt(userId), Types.INTEGER));
+  }
+ 
+  return whereOfUserId;
  }
 
  /**

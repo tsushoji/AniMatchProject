@@ -90,11 +90,11 @@ public class UpdateDao extends BaseDao {
    }
   }
 
-  sql += where;
+  sql += " WHERE " + where;
 
   PreparedStatement pstmt = this.con.prepareStatement(sql);
 
-  for (int i = 0; i < setColumnList.size(); i++) {
+  for (int i = 0; i < list.size(); i++) {
    HashMap<String, Object> data = list.get(i);
    setSqlParameter(pstmt, (i + 1), data.get("value"), (Integer) data.get("dataType"));
   }

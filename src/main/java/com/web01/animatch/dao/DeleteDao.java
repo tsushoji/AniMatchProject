@@ -68,7 +68,7 @@ public class DeleteDao extends BaseDao {
  private PreparedStatement createDeleteStatement(String tableName, List<HashMap<String, Object>> list, String where) throws SQLException {
   String sql = "DELETE FROM " + tableName;
 
-  sql += where;
+  sql += " WHERE " + where;
 
   PreparedStatement pstmt = this.con.prepareStatement(sql);
 

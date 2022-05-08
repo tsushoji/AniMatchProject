@@ -38,6 +38,7 @@ public class CookieService {
   
   Cookie cookie = new Cookie(name, value);
   cookie.setMaxAge(SAVE_COOKIE_PERIOD);
+  cookie.setPath("/");
   response.addCookie(cookie);
  }
 
@@ -46,13 +47,16 @@ public class CookieService {
   * @param request リクエストオブジェクト
   * @param name 名前
   */
- public void deleteCookie(HttpServletRequest request, String name) {
+ public void deleteCookie(HttpServletRequest request, HttpServletResponse response, String name) {
   Cookie cookieAry[] = request.getCookies();
 
   if(cookieAry != null) {
    for(int i = 0; i < cookieAry.length; i++) {
     if(cookieAry[i].getName().equals(name)) {
-     cookieAry[i].setMaxAge(0);
+     Cookie cookie = cookieAry[i];
+     cookie.setMaxAge(0);
+     cookie.setPath("/");
+     response.addCookie(cookie);
     }
    }
   }

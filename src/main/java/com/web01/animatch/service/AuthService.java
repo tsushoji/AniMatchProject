@@ -71,7 +71,8 @@ public class AuthService {
    if(!isAuth(request, userId, loginForm.getPassword())) {
     this.msgMap.put("004", this.messageService.getMessage(MessageService.MessageType.ERROR, "010", "ユーザーIDまたはパスワード"));
    }else {
-    if(!(loginForm.getSavedUserInfo().equals("saved-user-info"))) {
+    String savedUserInfo = loginForm.getSavedUserInfo();
+    if(!(savedUserInfo != null && savedUserInfo.equals("saved-user-info"))) {
      deleteAutoLoginInfo(request, response, userId);
      return true;
     }
@@ -104,7 +105,6 @@ public class AuthService {
    if(userList.size() > 0) {
     User user = userList.get(0);
     UserSession userSession = new UserSession();
-    userSession = new UserSession();
     userSession.setUserId(user.getUserId());
     userSession.setPetId(user.getPet().getPetId());
     userSession.setStoreId(user.getStore().getStoreId());
@@ -182,8 +182,12 @@ public class AuthService {
   CookieService cookieService = new CookieService();
   String tempUserId = cookieService.getCookieValueWithKey(request, USER_ID_COOKIE_KEY_NAME);
   int userId = tempUserId != null && StringUtils.isNumeric(tempUserId)?Integer.parseInt(tempUserId):0;
+  if(userId == 0) {
+   return false;
+  }
+
   String token = cookieService.getCookieValueWithKey(request, USER_TOKEN_COOKIE_KEY_NAME);
-  if(userId == 0 || token == null) {
+  if(token == null) {
    return false;
   }
 
@@ -248,8 +252,8 @@ public class AuthService {
     cookieService.addCookie(request, response, USER_ID_COOKIE_KEY_NAME, String.valueOf(userId));
     cookieService.addCookie(request, response, USER_TOKEN_COOKIE_KEY_NAME, token);
    }else {
-    cookieService.deleteCookie(request, USER_ID_COOKIE_KEY_NAME); 
-    cookieService.deleteCookie(request, USER_TOKEN_COOKIE_KEY_NAME); 
+    cookieService.deleteCookie(request, response, USER_ID_COOKIE_KEY_NAME); 
+    cookieService.deleteCookie(request, response, USER_TOKEN_COOKIE_KEY_NAME); 
    }
 
 
@@ -277,8 +281,8 @@ public class AuthService {
    deleteDao.deleteAutoLoginInfo(userId);
 
    CookieService cookieService = new CookieService();
-   cookieService.deleteCookie(request, USER_ID_COOKIE_KEY_NAME); 
-   cookieService.deleteCookie(request, USER_TOKEN_COOKIE_KEY_NAME);
+   cookieService.deleteCookie(request, response, USER_ID_COOKIE_KEY_NAME); 
+   cookieService.deleteCookie(request, response, USER_TOKEN_COOKIE_KEY_NAME);
 
 
   }catch(Exception e) {
