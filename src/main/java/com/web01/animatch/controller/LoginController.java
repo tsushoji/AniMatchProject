@@ -53,13 +53,8 @@ public class LoginController extends HttpServlet {
    SessionService sessionService = new SessionService();
    UserSession userSession = (UserSession)sessionService.getBindingKeySessionValue((HttpServletRequest)request, AuthService.USER_SESSION_KEY_NAME);
    String URL  = userSession.getLoginedURL();
-   if(URL == null) {
-    // ホーム画面へリダイレクト
-    URL = "/animatch/index";
-   }else {
-    // ログイン完了後URLリセット
-    userSession.setLoginedURL(null);
-   }
+   // ログイン完了後URLリセット
+   userSession.setLoginedURL(null);
    response.sendRedirect(URL);
   }else {
    doGet(request, response);

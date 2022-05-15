@@ -195,6 +195,7 @@ public class ReadDao extends BaseDao {
   * @param searchService 検索サービスオブジェクト
   * @param startDataRowNum 検索開始行数
   * @param endDataRowNum 検索終了行数
+  * @param searchForm 検索フォームオブジェクト
   * @return トリマー情報オブジェクトリスト
   */
  public List<TrimmerInfo> findTrimmerInfoByStartDataRowNumAndEndDataRowNumAndSearchForm(SearchService searchService, int startDataRowNum, int endDataRowNum, SearchForm searchForm) throws SQLException {

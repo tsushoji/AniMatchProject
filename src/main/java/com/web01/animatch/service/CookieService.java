@@ -35,7 +35,7 @@ public class CookieService {
     }
    }
   }
-  
+
   Cookie cookie = new Cookie(name, value);
   cookie.setMaxAge(SAVE_COOKIE_PERIOD);
   cookie.setPath("/");
@@ -45,6 +45,7 @@ public class CookieService {
  /**
   * クッキーを削除する
   * @param request リクエストオブジェクト
+  * @param response レスポンスオブジェクト
   * @param name 名前
   */
  public void deleteCookie(HttpServletRequest request, HttpServletResponse response, String name) {

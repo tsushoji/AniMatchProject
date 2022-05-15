@@ -663,7 +663,6 @@ public class SignupService extends BaseService {
   * パラメータセットペットオブジェクト取得
   * @param request リクエストオブジェクト
   * @param registForm 登録フォームオブジェクト
-  * @param request 登録DB処理オブジェクト
   * @return ペットオブジェクト
   */
  private Pet getParameterPetDto(HttpServletRequest request, RegistForm registForm)
@@ -695,7 +694,6 @@ public class SignupService extends BaseService {
   * パラメータセット店舗オブジェクト取得
   * @param request リクエストオブジェクト
   * @param registForm 登録フォームオブジェクト
-  * @param request 登録DB処理オブジェクト
   * @return 店舗オブジェクト
   */
  private Store getParameterStoreDto(HttpServletRequest request, RegistForm registForm)

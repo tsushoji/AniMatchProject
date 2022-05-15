@@ -138,7 +138,7 @@ public class AuthService {
 
  /**
   * バリデーションチェック
-  * @param registForm ログインフォームオブジェクト
+  * @param loginForm ログインフォームオブジェクト
   * @return チェック結果
   */
  private boolean isValidate(LoginForm loginForm) {
@@ -168,7 +168,7 @@ public class AuthService {
  /**
   * バリデーションエラー属性設定
   * @param request リクエストオブジェクト
-  * @param registForm ログインフォームオブジェクト
+  * @param loginForm ログインフォームオブジェクト
   */
  private void setAttributeKeyWithCanNotValidate(HttpServletRequest request, LoginForm loginForm) {
   request.setAttribute("loginForm", loginForm);
