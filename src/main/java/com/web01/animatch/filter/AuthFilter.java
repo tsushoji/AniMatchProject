@@ -11,6 +11,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.web01.animatch.dto.UserSession;
 import com.web01.animatch.service.AuthService;
 import com.web01.animatch.service.SessionService;
 
@@ -47,13 +48,18 @@ public class AuthFilter implements Filter {
   if(judgeSessionPageURL(path) && !(sessionService.isBindingKeySession((HttpServletRequest)request, AuthService.USER_SESSION_KEY_NAME)) && authService.autoLoginAuth((HttpServletRequest)request)) {
    authService.setUserSessionWithCookie((HttpServletRequest)request);
    chain.doFilter(request, response);
+   return;
   }
 
-  if(judgeAuthURL(path) && !(sessionService.isBindingKeySession((HttpServletRequest)request, AuthService.USER_SESSION_KEY_NAME))) {
+  if(judgeAuthURL(path) && (sessionService.isBindingKeySession((HttpServletRequest)request, AuthService.USER_SESSION_KEY_NAME) == false || ((UserSession)sessionService.getBindingKeySessionValue((HttpServletRequest)request, AuthService.USER_SESSION_KEY_NAME)).getUserId() == null)) {
    if(authService.autoLoginAuth((HttpServletRequest)request)) {
     authService.setUserSessionWithCookie((HttpServletRequest)request);
     chain.doFilter(request, response);
+    return;
    }else {
+    UserSession userSession = new UserSession();
+    userSession.setLoginedURL("/animatch/member/dmessage/list");
+    sessionService.bindSession((HttpServletRequest)request, AuthService.USER_SESSION_KEY_NAME, userSession);
     //ログイン画面へリダイレクト
     String URL = "/animatch/login/";
     ((HttpServletResponse)response).sendRedirect(URL);

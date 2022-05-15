@@ -23,4 +23,8 @@ public class UserSession {
   * 店舗ID
   */
  private Integer storeId;
+ /**
+  * ログイン完了リダイレクトURL
+  */
+ private String loginedURL;
 }

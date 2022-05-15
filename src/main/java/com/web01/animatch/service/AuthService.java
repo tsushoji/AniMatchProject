@@ -108,6 +108,8 @@ public class AuthService {
     userSession.setUserId(user.getUserId());
     userSession.setPetId(user.getPet().getPetId());
     userSession.setStoreId(user.getStore().getStoreId());
+    SessionService sessionService = new SessionService();
+    userSession.setLoginedURL((UserSession)sessionService.getBindingKeySessionValue((HttpServletRequest)request, AuthService.USER_SESSION_KEY_NAME) == null ? null : ((UserSession)sessionService.getBindingKeySessionValue((HttpServletRequest)request, AuthService.USER_SESSION_KEY_NAME)).getLoginedURL());
     new SessionService().bindSession(request, USER_SESSION_KEY_NAME, userSession);
 
     result = true;
@@ -252,8 +254,8 @@ public class AuthService {
     cookieService.addCookie(request, response, USER_ID_COOKIE_KEY_NAME, String.valueOf(userId));
     cookieService.addCookie(request, response, USER_TOKEN_COOKIE_KEY_NAME, token);
    }else {
-    cookieService.deleteCookie(request, response, USER_ID_COOKIE_KEY_NAME); 
-    cookieService.deleteCookie(request, response, USER_TOKEN_COOKIE_KEY_NAME); 
+    cookieService.deleteCookie(request, response, USER_ID_COOKIE_KEY_NAME);
+    cookieService.deleteCookie(request, response, USER_TOKEN_COOKIE_KEY_NAME);
    }
 
 
@@ -281,7 +283,7 @@ public class AuthService {
    deleteDao.deleteAutoLoginInfo(userId);
 
    CookieService cookieService = new CookieService();
-   cookieService.deleteCookie(request, response, USER_ID_COOKIE_KEY_NAME); 
+   cookieService.deleteCookie(request, response, USER_ID_COOKIE_KEY_NAME);
    cookieService.deleteCookie(request, response, USER_TOKEN_COOKIE_KEY_NAME);
 
 
@@ -303,7 +305,7 @@ public class AuthService {
   boolean result = false;
   String userId = new CookieService().getCookieValueWithKey(request, USER_ID_COOKIE_KEY_NAME);
   if(userId == null || !StringUtils.isNumeric(userId)) {
-   return result; 
+   return result;
   }
 
   DBConnection con = new DBConnection();
