@@ -149,7 +149,7 @@ public class AuthService {
   if(StringUtils.isEmpty(userId)) {
    this.msgMap.put("001", this.messageService.getMessage(MessageService.MessageType.ERROR, "005", "ユーザーID"));
   }else {
-   if(StringUtils.isNotEmpty(userId) && !StringUtils.isNumeric(userId)) {
+   if(!StringUtils.isNumeric(userId)) {
     this.msgMap.put("002", this.messageService.getMessage(MessageService.MessageType.ERROR, "001", "ユーザーID", "数値"));
    }
   }
