@@ -108,10 +108,10 @@ public class AuthService {
     userSession.setUserId(user.getUserId());
     userSession.setPetId(user.getPet().getPetId());
     userSession.setStoreId(user.getStore().getStoreId());
-    SessionService sessionService = new SessionService();
-    UserSession userSessionOld = (UserSession)sessionService.getBindingKeySessionValue((HttpServletRequest)request, AuthService.USER_SESSION_KEY_NAME);
+    SessionService sessionService = new SessionService(request);
+    UserSession userSessionOld = (UserSession)sessionService.getBindingKeySessionValue(AuthService.USER_SESSION_KEY_NAME);
     userSession.setLoginedURL(userSessionOld == null ? null : userSessionOld.getLoginedURL());
-    new SessionService().bindSession(request, USER_SESSION_KEY_NAME, userSession);
+    sessionService.bindSession(USER_SESSION_KEY_NAME, userSession);
 
     result = true;
    }
@@ -182,14 +182,14 @@ public class AuthService {
   * @return 自動ログイン認証成功失敗
   */
  public boolean autoLoginAuth(HttpServletRequest request) {
-  CookieService cookieService = new CookieService();
-  String tempUserId = cookieService.getCookieValueWithKey(request, USER_ID_COOKIE_KEY_NAME);
+  CookieService cookieService = new CookieService(request);
+  String tempUserId = cookieService.getCookieValueWithKey(USER_ID_COOKIE_KEY_NAME);
   int userId = tempUserId != null && StringUtils.isNumeric(tempUserId)?Integer.parseInt(tempUserId):0;
   if(userId == 0) {
    return false;
   }
 
-  String token = cookieService.getCookieValueWithKey(request, USER_TOKEN_COOKIE_KEY_NAME);
+  String token = cookieService.getCookieValueWithKey(USER_TOKEN_COOKIE_KEY_NAME);
   if(token == null) {
    return false;
   }
@@ -250,13 +250,13 @@ public class AuthService {
     }
    }
 
-   CookieService cookieService = new CookieService();
+   CookieService cookieService = new CookieService(request);
    if(result) {
-    cookieService.addCookie(request, response, USER_ID_COOKIE_KEY_NAME, String.valueOf(userId));
-    cookieService.addCookie(request, response, USER_TOKEN_COOKIE_KEY_NAME, token);
+    cookieService.addCookie(response, USER_ID_COOKIE_KEY_NAME, String.valueOf(userId));
+    cookieService.addCookie(response, USER_TOKEN_COOKIE_KEY_NAME, token);
    }else {
-    cookieService.deleteCookie(request, response, USER_ID_COOKIE_KEY_NAME);
-    cookieService.deleteCookie(request, response, USER_TOKEN_COOKIE_KEY_NAME);
+    cookieService.deleteCookie(response, USER_ID_COOKIE_KEY_NAME);
+    cookieService.deleteCookie(response, USER_TOKEN_COOKIE_KEY_NAME);
    }
 
 
@@ -283,9 +283,9 @@ public class AuthService {
   try {
    deleteDao.deleteAutoLoginInfo(userId);
 
-   CookieService cookieService = new CookieService();
-   cookieService.deleteCookie(request, response, USER_ID_COOKIE_KEY_NAME);
-   cookieService.deleteCookie(request, response, USER_TOKEN_COOKIE_KEY_NAME);
+   CookieService cookieService = new CookieService(request);
+   cookieService.deleteCookie(response, USER_ID_COOKIE_KEY_NAME);
+   cookieService.deleteCookie(response, USER_TOKEN_COOKIE_KEY_NAME);
 
 
   }catch(Exception e) {
@@ -304,7 +304,7 @@ public class AuthService {
   */
  public boolean setUserSessionWithCookie(HttpServletRequest request) {
   boolean result = false;
-  String userId = new CookieService().getCookieValueWithKey(request, USER_ID_COOKIE_KEY_NAME);
+  String userId = new CookieService(request).getCookieValueWithKey(USER_ID_COOKIE_KEY_NAME);
   if(userId == null || !StringUtils.isNumeric(userId)) {
    return result;
   }
@@ -321,7 +321,7 @@ public class AuthService {
     userSession.setUserId(user.getUserId());
     userSession.setPetId(user.getPet().getPetId());
     userSession.setStoreId(user.getStore().getStoreId());
-    new SessionService().bindSession(request, USER_SESSION_KEY_NAME, userSession);
+    new SessionService(request).bindSession(USER_SESSION_KEY_NAME, userSession);
 
     result = true;
    }

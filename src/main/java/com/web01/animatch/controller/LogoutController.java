@@ -48,12 +48,12 @@ public class LogoutController extends HttpServlet {
   * @param response レスポンスオブジェクト
   */
  protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-  SessionService sessionService = new SessionService();
-  UserSession userSession = (UserSession)sessionService.getBindingKeySessionValue(request, AuthService.USER_SESSION_KEY_NAME);
+  SessionService sessionService = new SessionService(request);
+  UserSession userSession = (UserSession)sessionService.getBindingKeySessionValue(AuthService.USER_SESSION_KEY_NAME);
   if(userSession != null && userSession.getUserId() != null){
    new AuthService().deleteAutoLoginInfo(request, response, userSession.getUserId());
   }
-  sessionService.invalidateSession(request);
+  sessionService.invalidateSession();
   doGet(request, response);
  }
 }

@@ -10,18 +10,31 @@ import javax.servlet.http.HttpSession;
  */
 public class SessionService {
 
+ //メンバー
+ /**
+  * リクエストオブジェクト
+  */
+ private HttpServletRequest request;
+
+ /**
+  * 引数付きコンストラクタ
+  * @param request リクエストオブジェクト
+  */
+ public SessionService(HttpServletRequest request) {
+  this.request = request;
+ }
+
  /**
   * セッションにバインドする
-  * @param request リクエストオブジェクト
   * @param key 名前
   * @param value オブジェクト
   * @return セッションバインド成功失敗
   */
- public boolean bindSession(HttpServletRequest request, String key, Object value) {
-  HttpSession session = request.getSession(false);
+ public boolean bindSession(String key, Object value) {
+  HttpSession session = this.request.getSession(false);
 
   if(session == null) {
-   session = request.getSession(true);
+   session = this.request.getSession(true);
   }
 
   if(key == null) {
@@ -34,10 +47,9 @@ public class SessionService {
 
  /**
   * セッションを無効にする
-  * @param request リクエストオブジェクト
   */
- public void invalidateSession(HttpServletRequest request) {
-  HttpSession session = request.getSession(false);
+ public void invalidateSession() {
+  HttpSession session = this.request.getSession(false);
 
   if(session != null) {
    session.invalidate();
@@ -46,13 +58,12 @@ public class SessionService {
 
  /**
   * セッションにバインドされているキーの値を取得
-  * @param request リクエストオブジェクト
   * @param key セッションキー
   * @return セッションキーがセッションにバインドされている値
   * バインドされていない場合、null
   */
- public Object getBindingKeySessionValue(HttpServletRequest request, String key) {
-  HttpSession session = request.getSession(false);
+ public Object getBindingKeySessionValue(String key) {
+  HttpSession session = this.request.getSession(false);
 
   if(session == null) {
    return null;
@@ -63,13 +74,12 @@ public class SessionService {
 
  /**
   * キーがセッションにバインドされているか
-  * @param request リクエストオブジェクト
   * @param key セッションキー
   * @return セッションキーがセッションにバインドされている場合、true
   * そうでない場合、false
   */
- public boolean isBindingKeySession(HttpServletRequest request, String key) {
-  HttpSession session = request.getSession(false);
+ public boolean isBindingKeySession(String key) {
+  HttpSession session = this.request.getSession(false);
 
   if(session == null) {
    return false;

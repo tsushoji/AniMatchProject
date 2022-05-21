@@ -50,8 +50,8 @@ public class LoginController extends HttpServlet {
   */
  protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
   if(new AuthService().loginAuth(request, response)) {
-   SessionService sessionService = new SessionService();
-   UserSession userSession = (UserSession)sessionService.getBindingKeySessionValue((HttpServletRequest)request, AuthService.USER_SESSION_KEY_NAME);
+   SessionService sessionService = new SessionService((HttpServletRequest)request);
+   UserSession userSession = (UserSession)sessionService.getBindingKeySessionValue(AuthService.USER_SESSION_KEY_NAME);
    String loginedURL  = userSession.getLoginedURL();
    // ログイン完了後URLリセット
    userSession.setLoginedURL(null);

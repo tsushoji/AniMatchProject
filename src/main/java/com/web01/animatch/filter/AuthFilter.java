@@ -43,34 +43,34 @@ public class AuthFilter implements Filter {
  public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
   String path = ((HttpServletRequest) request).getServletPath();
   AuthService authService = new AuthService();
-  SessionService sessionService = new SessionService();
+  SessionService sessionService = new SessionService((HttpServletRequest)request);
   UserSession userSession = null;
 
   // ログイン完了後URL取得
   if(judgeSessionPageURL(path)) {
-   if(sessionService.isBindingKeySession((HttpServletRequest)request, AuthService.USER_SESSION_KEY_NAME)) {
-    userSession = (UserSession)sessionService.getBindingKeySessionValue((HttpServletRequest)request, AuthService.USER_SESSION_KEY_NAME);
+   if(sessionService.isBindingKeySession(AuthService.USER_SESSION_KEY_NAME)) {
+    userSession = (UserSession)sessionService.getBindingKeySessionValue(AuthService.USER_SESSION_KEY_NAME);
     userSession.setLoginedURL("/animatch" + path);
    }else {
     userSession = new UserSession();
     userSession.setLoginedURL("/animatch" + path);
    }
-   sessionService.bindSession((HttpServletRequest)request, AuthService.USER_SESSION_KEY_NAME, userSession);
+   sessionService.bindSession(AuthService.USER_SESSION_KEY_NAME, userSession);
   }else if(judgeNotLoginedSessionPageURL(path)){
-   if(sessionService.isBindingKeySession((HttpServletRequest)request, AuthService.USER_SESSION_KEY_NAME)) {
-    userSession = (UserSession)sessionService.getBindingKeySessionValue((HttpServletRequest)request, AuthService.USER_SESSION_KEY_NAME);
+   if(sessionService.isBindingKeySession(AuthService.USER_SESSION_KEY_NAME)) {
+    userSession = (UserSession)sessionService.getBindingKeySessionValue(AuthService.USER_SESSION_KEY_NAME);
     userSession.setLoginedURL(null);
-    sessionService.bindSession((HttpServletRequest)request, AuthService.USER_SESSION_KEY_NAME, userSession);
+    sessionService.bindSession(AuthService.USER_SESSION_KEY_NAME, userSession);
    }
   }
 
-  if(judgeSessionPageURL(path) && (sessionService.isBindingKeySession((HttpServletRequest)request, AuthService.USER_SESSION_KEY_NAME) == false || ((UserSession)sessionService.getBindingKeySessionValue((HttpServletRequest)request, AuthService.USER_SESSION_KEY_NAME)).getUserId() == null) && authService.autoLoginAuth((HttpServletRequest)request)) {
+  if(judgeSessionPageURL(path) && (sessionService.isBindingKeySession(AuthService.USER_SESSION_KEY_NAME) == false || ((UserSession)sessionService.getBindingKeySessionValue(AuthService.USER_SESSION_KEY_NAME)).getUserId() == null) && authService.autoLoginAuth((HttpServletRequest)request)) {
    authService.setUserSessionWithCookie((HttpServletRequest)request);
    chain.doFilter(request, response);
    return;
   }
 
-  if(judgeAuthURL(path) && (sessionService.isBindingKeySession((HttpServletRequest)request, AuthService.USER_SESSION_KEY_NAME) == false || ((UserSession)sessionService.getBindingKeySessionValue((HttpServletRequest)request, AuthService.USER_SESSION_KEY_NAME)).getUserId() == null)) {
+  if(judgeAuthURL(path) && (sessionService.isBindingKeySession(AuthService.USER_SESSION_KEY_NAME) == false || ((UserSession)sessionService.getBindingKeySessionValue(AuthService.USER_SESSION_KEY_NAME)).getUserId() == null)) {
    if(authService.autoLoginAuth((HttpServletRequest)request)) {
     authService.setUserSessionWithCookie((HttpServletRequest)request);
     chain.doFilter(request, response);
@@ -78,7 +78,7 @@ public class AuthFilter implements Filter {
    }else {
     userSession = new UserSession();
     userSession.setLoginedURL("/animatch/member/dmessage/list");
-    sessionService.bindSession((HttpServletRequest)request, AuthService.USER_SESSION_KEY_NAME, userSession);
+    sessionService.bindSession(AuthService.USER_SESSION_KEY_NAME, userSession);
     //ログイン画面へリダイレクト
     String URL = "/animatch/login/";
     ((HttpServletResponse)response).sendRedirect(URL);

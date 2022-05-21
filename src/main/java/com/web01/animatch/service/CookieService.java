@@ -11,6 +11,12 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class CookieService {
 
+ //メンバー
+ /**
+  * リクエストオブジェクト
+  */
+ private HttpServletRequest request;
+
  // 定数
  /**
   * クッキー保存期間
@@ -18,14 +24,21 @@ public class CookieService {
  public static final int SAVE_COOKIE_PERIOD = 60 * 60 * 24 * 14;
 
  /**
-  * クッキー追加
+  * 引数付きコンストラクタ
   * @param request リクエストオブジェクト
+  */
+ public CookieService(HttpServletRequest request) {
+  this.request = request;
+ }
+
+ /**
+  * クッキー追加
   * @param response レスポンスオブジェクト
   * @param key 名前
   * @param value オブジェクト
   */
- public void addCookie(HttpServletRequest request, HttpServletResponse response, String key, String value) {
-  Cookie cookieAry[] = request.getCookies();
+ public void addCookie(HttpServletResponse response, String key, String value) {
+  Cookie cookieAry[] = this.request.getCookies();
 
   if(cookieAry != null) {
    for(int i = 0; i < cookieAry.length; i++) {
@@ -44,12 +57,11 @@ public class CookieService {
 
  /**
   * クッキーを削除する
-  * @param request リクエストオブジェクト
   * @param response レスポンスオブジェクト
   * @param key 名前
   */
- public void deleteCookie(HttpServletRequest request, HttpServletResponse response, String key) {
-  Cookie cookieAry[] = request.getCookies();
+ public void deleteCookie(HttpServletResponse response, String key) {
+  Cookie cookieAry[] = this.request.getCookies();
 
   if(cookieAry != null) {
    for(int i = 0; i < cookieAry.length; i++) {
@@ -65,13 +77,12 @@ public class CookieService {
 
  /**
   * クッキーに存在するキーの値を取得
-  * @param request リクエストオブジェクト
   * @param key キー
   * @return キーの値
   * 存在しない場合、null
   */
- public String getCookieValueWithKey(HttpServletRequest request, String key) {
-  Cookie cookie[] = request.getCookies();
+ public String getCookieValueWithKey(String key) {
+  Cookie cookie[] = this.request.getCookies();
 
   if(cookie == null) {
    return null;
