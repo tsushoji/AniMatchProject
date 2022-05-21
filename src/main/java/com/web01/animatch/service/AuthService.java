@@ -2,6 +2,7 @@ package com.web01.animatch.service;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -229,8 +230,9 @@ public class AuthService {
   */
  private boolean registAutoLoginInfo(HttpServletRequest request, HttpServletResponse response, int userId) {
   DBConnection con = new DBConnection();
-  UpdateDao updateDao = new UpdateDao(con.getConnection());
-  CreateDao createDao = new CreateDao(con.getConnection());
+  Connection conSQL = con.getConnection();
+  UpdateDao updateDao = new UpdateDao(conSQL);
+  CreateDao createDao = new CreateDao(conSQL);
   boolean result = false;
 
   try {
@@ -243,9 +245,10 @@ public class AuthService {
    autoLoginInfo.setDigest(digest);
    LocalDateTime now = LocalDateTime.now();
    autoLoginInfo.setUpdatedTime(now);
-   if(updateDao.updateAutoLoginInfo(autoLoginInfo) == 1) {
+   int updateNum = updateDao.updateAutoLoginInfo(autoLoginInfo);
+   if(updateNum == 1) {
     result = true;
-   }else {
+   }else if(updateNum == 0){
     autoLoginInfo.setIsDeleted(0);
     autoLoginInfo.setInsertedTime(now);
     if(createDao.registAutoLoginInfo(autoLoginInfo)) {
@@ -262,9 +265,18 @@ public class AuthService {
     cookieService.deleteCookie(response, USER_TOKEN_COOKIE_KEY_NAME);
    }
 
+   if(result) {
+    conSQL.commit();
+   }else {
+    conSQL.rollback();
+   }
 
   }catch(Exception e) {
-   e.printStackTrace();
+   try {
+    conSQL.rollback();
+   } catch (SQLException e1) {
+    e1.printStackTrace();
+   }
   }finally {
    con.close();
   }
@@ -281,7 +293,8 @@ public class AuthService {
   */
  public boolean deleteAutoLoginInfo(HttpServletRequest request, HttpServletResponse response, int userId) {
   DBConnection con = new DBConnection();
-  DeleteDao deleteDao = new DeleteDao(con.getConnection());
+  Connection conSQL = con.getConnection();
+  DeleteDao deleteDao = new DeleteDao(conSQL);
 
   try {
    deleteDao.deleteAutoLoginInfo(userId);
@@ -290,8 +303,15 @@ public class AuthService {
    cookieService.deleteCookie(response, USER_ID_COOKIE_KEY_NAME);
    cookieService.deleteCookie(response, USER_TOKEN_COOKIE_KEY_NAME);
 
+   conSQL.commit();
+
 
   }catch(Exception e) {
+   try {
+    conSQL.rollback();
+   } catch (SQLException e1) {
+    e1.printStackTrace();
+   }
    e.printStackTrace();
   }finally {
    con.close();

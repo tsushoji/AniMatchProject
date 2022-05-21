@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -590,7 +591,8 @@ public class SignupService extends BaseService {
   */
  private void registDao(HttpServletRequest request, RegistForm registForm) {
   DBConnection con = new DBConnection();
-  CreateDao createDao = new CreateDao(con.getConnection());
+  Connection conSQL = con.getConnection();
+  CreateDao createDao = new CreateDao(conSQL);
   try {
    User user = getParameterUserDto(registForm);
    switch (this.registType) {
@@ -603,6 +605,7 @@ public class SignupService extends BaseService {
      this.canRegist = false;
      this.canRegist = createDao.registOwner(user);
      setAttributeRegistOwner(request, user);
+     conSQL.commit();
     }
     break;
 
@@ -617,6 +620,7 @@ public class SignupService extends BaseService {
      this.canRegist = false;
      this.canRegist = createDao.registTrimmer(user);
      setAttributeRegistTrimmer(request, user);
+     conSQL.commit();
     }
     break;
 
@@ -624,6 +628,11 @@ public class SignupService extends BaseService {
     break;
    }
   } catch (SQLException | ParseException | IOException | ServletException e) {
+   try {
+    conSQL.rollback();
+   } catch (SQLException e1) {
+    e1.printStackTrace();
+   }
    e.printStackTrace();
   } finally {
    con.close();

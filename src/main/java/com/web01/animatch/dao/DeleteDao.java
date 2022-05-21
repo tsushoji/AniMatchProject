@@ -38,6 +38,7 @@ public class DeleteDao extends BaseDao {
   * 自動ログイン情報削除
   * @param autoLoginInfo 自動ログイン情報オブジェクト
   * @return DB更新した件数
+  * 呼び出し元でトランザクション管理
   */
  public int deleteAutoLoginInfo(int userId) throws SQLException {
   List<HashMap<String, Object>> autoLoginDataList = new ArrayList<>();
@@ -50,7 +51,6 @@ public class DeleteDao extends BaseDao {
 
    result = pstmt.executeUpdate();
 
-   this.con.commit();
   } catch (SQLException e) {
    throw e;
   }

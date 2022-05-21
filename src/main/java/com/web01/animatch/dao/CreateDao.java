@@ -57,6 +57,7 @@ public class CreateDao extends BaseDao {
   * 飼い主DB登録
   * @param user ユーザオブジェクト
   * @return DB登録成功失敗
+  * 呼び出し元でトランザクション管理
   */
  public boolean registOwner(User user) throws SQLException {
   Pet pet = user.getPet();
@@ -111,7 +112,6 @@ public class CreateDao extends BaseDao {
 
    pstmt.executeUpdate();
 
-   this.con.commit();
   } catch (SQLException e) {
    throw e;
   }
@@ -209,7 +209,6 @@ public class CreateDao extends BaseDao {
     pstmt.executeUpdate();
    }
 
-   this.con.commit();
   } catch (SQLException e) {
    throw e;
   } finally {
@@ -225,6 +224,7 @@ public class CreateDao extends BaseDao {
   * 飼い主DB登録
   * @param autoLoginInfo 自動ログイン情報オブジェクト
   * @return DB登録成功失敗
+  * 呼び出し元でトランザクション管理
   */
  public boolean registAutoLoginInfo(AutoLoginInfo autoLoginInfo) throws SQLException {
 
@@ -241,7 +241,6 @@ public class CreateDao extends BaseDao {
 
   try (PreparedStatement pstmt = createInsetStatement("t_auto_login", autoLoginDataList, true);) {
    pstmt.executeUpdate();
-   this.con.commit();
 
   } catch (SQLException e) {
    throw e;

@@ -42,6 +42,7 @@ public class UpdateDao extends BaseDao {
   * 自動ログイン情報更新
   * @param autoLoginInfo 自動ログイン情報オブジェクト
   * @return DB更新した件数
+  * 呼び出し元でトランザクション管理
   */
  public int updateAutoLoginInfo(AutoLoginInfo autoLoginInfo) throws SQLException {
   List<String> setColumnList = new ArrayList<>();
@@ -62,7 +63,6 @@ public class UpdateDao extends BaseDao {
 
    result = pstmt.executeUpdate();
 
-   this.con.commit();
   } catch (SQLException e) {
    throw e;
   }
