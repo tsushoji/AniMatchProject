@@ -52,10 +52,10 @@ public class LoginController extends HttpServlet {
   if(new AuthService().loginAuth(request, response)) {
    SessionService sessionService = new SessionService();
    UserSession userSession = (UserSession)sessionService.getBindingKeySessionValue((HttpServletRequest)request, AuthService.USER_SESSION_KEY_NAME);
-   String URL  = userSession.getLoginedURL();
+   String loginedURL  = userSession.getLoginedURL();
    // ログイン完了後URLリセット
    userSession.setLoginedURL(null);
-   response.sendRedirect(URL);
+   response.sendRedirect(loginedURL);
   }else {
    doGet(request, response);
   }
