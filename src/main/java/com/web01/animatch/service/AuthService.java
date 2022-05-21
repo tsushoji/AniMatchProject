@@ -58,6 +58,14 @@ public class AuthService {
  public static final String MESSAGE_DIGEST_ALGORITHM_NAME = "SHA-1";
 
  /**
+  * デフォルトコンストラクタ
+  */
+ public AuthService() {
+  this.msgMap = new HashMap<>();
+  this.messageService = new MessageService();
+ }
+
+ /**
   * ログイン認証
   * @param request リクエストオブジェクト
   * @param response レスポンスオブジェクト
@@ -143,9 +151,6 @@ public class AuthService {
   * @return チェック結果
   */
  private boolean isValidate(LoginForm loginForm) {
-  this.msgMap = new HashMap<>();
-  this.messageService = new MessageService();
-
   String userId = loginForm.getUserId();
   if(StringUtils.isEmpty(userId)) {
    this.msgMap.put("001", this.messageService.getMessage(MessageService.MessageType.ERROR, "005", "ユーザーID"));
