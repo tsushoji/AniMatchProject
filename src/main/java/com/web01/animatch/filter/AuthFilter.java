@@ -44,39 +44,37 @@ public class AuthFilter implements Filter {
   String path = ((HttpServletRequest) request).getServletPath();
   AuthService authService = new AuthService();
   SessionService sessionService = new SessionService((HttpServletRequest)request);
-  UserSession userSession = null;
+  UserSession userSession = new UserSession();
 
   // ログイン完了後URL取得
+  boolean isExistUserSessionKeyName = sessionService.isBindingKeySession(AuthService.USER_SESSION_KEY_NAME);
+  if(isExistUserSessionKeyName) {
+   userSession = (UserSession)sessionService.getBindingKeySessionValue(AuthService.USER_SESSION_KEY_NAME);
+  }  
   if(judgeSessionPageURL(path)) {
-   if(sessionService.isBindingKeySession(AuthService.USER_SESSION_KEY_NAME)) {
-    userSession = (UserSession)sessionService.getBindingKeySessionValue(AuthService.USER_SESSION_KEY_NAME);
-    userSession.setLoginedURL("/animatch" + path);
-   }else {
-    userSession = new UserSession();
-    userSession.setLoginedURL("/animatch" + path);
+   String LoginedURL = "/animatch" + path;
+   if(judgeParameterURL(path)) {
+    LoginedURL = ((HttpServletRequest) request).getRequestURI();
    }
-   sessionService.bindSession(AuthService.USER_SESSION_KEY_NAME, userSession);
+   userSession.setLoginedURL(LoginedURL);
   }else if(judgeNotLoginedSessionPageURL(path)){
-   if(sessionService.isBindingKeySession(AuthService.USER_SESSION_KEY_NAME)) {
-    userSession = (UserSession)sessionService.getBindingKeySessionValue(AuthService.USER_SESSION_KEY_NAME);
-    userSession.setLoginedURL(null);
-    sessionService.bindSession(AuthService.USER_SESSION_KEY_NAME, userSession);
-   }
+   userSession.setLoginedURL(null);
   }
+  sessionService.bindSession(AuthService.USER_SESSION_KEY_NAME, userSession);
 
-  if(judgeSessionPageURL(path) && (sessionService.isBindingKeySession(AuthService.USER_SESSION_KEY_NAME) == false || ((UserSession)sessionService.getBindingKeySessionValue(AuthService.USER_SESSION_KEY_NAME)).getUserId() == null) && authService.autoLoginAuth((HttpServletRequest)request)) {
+  Integer userId = userSession.getUserId();
+  if(judgeSessionPageURL(path) && userId == null && authService.autoLoginAuth((HttpServletRequest)request)) {
    authService.setUserSessionWithCookie((HttpServletRequest)request);
    chain.doFilter(request, response);
    return;
   }
 
-  if(judgeAuthURL(path) && (sessionService.isBindingKeySession(AuthService.USER_SESSION_KEY_NAME) == false || ((UserSession)sessionService.getBindingKeySessionValue(AuthService.USER_SESSION_KEY_NAME)).getUserId() == null)) {
+  if(judgeAuthURL(path) && userId == null) {
    if(authService.autoLoginAuth((HttpServletRequest)request)) {
     authService.setUserSessionWithCookie((HttpServletRequest)request);
     chain.doFilter(request, response);
     return;
    }else {
-    userSession = new UserSession();
     userSession.setLoginedURL("/animatch/member/dmessage/list");
     sessionService.bindSession(AuthService.USER_SESSION_KEY_NAME, userSession);
     //ログイン画面へリダイレクト
@@ -114,11 +112,29 @@ public class AuthFilter implements Filter {
    return true;
   }
 
-  if (path.startsWith("/member/detail/owner/")) {
+  if (path.startsWith("/member/detail/owner")) {
    return true;
   }
 
-  if (path.startsWith("/member/detail/trimmer/")) {
+  if (path.startsWith("/member/detail/trimmer")) {
+   return true;
+  }
+
+  return false;
+ }
+
+ /**
+  * セッション制御ページURLパターン判定
+  * @param path パス
+  * @return パラメータを含むURLパターンである場合、true
+  * そうでない場合、false
+  */
+ public boolean judgeParameterURL(String path) throws ServletException {
+  if (path.startsWith("/member/detail/owner")) {
+   return true;
+  }
+
+  if (path.startsWith("/member/detail/trimmer")) {
    return true;
   }
 
@@ -137,14 +153,6 @@ public class AuthFilter implements Filter {
   }
 
   if (path.equals("/contact/")) {
-   return true;
-  }
-
-  if (path.startsWith("/member/detail/owner/")) {
-   return true;
-  }
-
-  if (path.startsWith("/member/detail/trimmer/")) {
    return true;
   }
 
