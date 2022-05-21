@@ -5,7 +5,6 @@ import java.security.MessageDigest;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -109,9 +108,8 @@ public class AuthService {
   ReadDao readDao = new ReadDao(con.getConnection());
 
   try {
-   List<User> userList = readDao.findUserByUserIdAndPassword(userId, password);
-   if(userList.size() > 0) {
-    User user = userList.get(0);
+   User user = readDao.findUserByUserIdAndPassword(userId, password);
+   if(user != null) {
     UserSession userSession = new UserSession();
     userSession.setUserId(user.getUserId());
     userSession.setPetId(user.getPet().getPetId());
@@ -318,9 +316,8 @@ public class AuthService {
   ReadDao readDao = new ReadDao(con.getConnection());
 
   try {
-   List<User> userList = readDao.findUserByUserId(Integer.parseInt(userId));
-   if(userList.size() > 0) {
-    User user = userList.get(0);
+   User user = readDao.findUserByUserId(Integer.parseInt(userId));
+   if(user != null) {
     UserSession userSession = new UserSession();
     userSession = new UserSession();
     userSession.setUserId(user.getUserId());

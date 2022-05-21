@@ -57,10 +57,10 @@ public class ReadDao extends BaseDao {
  /**
   * ユーザー情報抽出
   * @param userId ユーザーID
-  * @return ユーザー情報オブジェクトリスト
+  * @return ユーザー情報オブジェクト
   */
- public List<User> findUserByUserId(int userId) throws SQLException {
-  List<User> userList = new ArrayList<>();
+ public User findUserByUserId(int userId) throws SQLException {
+  User user = null;
   List<HashMap<String, Object>> userDataList = new ArrayList<>();
 
   String whereStr = createWhereOfUserId(userId, userDataList);
@@ -68,8 +68,8 @@ public class ReadDao extends BaseDao {
   try (PreparedStatement pstmt = createSelectStatement(null, "t_user", whereStr, null, null, userDataList);) {
    ResultSet rs = pstmt.executeQuery();
 
-   while (rs.next()) {
-    User user = new User();
+   if (rs.next()) {
+    user = new User();
     user.setUserId(rs.getInt("user_id") == 0 ? null : rs.getInt("user_id"));
     user.setUserName(rs.getString("user_name"));
     user.setPassword(rs.getString("password"));
@@ -85,23 +85,22 @@ public class ReadDao extends BaseDao {
     Store store = new Store();
     store.setStoreId(rs.getInt("store_info_id") == 0 ? null : rs.getInt("store_info_id"));
     user.setStore(store);
-    userList.add(user);
    }
   } catch (SQLException e) {
    throw e;
   }
 
-  return userList;
+  return user;
  }
 
  /**
   * ユーザー情報抽出
   * @param userId ユーザーID
   * @param password パスワード
-  * @return ユーザー情報オブジェクトリスト
+  * @return ユーザー情報オブジェクト
   */
- public List<User> findUserByUserIdAndPassword(int userId, String password) throws SQLException {
-  List<User> userList = new ArrayList<>();
+ public User findUserByUserIdAndPassword(int userId, String password) throws SQLException {
+  User user = null;
   List<HashMap<String, Object>> userDataList = new ArrayList<>();
   
   String whereStr = createWhereOfUserIdAndPassword(userId, password, userDataList);
@@ -112,8 +111,8 @@ public class ReadDao extends BaseDao {
   try (PreparedStatement pstmt = createSelectStatement(null, "t_user", whereStr, null, null, userDataList);) {
    ResultSet rs = pstmt.executeQuery();
    
-   while (rs.next()) {
-    User user = new User();
+   if (rs.next()) {
+    user = new User();
     user.setUserId(rs.getInt("user_id") == 0 ? null : rs.getInt("user_id"));
     user.setUserName(rs.getString("user_name"));
     user.setPassword(rs.getString("password"));
@@ -129,13 +128,12 @@ public class ReadDao extends BaseDao {
     Store store = new Store();
     store.setStoreId(rs.getInt("store_info_id") == 0 ? null : rs.getInt("store_info_id"));
     user.setStore(store);
-    userList.add(user);
    }
   } catch (SQLException e) {
    throw e;
   }
   
-  return userList;
+  return user;
  }
 
  /**
