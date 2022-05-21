@@ -109,7 +109,8 @@ public class AuthService {
     userSession.setPetId(user.getPet().getPetId());
     userSession.setStoreId(user.getStore().getStoreId());
     SessionService sessionService = new SessionService();
-    userSession.setLoginedURL((UserSession)sessionService.getBindingKeySessionValue((HttpServletRequest)request, AuthService.USER_SESSION_KEY_NAME) == null ? null : ((UserSession)sessionService.getBindingKeySessionValue((HttpServletRequest)request, AuthService.USER_SESSION_KEY_NAME)).getLoginedURL());
+    UserSession userSessionOld = (UserSession)sessionService.getBindingKeySessionValue((HttpServletRequest)request, AuthService.USER_SESSION_KEY_NAME);
+    userSession.setLoginedURL(userSessionOld == null ? null : userSessionOld.getLoginedURL());
     new SessionService().bindSession(request, USER_SESSION_KEY_NAME, userSession);
 
     result = true;
