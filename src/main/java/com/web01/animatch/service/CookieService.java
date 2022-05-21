@@ -21,22 +21,22 @@ public class CookieService {
   * クッキー追加
   * @param request リクエストオブジェクト
   * @param response レスポンスオブジェクト
-  * @param name 名前
+  * @param key 名前
   * @param value オブジェクト
   */
- public void addCookie(HttpServletRequest request, HttpServletResponse response, String name, String value) {
+ public void addCookie(HttpServletRequest request, HttpServletResponse response, String key, String value) {
   Cookie cookieAry[] = request.getCookies();
 
   if(cookieAry != null) {
    for(int i = 0; i < cookieAry.length; i++) {
-    if(cookieAry[i].getName().equals(name)) {
+    if(cookieAry[i].getName().equals(key)) {
      cookieAry[i].setValue(value);
      return;
     }
    }
   }
 
-  Cookie cookie = new Cookie(name, value);
+  Cookie cookie = new Cookie(key, value);
   cookie.setMaxAge(SAVE_COOKIE_PERIOD);
   cookie.setPath("/");
   response.addCookie(cookie);
@@ -46,14 +46,14 @@ public class CookieService {
   * クッキーを削除する
   * @param request リクエストオブジェクト
   * @param response レスポンスオブジェクト
-  * @param name 名前
+  * @param key 名前
   */
- public void deleteCookie(HttpServletRequest request, HttpServletResponse response, String name) {
+ public void deleteCookie(HttpServletRequest request, HttpServletResponse response, String key) {
   Cookie cookieAry[] = request.getCookies();
 
   if(cookieAry != null) {
    for(int i = 0; i < cookieAry.length; i++) {
-    if(cookieAry[i].getName().equals(name)) {
+    if(cookieAry[i].getName().equals(key)) {
      Cookie cookie = cookieAry[i];
      cookie.setMaxAge(0);
      cookie.setPath("/");

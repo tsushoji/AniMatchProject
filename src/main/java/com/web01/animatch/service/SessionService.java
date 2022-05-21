@@ -13,22 +13,22 @@ public class SessionService {
  /**
   * セッションにバインドする
   * @param request リクエストオブジェクト
-  * @param name 名前
+  * @param key 名前
   * @param value オブジェクト
   * @return セッションバインド成功失敗
   */
- public boolean bindSession(HttpServletRequest request, String name, Object value) {
+ public boolean bindSession(HttpServletRequest request, String key, Object value) {
   HttpSession session = request.getSession(false);
 
   if(session == null) {
    session = request.getSession(true);
   }
 
-  if(name == null) {
+  if(key == null) {
    return false;
   }
 
-  session.setAttribute(name, value);
+  session.setAttribute(key, value);
   return true;
  }
 
