@@ -74,25 +74,27 @@ public class AuthService {
  public boolean loginAuth(HttpServletRequest request, HttpServletResponse response) {
   LoginForm loginForm = getFormParameterDto(request);
 
-  if(isValidate(loginForm)) {
-   int userId = Integer.parseInt(loginForm.getUserId());
-   if(!isAuth(request, userId, loginForm.getPassword())) {
-    this.msgMap.put("004", this.messageService.getMessage(MessageService.MessageType.ERROR, "010", "ユーザーIDまたはパスワード"));
-   }else {
-    String savedUserInfo = loginForm.getSavedUserInfo();
-    if(!(savedUserInfo != null && savedUserInfo.equals("saved-user-info"))) {
-     deleteAutoLoginInfo(request, response, userId);
-     return true;
-    }
-    if(registAutoLoginInfo(request, response, userId)) {
-     return true;
-    }
-   }
-   deleteAutoLoginInfo(request, response, userId);
+  if(!isValidate(loginForm)){
+   setAttributeKeyWithCanNotValidate(request, loginForm);
+   return false;
   }
 
-  setAttributeKeyWithCanNotValidate(request, loginForm);
-  return false;
+  int userId = Integer.parseInt(loginForm.getUserId());
+  if(!isAuth(request, userId, loginForm.getPassword())) {
+   this.msgMap.put("004", this.messageService.getMessage(MessageService.MessageType.ERROR, "010", "ユーザーIDまたはパスワード"));
+   deleteAutoLoginInfo(request, response, userId);
+   setAttributeKeyWithCanNotValidate(request, loginForm);
+   return false;
+  }
+  
+  String savedUserInfo = loginForm.getSavedUserInfo();
+  if(!(savedUserInfo != null && savedUserInfo.equals("saved-user-info"))) {
+   deleteAutoLoginInfo(request, response, userId);
+   return true;
+  }
+
+  registAutoLoginInfo(request, response, userId);
+  return true;
  }
 
  /**
