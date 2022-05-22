@@ -48,9 +48,9 @@ public class BaseService {
   }
 
   /**
-   * Enum名からEnum取得
-   * @param str 取得文字列
-   * @return Enum名文字列
+   * ユーザ種別取得
+   * @param enumName enum文字列
+   * @return ユーザ種別
    */
   public static UserType getEnumFromEnumName(String enumName) {
    for (UserType val : values()) {
@@ -63,9 +63,9 @@ public class BaseService {
   }
 
   /**
-   * IDEnum名取得
-   * @param str 取得文字列
-   * @return Enum名文字列
+   * ユーザ種別取得
+   * @param Id ID
+   * @return ユーザ種別
    */
   public static UserType getEnumFromId(String Id) {
    for (UserType val : values()) {
@@ -79,9 +79,9 @@ public class BaseService {
  }
 
  /**
-  * 飼い主用登録オブジェクト属性設定
-  * @param request リクエストオブジェクト
-  * @param user ユーザオブジェクト
+  * バイナリーデータからBase64へ変換
+  * @param byteData バイナリーデータ
+  * @return Base64文字列
   */
  protected String convertByteAryToBase64(byte[] byteData) {
   String base64String = null;

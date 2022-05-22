@@ -212,6 +212,7 @@ public class SearchService extends BaseService {
   * ページリンク設定
   * @param request リクエストオブジェクト
   * @param targetPage 遷移するページ番号
+  * @param startPageIndex 開始ページインデックス
   * @param searchForm 検索フォームオブジェクト
   */
  private void setPageLink(HttpServletRequest request, int targetPage, int startPageIndex, SearchForm searchForm) {

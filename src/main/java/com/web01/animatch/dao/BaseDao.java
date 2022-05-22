@@ -7,6 +7,7 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.HashMap;
+import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -100,5 +101,18 @@ public class BaseDao {
    break;
   }
   return clauseContents;
+ }
+
+ /**
+  * ユーザIDWhere句作成
+  * @param userId ユーザID
+  * @param paramDataList SQLパラメータデータリスト
+  * @return ユーザIDWhere句
+  */
+ protected String createWhereOfUserId(int userId, List<HashMap<String, Object>> paramDataList) {
+  String whereOfUserId = "user_id = ?";
+  paramDataList.add(createSqlParatemerMap(userId, Types.INTEGER));
+
+  return whereOfUserId;
  }
 }
