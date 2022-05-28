@@ -1,0 +1,60 @@
+/* 新規登録 */
+/* 入力必須項目の必須マーク */
+.required-item::before {
+ content: "必須";
+ margin-right: 5px;
+ padding: 2px;
+ color: rgb(255, 255, 255);
+ background-color: rgb(248, 12, 12);
+ border-radius: .20rem;
+}
+
+/* 入力内容が正しかった場合の指定 */
+input.form-control:valid {
+ background: transparent;
+}
+
+/* 必須項目を入力間違いの場合の指定 */
+input:required {
+ background: rgb(248, 192, 192);
+}
+
+/* 新規登録結果 */
+.regist-complete-block {
+ width: 38%;
+}
+
+.regist-complete-item-name {
+ font-weight: bolder;
+}
+
+.regist-complete-item-image img {
+ height: 300px;
+ width: 300px;
+ padding: 2px;
+ display: block;
+}
+
+/* 画面サイズが991pxまではここを読み込む */
+@media screen and (max-width:991px) {
+ /* 新規登録結果 */
+ .regist-complete-block {
+  width: 50%;
+ }
+}
+
+/* 画面サイズが767pxまではここを読み込む */
+@media screen and (max-width:767px) {
+ /* 新規登録結果 */
+ .regist-complete-block {
+  width: 60%;
+ }
+}
+
+/* 画面サイズが250pxまではここを読み込む */
+@media screen and (max-width:250px) {
+ /* 新規登録結果 */
+ .regist-complete-block {
+  width: 100%;
+ }
+}
