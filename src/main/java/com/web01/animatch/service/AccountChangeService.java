@@ -33,10 +33,12 @@ import com.web01.animatch.dto.FormBusinessHours;
 import com.web01.animatch.dto.OwnerInfo;
 import com.web01.animatch.dto.Pet;
 import com.web01.animatch.dto.RegistForm;
+import com.web01.animatch.dto.RegistedAccountForm;
 import com.web01.animatch.dto.Store;
 import com.web01.animatch.dto.TrimmerInfo;
 import com.web01.animatch.dto.TrimmerInfoBusinessHours;
 import com.web01.animatch.dto.User;
+import com.web01.animatch.dto.UserSession;
 import com.web01.animatch.exception.MyException;
 
 /**
@@ -234,11 +236,11 @@ public class AccountChangeService extends BaseService {
    if(petId != DEFAULT_ID && storeId == DEFAULT_ID) {
     this.registType = UserType.OWNER;
     OwnerInfo ownerInfo = readDao.findOwnerInfoByUserId(userId);
-    accountChangeForm = getAccountChangeFormDtoWithOwnerInfo(ownerInfo);
+    accountChangeForm = setAccountChangeInfoWithOwnerInfo(request, ownerInfo);
    }else if(petId == DEFAULT_ID && storeId != DEFAULT_ID) {
     this.registType = UserType.TRIMMER;
     TrimmerInfo trimmerInfo = readDao.findTrimmerInfoByUserId(userId);
-    accountChangeForm = getAccountChangeFormDtoWithTrimmerInfo(trimmerInfo);
+    accountChangeForm = setAccountChangeInfoWithTrimmerInfo(request,trimmerInfo);
    }else {
     throw new MyException("msg.error.011",
      this.messageService.getMessage(MessageService.MessageType.ERROR, "011", "アカウント情報"));
@@ -265,20 +267,32 @@ public class AccountChangeService extends BaseService {
  }
 
  /**
-  * 飼い主情報変更フォームオブジェクト取得
+  * 飼い主変更情報設定
+  * @param request リクエストオブジェクト
   * @param ownerInfo 飼い主情報オブジェクト
   * @return 飼い主情報変更フォームオブジェクト
   */
- private AccountChangeForm getAccountChangeFormDtoWithOwnerInfo(OwnerInfo ownerInfo)
+ private AccountChangeForm setAccountChangeInfoWithOwnerInfo(HttpServletRequest request, OwnerInfo ownerInfo)
    throws MyException {
   SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
   Pattern preficturePattern = Pattern.compile(PREFECTURE_FORMAT);
   AccountChangeForm accountChangeForm = new AccountChangeForm();
-  accountChangeForm.setUserName(ownerInfo.getUserName());
-  accountChangeForm.setPassword(ownerInfo.getPassword());
-  accountChangeForm.setSex(ownerInfo.getSex());
-  accountChangeForm.setBirthday(dateFormat.format(ownerInfo.getBirthday()));
-  accountChangeForm.setPostalCode(ownerInfo.getPostalCode());
+  RegistedAccountForm registedAccountForm = new RegistedAccountForm();
+  String userName = ownerInfo.getUserName();
+  accountChangeForm.setUserName(userName);
+  registedAccountForm.setUserName(userName);
+  String password = ownerInfo.getPassword();
+  accountChangeForm.setPassword(password);
+  registedAccountForm.setPassword(password);
+  String sex = ownerInfo.getSex();
+  accountChangeForm.setSex(sex);
+  registedAccountForm.setSex(sex);
+  String birthday = dateFormat.format(ownerInfo.getBirthday());
+  accountChangeForm.setBirthday(birthday);
+  registedAccountForm.setBirthday(birthday);
+  String postalCode = ownerInfo.getPostalCode();
+  accountChangeForm.setPostalCode(postalCode);
+  registedAccountForm.setPostalCode(postalCode);
   String streetAddres = ownerInfo.getStreetAddress();
   Matcher macher = preficturePattern.matcher(streetAddres);
   boolean isExistPrefecture = macher.find();
@@ -295,34 +309,73 @@ public class AccountChangeService extends BaseService {
    prefectureKey = prefectureKey.replace(PropertiesService.PREFECTURES_KEY_INIT_STR,"");
   }
   accountChangeForm.setPrefectures(prefectureKey);
-  accountChangeForm.setCities(streetAddres.substring(macher.end()));
-  accountChangeForm.setEmailAddress(ownerInfo.getEmailAddress());
-  accountChangeForm.setTelephoneNumber(ownerInfo.getTelephoneNumber());
-  accountChangeForm.setPetName(ownerInfo.getPetNickName());
-  accountChangeForm.setPetSex(ownerInfo.getPetSex());
-  accountChangeForm.setPetType(ownerInfo.getPetType());
-  Float petWeight = ownerInfo.getPetWeight();
-  accountChangeForm.setPetWeight(petWeight == null?null:String.valueOf(petWeight));
-  accountChangeForm.setPetRemarks(ownerInfo.getPetRemarks());
+  registedAccountForm.setPrefectures(prefectureKey);
+  String cities = streetAddres.substring(macher.end());
+  accountChangeForm.setCities(cities);
+  registedAccountForm.setCities(cities);
+  String emailAddres = ownerInfo.getEmailAddress();
+  accountChangeForm.setEmailAddress(emailAddres);
+  registedAccountForm.setEmailAddress(emailAddres);
+  String telephoneNum = ownerInfo.getTelephoneNumber();
+  accountChangeForm.setTelephoneNumber(telephoneNum);
+  registedAccountForm.setTelephoneNumber(telephoneNum);
+  String petNickName = ownerInfo.getPetNickName();
+  accountChangeForm.setPetName(petNickName);
+  registedAccountForm.setPetName(petNickName);
+  String petSex = ownerInfo.getPetSex();
+  accountChangeForm.setPetSex(petSex);
+  registedAccountForm.setPetSex(petSex);
+  String petType = ownerInfo.getPetType();
+  accountChangeForm.setPetType(petType);
+  registedAccountForm.setPetType(petType);
+  Float tempPetWeight = ownerInfo.getPetWeight();
+  String petWeight = tempPetWeight == null?null:String.valueOf(tempPetWeight);
+  accountChangeForm.setPetWeight(petWeight);
+  registedAccountForm.setPetWeight(petWeight);
+  String petRemarks = ownerInfo.getPetRemarks();
+  accountChangeForm.setPetRemarks(petRemarks);
+  registedAccountForm.setPetRemarks(petRemarks);
+
+  SessionService sessionService = new SessionService((HttpServletRequest)request);
+  UserSession userSession = (UserSession)sessionService.getBindingKeySessionValue(AuthService.USER_SESSION_KEY_NAME);
+  if(userSession == null) {
+   throw new MyException("msg.error.009",
+    this.messageService.getMessage(MessageService.MessageType.ERROR, "009", "ログイン"));
+  }
+
+  userSession.setRegistedAccountForm(registedAccountForm);
+  sessionService.bindSession(AuthService.USER_SESSION_KEY_NAME, userSession);
 
   return accountChangeForm;
  }
 
  /**
-  * トリマー情報変更フォームオブジェクト取得
+  * トリマー変更情報設定
+  * @param request リクエストオブジェクト
   * @param trimmerInfo トリマー情報オブジェクト
   * @return トリマー情報変更フォームオブジェクト
   */
- private AccountChangeForm getAccountChangeFormDtoWithTrimmerInfo(TrimmerInfo trimmerInfo)
+ private AccountChangeForm setAccountChangeInfoWithTrimmerInfo(HttpServletRequest request, TrimmerInfo trimmerInfo)
    throws MyException {
   SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
   Pattern preficturePattern = Pattern.compile(PREFECTURE_FORMAT);
   AccountChangeForm accountChangeForm = new AccountChangeForm();
-  accountChangeForm.setUserName(trimmerInfo.getUserName());
-  accountChangeForm.setPassword(trimmerInfo.getPassword());
-  accountChangeForm.setSex(trimmerInfo.getSex());
-  accountChangeForm.setBirthday(dateFormat.format(trimmerInfo.getBirthday()));
-  accountChangeForm.setPostalCode(trimmerInfo.getPostalCode());
+  RegistedAccountForm registedAccountForm = new RegistedAccountForm();
+  String userName = trimmerInfo.getUserName();
+  accountChangeForm.setUserName(userName);
+  registedAccountForm.setUserName(userName);
+  String password = trimmerInfo.getPassword();
+  accountChangeForm.setPassword(password);
+  registedAccountForm.setPassword(password);
+  String sex = trimmerInfo.getSex();
+  accountChangeForm.setSex(sex);
+  registedAccountForm.setSex(sex);
+  String birthday = dateFormat.format(trimmerInfo.getBirthday());
+  accountChangeForm.setBirthday(birthday);
+  registedAccountForm.setBirthday(birthday);
+  String postalCode = trimmerInfo.getPostalCode();
+  accountChangeForm.setPostalCode(postalCode);
+  registedAccountForm.setPostalCode(postalCode);
   String streetAddres = trimmerInfo.getStreetAddress();
   Matcher macher = preficturePattern.matcher(streetAddres);
   boolean isExistPrefecture = macher.find();
@@ -339,10 +392,19 @@ public class AccountChangeService extends BaseService {
    prefectureKey = prefectureKey.replace(PropertiesService.PREFECTURES_KEY_INIT_STR,"");
   }
   accountChangeForm.setPrefectures(prefectureKey);
-  accountChangeForm.setCities(streetAddres.substring(macher.end()));
-  accountChangeForm.setEmailAddress(trimmerInfo.getEmailAddress());
-  accountChangeForm.setTelephoneNumber(trimmerInfo.getTelephoneNumber());
-  accountChangeForm.setStoreName(trimmerInfo.getStoreName());
+  registedAccountForm.setPrefectures(prefectureKey);
+  String cities = streetAddres.substring(macher.end());
+  accountChangeForm.setCities(cities);
+  registedAccountForm.setCities(cities);
+  String emailAddres = trimmerInfo.getEmailAddress();
+  accountChangeForm.setEmailAddress(emailAddres);
+  registedAccountForm.setEmailAddress(emailAddres);
+  String telephoneNum = trimmerInfo.getTelephoneNumber();
+  accountChangeForm.setTelephoneNumber(telephoneNum);
+  registedAccountForm.setTelephoneNumber(telephoneNum);
+  String storeName = trimmerInfo.getStoreName();
+  accountChangeForm.setStoreName(storeName);
+  registedAccountForm.setStoreName(storeName);
   List<FormBusinessHours> formBusinessHoursList = new ArrayList<>();
   List<TrimmerInfoBusinessHours> trimmerInfoBusinessHoursList = trimmerInfo.getTrimmerInfoBusinessHoursList();
   String formBusinessHoursInputValue = null;
@@ -370,11 +432,29 @@ public class AccountChangeService extends BaseService {
    }
   }
   accountChangeForm.setFormBusinessHoursInputValue(formBusinessHoursInputValue);
+  registedAccountForm.setFormBusinessHoursInputValue(formBusinessHoursInputValue);
   accountChangeForm.setFormBusinessHoursList(formBusinessHoursList);
-  Integer storeEmployeesNum = trimmerInfo.getStoreEmployeesNumber();
-  accountChangeForm.setStoreEmployees(storeEmployeesNum == null?null:storeEmployeesNum.toString());
-  accountChangeForm.setCourseInfo(trimmerInfo.getStoreCourseInfo());
-  accountChangeForm.setCommitment(trimmerInfo.getStoreCommitment());
+  registedAccountForm.setFormBusinessHoursList(formBusinessHoursList);
+  Integer tempStoreEmployeesNum = trimmerInfo.getStoreEmployeesNumber();
+  String storeEmployeesNum = tempStoreEmployeesNum == null?null:tempStoreEmployeesNum.toString();
+  accountChangeForm.setStoreEmployees(storeEmployeesNum);
+  registedAccountForm.setStoreEmployees(storeEmployeesNum);
+  String storeCourseInfo = trimmerInfo.getStoreCourseInfo();
+  accountChangeForm.setCourseInfo(storeCourseInfo);
+  registedAccountForm.setCourseInfo(storeCourseInfo);
+  String storeCommitment = trimmerInfo.getStoreCommitment();
+  accountChangeForm.setCommitment(storeCommitment);
+  registedAccountForm.setCommitment(storeCommitment);
+
+  SessionService sessionService = new SessionService((HttpServletRequest)request);
+  UserSession userSession = (UserSession)sessionService.getBindingKeySessionValue(AuthService.USER_SESSION_KEY_NAME);
+  if(userSession == null) {
+   throw new MyException("msg.error.011",
+    this.messageService.getMessage(MessageService.MessageType.ERROR, "009", "ログイン"));
+  }
+
+  userSession.setRegistedAccountForm(registedAccountForm);
+  sessionService.bindSession(AuthService.USER_SESSION_KEY_NAME, userSession);
 
   return accountChangeForm;
  }

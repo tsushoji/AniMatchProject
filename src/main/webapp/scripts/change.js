@@ -7,6 +7,35 @@ $(document).ready(function(){
  //トリマー区分
  const trimmerType = '002';
 
+ //アクション:入力値の値が変更される
+ $('.check-changed-input').change(function() {
+  console.log("変更");
+  let targetEle = $(this);
+  console.log(targetEle);
+  let tarVal = "";
+  let registedVal = "";
+  
+  //入力値を取得
+  tarVal = targetEle.val();
+  let tagName = targetEle[0].tagName;
+  let registedId = "#registed-";
+  registedId += targetEle.attr('id');
+  console.log(registedId);
+  registedVal = $(registedId).val();
+  console.log(tarVal);
+  console.log(registedVal);
+  console.log(targetEle.attr('type'));
+  console.log(targetEle[0].tagName);
+  //入力値が変更されたとき、入力欄を赤色にする
+  if(tarVal === registedVal){
+   targetEle.removeClass("test");
+   console.log("削除");
+  }else{
+   targetEle.addClass("test");
+   console.log("追加");
+  }
+ });
+
  //アクション:「郵便番号」を入力する
  $("#postal-code").change(function(){
   const successStatus = 200;

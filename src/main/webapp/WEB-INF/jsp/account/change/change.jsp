@@ -72,7 +72,7 @@
 
     <div class="form-group col-md-4 col-sm-5">
      <label class="control-label required-item">ユーザー名</label>
-     <input type="text" name="user-name" class="form-control" value="<c:out value="${accountChangeForm.userName}"/>">
+     <input type="text" id="user-name" name="user-name" class="form-control check-changed-input" value="<c:out value="${accountChangeForm.userName}"/>">
      <c:if test="${not empty msgMap['001']}">
       <p>${msgMap["001"]}</p>
      </c:if>
@@ -81,7 +81,7 @@
     <div class="form-group col-md-4">
 
      <label class="control-label required-item">パスワード</label>
-     <input type="password" name="password" class="form-control col-md col-sm-5" value="<c:out value="${accountChangeForm.password}"/>" data-toggle="password">
+     <input type="password" id="password" name="password" class="form-control col-md col-sm-5 check-changed-input" value="<c:out value="${accountChangeForm.password}"/>" data-toggle="password">
      <c:if test="${not empty msgMap['003']}">
       <p>${msgMap["003"]}</p>
      </c:if>
@@ -107,7 +107,7 @@
    <div class="form-row mt-3 form-common">
     <div class="form-group col-md-4 col-sm-5">
      <label class="control-label required-item">生年月日</label>
-     <input type="text" name="birthday" class="form-control plugin-datepicker" value="<c:out value="${accountChangeForm.birthday}"/>">
+     <input type="text" id="birthday" name="birthday" class="form-control check-changed-input plugin-datepicker" value="<c:out value="${accountChangeForm.birthday}"/>">
     </div>
    </div>
 
@@ -123,7 +123,7 @@
 
     <div class="form-group col-md-3">
      <label class="control-label required-item" for="postal-code">郵便番号</label>
-     <input type="text" name="postal-code" class="form-control col-md col-sm-3" placeholder="9991234" id="postal-code" maxlength="7" value="<c:out value="${accountChangeForm.postalCode}"/>">
+     <input type="text" id="postal-code" name="postal-code" class="form-control col-md col-sm-3 check-changed-input" placeholder="9991234" id="postal-code" maxlength="7" value="<c:out value="${accountChangeForm.postalCode}"/>">
      <c:if test="${not empty msgMap['004']}">
       <p>${msgMap["004"]}</p>
      </c:if>
@@ -147,7 +147,7 @@
 
     <div class="form-group col-md-3">
      <label class="control-label required-item" for="cities">住所&ndash;市区町村</label>
-     <input type="text" name="cities" id="cities" class="form-control col-md col-sm-3" value="<c:out value="${accountChangeForm.cities}"/>">
+     <input type="text" name="cities" id="cities" class="form-control col-md col-sm-3 check-changed-input" value="<c:out value="${accountChangeForm.cities}"/>">
      <c:if test="${not empty msgMap['006']}">
       <p>${msgMap["006"]}</p>
      </c:if>
@@ -161,7 +161,7 @@
    <div class="form-row form-common">
     <div class="form-group col-md-5 col-sm-6">
      <label class="control-label required-item">メールアドレス</label>
-     <input type="text" name="email-address" class="form-control" placeholder="xxxxxxx@xx.xx.xx" value="<c:out value="${accountChangeForm.emailAddress}"/>">
+     <input type="text" id="email-address" name="email-address" class="form-control check-changed-input" placeholder="xxxxxxx@xx.xx.xx" value="<c:out value="${accountChangeForm.emailAddress}"/>">
      <c:if test="${not empty msgMap['008']}">
       <p>${msgMap["008"]}</p>
      </c:if>
@@ -174,7 +174,7 @@
    <div class="form-row form-common">
     <div class="form-group col-md-4 col-sm-5">
      <label class="control-label required-item">電話番号</label>
-     <input type="tel" name="telephone-number" class="form-control" placeholder="09012345678" value="<c:out value="${accountChangeForm.telephoneNumber}"/>">
+     <input type="tel" id="telephone-number" name="telephone-number" class="form-control check-changed-input" placeholder="09012345678" value="<c:out value="${accountChangeForm.telephoneNumber}"/>">
      <c:if test="${not empty msgMap['010']}">
       <p>${msgMap["010"]}</p>
      </c:if>
@@ -196,7 +196,7 @@
    <div class="form-row form-owner">
     <div class="form-group col-md-4 col-sm-5">
      <label class="control-label required-item">ニックネーム</label>
-     <input type="text" id="pet-name" name="pet-name" class="form-control" placeholder="シロ" value="<c:out value="${accountChangeForm.petName}"/>">
+     <input type="text" id="pet-name" name="pet-name" class="form-control check-changed-input" placeholder="シロ" value="<c:out value="${accountChangeForm.petName}"/>">
      <c:if test="${not empty msgMap['011']}">
       <p>${msgMap["011"]}</p>
      </c:if>
@@ -234,7 +234,7 @@
    <div class="form-row form-owner">
     <div class="form-group col-md-2 col-sm-3">
      <label class="control-label">体重&ndash;&#13199;</label>
-     <input type="text" name="pet-weight" class="form-control" placeholder="23" value="<c:out value="${accountChangeForm.petWeight}"/>">
+     <input type="text" id="pet-weight" name="pet-weight" class="form-control check-changed-input" placeholder="23" value="<c:out value="${accountChangeForm.petWeight}"/>">
      <c:if test="${not empty msgMap['012']}">
       <p>${msgMap["012"]}</p>
      </c:if>
@@ -247,7 +247,7 @@
    <div class="form-row form-trimmer">
     <div class="form-group col-md-4 col-sm-6">
      <label class="control-label required-item">店名</label>
-     <input type="text" id="store-name" name="store-name" class="form-control" placeholder="ペットサロン ヤマダ" value="<c:out value="${accountChangeForm.storeName}"/>">
+     <input type="text" id="store-name" name="store-name" class="form-control check-changed-input" placeholder="ペットサロン ヤマダ" value="<c:out value="${accountChangeForm.storeName}"/>">
      <c:if test="${not empty msgMap['015']}">
       <p>${msgMap["015"]}</p>
      </c:if>
@@ -309,7 +309,7 @@
    <div class="form-row form-trimmer">
     <div class="form-group col-md-2 col-sm-3">
      <label class="control-label">従業員数&ndash;人</label>
-     <input type="text" name="store-employees" class="form-control" placeholder="20" value="<c:out value="${accountChangeForm.storeEmployees}"/>">
+     <input type="text" id="store-employees" name="store-employees" class="form-control check-changed-input" placeholder="20" value="<c:out value="${accountChangeForm.storeEmployees}"/>">
      <c:if test="${not empty msgMap['018']}">
       <p>${msgMap["018"]}</p>
      </c:if>
@@ -321,7 +321,7 @@
 
    <div class="form-group form-owner">
     <label class="control-label">備考</label>
-    <textarea name="pet-remarks" class="form-control" rows="10" placeholder="トリマーに伝えておきたいことを書いてください"><c:out value="${accountChangeForm.petRemarks}" /></textarea>
+    <textarea id="pet-remarks" name="pet-remarks" class="form-control check-changed-input" rows="10" placeholder="トリマーに伝えておきたいことを書いてください"><c:out value="${accountChangeForm.petRemarks}" /></textarea>
     <c:if test="${not empty msgMap['014']}">
      <p>${msgMap["014"]}</p>
     </c:if>
@@ -332,7 +332,7 @@
 
    <div class="form-group form-trimmer">
     <label class="control-label">コース・値段</label>
-    <textarea name="course-info" class="form-control" rows="10" placeholder="サービスの詳細を書いてください"><c:out value="${accountChangeForm.courseInfo}" /></textarea>
+    <textarea id="course-info" name="course-info" class="form-control　check-changed-input" rows="10" placeholder="サービスの詳細を書いてください"><c:out value="${accountChangeForm.courseInfo}" /></textarea>
     <c:if test="${not empty msgMap['020']}">
      <p>${msgMap["020"]}</p>
     </c:if>
@@ -343,7 +343,7 @@
 
    <div class="form-group form-trimmer">
     <label class="control-label">こだわりポイント</label>
-    <textarea name="commitment" class="form-control" rows="10" placeholder="セールスポイントを書いてください"><c:out value="${accountChangeForm.commitment}" /></textarea>
+    <textarea id="commitment" name="commitment" class="form-control check-changed-input" rows="10" placeholder="セールスポイントを書いてください"><c:out value="${accountChangeForm.commitment}" /></textarea>
     <c:if test="${not empty msgMap['021']}">
      <p>${msgMap["021"]}</p>
     </c:if>
@@ -356,6 +356,32 @@
     <input type="submit" class="btn btn-primary" value="更新">
    </div>
 
+   <input type="hidden" id="registed-user-name" value="${userSession.registedAccountForm.userName}">
+   <input type="hidden" id="registed-password" value="${userSession.registedAccountForm.password}">
+   <input type="hidden" id="registedSex" value="${userSession.registedAccountForm.sex}">
+   <input type="hidden" id="registed-birthday" value="${userSession.registedAccountForm.birthday}">
+   <input type="hidden" id="registed-postal-code" value="${userSession.registedAccountForm.postalCode}">
+   <input type="hidden" id="registedPrefectures" value="${userSession.registedAccountForm.prefectures}">
+   <input type="hidden" id="registed-cities" value="${userSession.registedAccountForm.cities}">
+   <input type="hidden" id="registed-email-address" value="${userSession.registedAccountForm.emailAddress}">
+   <input type="hidden" id="registed-telephone-number" value="${userSession.registedAccountForm.telephoneNumber}">
+   
+   <input type="hidden" id="registed-pet-name" value="${userSession.registedAccountForm.petName}">
+   <input type="hidden" id="registedPetSex" value="${userSession.registedAccountForm.petSex}">
+   <input type="hidden" id="registedPetType" value="${userSession.registedAccountForm.petType}">
+   <input type="hidden" id="registed-pet-weight" value="${userSession.registedAccountForm.petWeight}">
+   <input type="hidden" id="registed-pet-remarks" value="${userSession.registedAccountForm.petRemarks}">
+   
+   <input type="hidden" id="registed-store-name" value="${userSession.registedAccountForm.storeName}">
+   <input type="hidden" id="registed-store-employees" value="${userSession.registedAccountForm.storeEmployees}">
+   <c:forEach items="${userSession.registedAccountForm.formBusinessHoursList}" var="registdFormBusinessHoursList">
+    <c:set var="registedBusinessHoursWeekdayNum" value="${registdFormBusinessHoursList.businessHoursWeekdayNum}" />
+    <input type="hidden" id="registedFormBusinessHoursStartTime${registedBusinessHoursWeekdayNum}" value="<c:out value="${registdFormBusinessHoursList.businessHoursStartTime}"/>">
+    <input type="hidden" id="registedFormBusinessHoursEndTime${registedBusinessHoursWeekdayNum}" value="<c:out value="${registdFormBusinessHoursList.businessHoursEndTime}"/>">
+    <input type="hidden" id="registedFormBusinessHoursRemarks${registedBusinessHoursWeekdayNum}" value="<c:out value="${registdFormBusinessHoursList.businessHoursRemarks}"/>">
+   </c:forEach>
+   <input type="hidden" id="registed-course-info" value="${userSession.registedAccountForm.courseInfo}">
+   <input type="hidden" id="registed-commitment" value="${userSession.registedAccountForm.commitment}">
   </form>
 
  </div>
