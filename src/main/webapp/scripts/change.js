@@ -7,35 +7,6 @@ $(document).ready(function(){
  //トリマー区分
  const trimmerType = '002';
 
- //アクション:入力値の値が変更される
- $('.check-changed-input').change(function() {
-  console.log("変更");
-  let targetEle = $(this);
-  console.log(targetEle);
-  let tarVal = "";
-  let registedVal = "";
-  
-  //入力値を取得
-  tarVal = targetEle.val();
-  let tagName = targetEle[0].tagName;
-  let registedId = "#registed-";
-  registedId += targetEle.attr('id');
-  console.log(registedId);
-  registedVal = $(registedId).val();
-  console.log(tarVal);
-  console.log(registedVal);
-  console.log(targetEle.attr('type'));
-  console.log(targetEle[0].tagName);
-  //入力値が変更されたとき、入力欄を赤色にする
-  if(tarVal === registedVal){
-   targetEle.removeClass("test");
-   console.log("削除");
-  }else{
-   targetEle.addClass("test");
-   console.log("追加");
-  }
- });
-
  //アクション:「郵便番号」を入力する
  $("#postal-code").change(function(){
   const successStatus = 200;
@@ -66,6 +37,106 @@ $(document).ready(function(){
   }).fail(function (XMLHttpRequest, textStatus, errorThrown) {
    console.log(XMLHttpRequest);
   });
+ });
+
+ // ajax完了後
+ $(document).ajaxComplete(function(){
+  //登録されている「市区町村」の値以外に変更されたとき、入力欄を赤色にする
+  let registedId = "#registed-";
+  registedId += $('#cities').attr('id');
+  if($('#cities').val() === $(registedId).val()){
+   $('#cities').removeClass("test");
+  }else{
+   $('#cities').addClass("test");
+  }
+ });
+
+ //アクション:入力値の値が変更される
+ $('.check-changed-input').change(function() {
+  console.log("変更");
+  let targetEle = $(this);
+  console.log(targetEle);
+  let tarVal = "";
+  let registedVal = "";
+
+  //入力値を取得
+  let tagName = targetEle[0].tagName;
+  let inputType = targetEle.attr('type');
+  let registedId = "#registed-";
+  tarVal = targetEle.val();
+  registedId += targetEle.attr('id');
+  console.log(registedId);
+  registedVal = $(registedId).val();
+  console.log(tarVal);
+  console.log(registedVal);
+  console.log(targetEle.attr('type'));
+  console.log(targetEle[0].tagName);
+  //入力値が変更されたとき、入力欄を赤色にする
+  if(tarVal === registedVal){
+   targetEle.removeClass("test");
+   console.log("削除");
+  }else{
+   targetEle.addClass("test");
+   console.log("追加");
+  }
+ });
+
+ //アクション:性別が変更される
+ $('form.account-change-form input[name="radio-user-sex"]:radio').change(function() {
+  console.log("変更");
+  let targetEle = $(this);
+  console.log(targetEle);
+
+  //入力値を取得
+  let registedId = "#registed-";
+  tarVal = targetEle.val();
+  registedId += targetEle.attr('name');
+  console.log(registedId);
+  registedVal = $(registedId).val();
+  console.log(tarVal);
+  console.log(registedVal);
+  //入力値が変更されたとき、入力欄を赤色にする
+  if(tarVal !== registedVal){
+   targetEle.addClass("test");
+   console.log("追加");
+  }
+  $('form.account-change-form input[name="radio-user-sex"]').each(function(i){
+   let tarEle = $(this);
+   let isChecked = tarEle.prop('checked');
+   if(!isChecked){
+    tarEle.removeClass("test");
+   }
+  });
+  console.log("削除");
+ });
+
+ //アクション:ペット性別が変更される
+ $('form.account-change-form input[name="radio-pet-sex"]:radio').change(function() {
+  console.log("変更");
+  let targetEle = $(this);
+  console.log(targetEle);
+
+  //入力値を取得
+  let registedId = "#registed-";
+  tarVal = targetEle.val();
+  registedId += targetEle.attr('name');
+  console.log(registedId);
+  registedVal = $(registedId).val();
+  console.log(tarVal);
+  console.log(registedVal);
+  //入力値が変更されたとき、入力欄を赤色にする
+  if(tarVal !== registedVal){
+   targetEle.addClass("test");
+   console.log("追加");
+  }
+  $('form.account-change-form input[name="radio-pet-sex"]').each(function(i){
+   let tarEle = $(this);
+   let isChecked = tarEle.prop('checked');
+   if(!isChecked){
+    tarEle.removeClass("test");
+   }
+  });
+  console.log("削除");
  });
 
  let formRegistType = $('#formRegistType').val();

@@ -62,7 +62,7 @@
   </div>
 
   <!--入力フォーム-->
-  <form method="post" enctype="multipart/form-data" action="/animatch/signup/">
+  <form method="post" class="account-change-form" enctype="multipart/form-data" action="/animatch/signup/">
 
    <div class="form-common">
     <h3 class="mb-3">会員情報</h3>
@@ -332,7 +332,7 @@
 
    <div class="form-group form-trimmer">
     <label class="control-label">コース・値段</label>
-    <textarea id="course-info" name="course-info" class="form-control　check-changed-input" rows="10" placeholder="サービスの詳細を書いてください"><c:out value="${accountChangeForm.courseInfo}" /></textarea>
+    <textarea id="course-info" name="course-info" class="form-control check-changed-input" rows="10" placeholder="サービスの詳細を書いてください"><c:out value="${accountChangeForm.courseInfo}" /></textarea>
     <c:if test="${not empty msgMap['020']}">
      <p>${msgMap["020"]}</p>
     </c:if>
@@ -358,20 +358,20 @@
 
    <input type="hidden" id="registed-user-name" value="${userSession.registedAccountForm.userName}">
    <input type="hidden" id="registed-password" value="${userSession.registedAccountForm.password}">
-   <input type="hidden" id="registedSex" value="${userSession.registedAccountForm.sex}">
+   <input type="hidden" id="registed-radio-user-sex" value="${userSession.registedAccountForm.sex}">
    <input type="hidden" id="registed-birthday" value="${userSession.registedAccountForm.birthday}">
    <input type="hidden" id="registed-postal-code" value="${userSession.registedAccountForm.postalCode}">
    <input type="hidden" id="registedPrefectures" value="${userSession.registedAccountForm.prefectures}">
    <input type="hidden" id="registed-cities" value="${userSession.registedAccountForm.cities}">
    <input type="hidden" id="registed-email-address" value="${userSession.registedAccountForm.emailAddress}">
    <input type="hidden" id="registed-telephone-number" value="${userSession.registedAccountForm.telephoneNumber}">
-   
+
    <input type="hidden" id="registed-pet-name" value="${userSession.registedAccountForm.petName}">
-   <input type="hidden" id="registedPetSex" value="${userSession.registedAccountForm.petSex}">
+   <input type="hidden" id="registed-radio-pet-sex" value="${userSession.registedAccountForm.petSex}">
    <input type="hidden" id="registedPetType" value="${userSession.registedAccountForm.petType}">
    <input type="hidden" id="registed-pet-weight" value="${userSession.registedAccountForm.petWeight}">
    <input type="hidden" id="registed-pet-remarks" value="${userSession.registedAccountForm.petRemarks}">
-   
+
    <input type="hidden" id="registed-store-name" value="${userSession.registedAccountForm.storeName}">
    <input type="hidden" id="registed-store-employees" value="${userSession.registedAccountForm.storeEmployees}">
    <c:forEach items="${userSession.registedAccountForm.formBusinessHoursList}" var="registdFormBusinessHoursList">
