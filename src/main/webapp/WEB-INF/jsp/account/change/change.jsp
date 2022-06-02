@@ -131,7 +131,7 @@
 
     <div class="form-group col-md-3 col-sm-5">
      <label class="control-label required-item" for="prefectures">住所&ndash;都道府県</label>
-     <select name="prefectures" id="prefectures" class="custom-select form-control">
+     <select name="prefectures" id="prefectures" class="custom-select form-control check-changed-input">
       <option value="000">選んでください</option>
       <c:forEach items="${prefecturesMap}" var="prefectures">
        <option value="${prefectures.key}"
@@ -220,7 +220,7 @@
    <div class="form-row mt-3 form-owner">
     <div class="form-group col-md-3 col-sm-5">
      <label class="control-label">種別</label>
-     <select name="pet-type" class="custom-select form-control">
+     <select name="pet-type" id="pet-type" class="custom-select form-control check-changed-input">
       <option value="000">選んでください</option>
       <c:forEach items="${petTypeMap}" var="petType">
        <option value="${petType.key}"
@@ -361,14 +361,14 @@
    <input type="hidden" id="registed-radio-user-sex" value="${userSession.registedAccountForm.sex}">
    <input type="hidden" id="registed-birthday" value="${userSession.registedAccountForm.birthday}">
    <input type="hidden" id="registed-postal-code" value="${userSession.registedAccountForm.postalCode}">
-   <input type="hidden" id="registedPrefectures" value="${userSession.registedAccountForm.prefectures}">
+   <input type="hidden" id="registed-prefectures" value="${userSession.registedAccountForm.prefectures}">
    <input type="hidden" id="registed-cities" value="${userSession.registedAccountForm.cities}">
    <input type="hidden" id="registed-email-address" value="${userSession.registedAccountForm.emailAddress}">
    <input type="hidden" id="registed-telephone-number" value="${userSession.registedAccountForm.telephoneNumber}">
 
    <input type="hidden" id="registed-pet-name" value="${userSession.registedAccountForm.petName}">
    <input type="hidden" id="registed-radio-pet-sex" value="${userSession.registedAccountForm.petSex}">
-   <input type="hidden" id="registedPetType" value="${userSession.registedAccountForm.petType}">
+   <input type="hidden" id="registed-pet-type" value="${userSession.registedAccountForm.petType}">
    <input type="hidden" id="registed-pet-weight" value="${userSession.registedAccountForm.petWeight}">
    <input type="hidden" id="registed-pet-remarks" value="${userSession.registedAccountForm.petRemarks}">
 

@@ -7,6 +7,11 @@ $(document).ready(function(){
  //トリマー区分
  const trimmerType = '002';
 
+ //登録されたタグID先頭
+ const registedIdPrefix = "#registed-";
+ //背景色赤色クラス属性名
+ const redBackGroundClassName = "bg-warning";
+
  //アクション:「郵便番号」を入力する
  $("#postal-code").change(function(){
   const successStatus = 200;
@@ -41,42 +46,48 @@ $(document).ready(function(){
 
  // ajax完了後
  $(document).ajaxComplete(function(){
-  //登録されている「市区町村」の値以外に変更されたとき、入力欄を赤色にする
-  let registedId = "#registed-";
-  registedId += $('#cities').attr('id');
-  if($('#cities').val() === $(registedId).val()){
-   $('#cities').removeClass("test");
+  //登録されている「都道府県」の値以外に変更されたとき、入力欄を赤色にする
+  let registedPrefecturesId = registedIdPrefix;
+  registedPrefecturesId += "prefectures";
+  if($('#prefectures').val() === $(registedPrefecturesId).val()){
+   $('#prefectures').removeClass(redBackGroundClassName);
   }else{
-   $('#cities').addClass("test");
+   $('#prefectures').addClass(redBackGroundClassName);
+  }
+  //登録されている「市区町村」の値以外に変更されたとき、入力欄を赤色にする
+  let registedCitiesId = registedIdPrefix;
+  registedCitiesId += "cities";
+  if($('#cities').val() === $(registedCitiesId).val()){
+   $('#cities').removeClass(redBackGroundClassName);
+  }else{
+   $('#cities').addClass(redBackGroundClassName);
   }
  });
 
- //アクション:入力値の値が変更される
+ //アクション:入力値(input、select)の値が変更される
  $('.check-changed-input').change(function() {
   console.log("変更");
   let targetEle = $(this);
   console.log(targetEle);
-  let tarVal = "";
-  let registedVal = "";
 
   //入力値を取得
   let tagName = targetEle[0].tagName;
   let inputType = targetEle.attr('type');
-  let registedId = "#registed-";
-  tarVal = targetEle.val();
+  let registedId = registedIdPrefix;
+  let tarVal = targetEle.val();
   registedId += targetEle.attr('id');
   console.log(registedId);
-  registedVal = $(registedId).val();
+  let registedVal = $(registedId).val();
   console.log(tarVal);
   console.log(registedVal);
   console.log(targetEle.attr('type'));
   console.log(targetEle[0].tagName);
   //入力値が変更されたとき、入力欄を赤色にする
   if(tarVal === registedVal){
-   targetEle.removeClass("test");
+   targetEle.removeClass(redBackGroundClassName);
    console.log("削除");
   }else{
-   targetEle.addClass("test");
+   targetEle.addClass(redBackGroundClassName);
    console.log("追加");
   }
  });
@@ -88,23 +99,27 @@ $(document).ready(function(){
   console.log(targetEle);
 
   //入力値を取得
-  let registedId = "#registed-";
-  tarVal = targetEle.val();
+  let registedId = registedIdPrefix;
+  let tarVal = targetEle.val();
   registedId += targetEle.attr('name');
   console.log(registedId);
-  registedVal = $(registedId).val();
+  let registedVal = $(registedId).val();
+  let tarForName = targetEle.attr('id');
   console.log(tarVal);
   console.log(registedVal);
+  let changeEle = $('label[for="' + tarForName + '"]');
   //入力値が変更されたとき、入力欄を赤色にする
   if(tarVal !== registedVal){
-   targetEle.addClass("test");
+   changeEle.addClass(redBackGroundClassName);
    console.log("追加");
   }
   $('form.account-change-form input[name="radio-user-sex"]').each(function(i){
    let tarEle = $(this);
    let isChecked = tarEle.prop('checked');
    if(!isChecked){
-    tarEle.removeClass("test");
+    tarForName = tarEle.attr('id');
+    changeEle = $('label[for="' + tarForName + '"]');
+    changeEle.removeClass(redBackGroundClassName);
    }
   });
   console.log("削除");
@@ -117,23 +132,27 @@ $(document).ready(function(){
   console.log(targetEle);
 
   //入力値を取得
-  let registedId = "#registed-";
-  tarVal = targetEle.val();
+  let registedId = registedIdPrefix;
+  let tarVal = targetEle.val();
   registedId += targetEle.attr('name');
   console.log(registedId);
-  registedVal = $(registedId).val();
+  let registedVal = $(registedId).val();
+  let tarForName = targetEle.attr('id');
   console.log(tarVal);
   console.log(registedVal);
+  let changeEle = $('label[for="' + tarForName + '"]');
   //入力値が変更されたとき、入力欄を赤色にする
   if(tarVal !== registedVal){
-   targetEle.addClass("test");
+   changeEle.addClass(redBackGroundClassName);
    console.log("追加");
   }
   $('form.account-change-form input[name="radio-pet-sex"]').each(function(i){
    let tarEle = $(this);
    let isChecked = tarEle.prop('checked');
    if(!isChecked){
-    tarEle.removeClass("test");
+    tarForName = tarEle.attr('id');
+    changeEle = $('label[for="' + tarForName + '"]');
+    changeEle.removeClass(redBackGroundClassName);
    }
   });
   console.log("削除");

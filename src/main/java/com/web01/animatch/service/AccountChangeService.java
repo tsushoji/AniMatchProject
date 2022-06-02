@@ -76,6 +76,10 @@ public class AccountChangeService extends BaseService {
   */
  private static final int DEFAULT_ID = 1000000000;
  /**
+  * セレクトタグラジオボタンデフォルト値
+  */
+ private static final String DEFAULT_SELECT_OR_RADIO_VAL = "000";
+ /**
   * 画像バイト配列サイズ
   */
  private static final int BYTE_ARY_SIZE = 16777215;
@@ -285,8 +289,9 @@ public class AccountChangeService extends BaseService {
   accountChangeForm.setPassword(password);
   registedAccountForm.setPassword(password);
   String sex = ownerInfo.getSex();
-  accountChangeForm.setSex(sex);
-  registedAccountForm.setSex(sex);
+  String tempSex = sex == null?DEFAULT_SELECT_OR_RADIO_VAL:sex;
+  accountChangeForm.setSex(tempSex);
+  registedAccountForm.setSex(tempSex);
   String birthday = dateFormat.format(ownerInfo.getBirthday());
   accountChangeForm.setBirthday(birthday);
   registedAccountForm.setBirthday(birthday);
@@ -323,11 +328,13 @@ public class AccountChangeService extends BaseService {
   accountChangeForm.setPetName(petNickName);
   registedAccountForm.setPetName(petNickName);
   String petSex = ownerInfo.getPetSex();
-  accountChangeForm.setPetSex(petSex);
-  registedAccountForm.setPetSex(petSex);
+  String tempPetSex = petSex == null?DEFAULT_SELECT_OR_RADIO_VAL:petSex;
+  accountChangeForm.setPetSex(tempPetSex);
+  registedAccountForm.setPetSex(tempPetSex);
   String petType = ownerInfo.getPetType();
-  accountChangeForm.setPetType(petType);
-  registedAccountForm.setPetType(petType);
+  String tempPetType = petType == null?DEFAULT_SELECT_OR_RADIO_VAL:petType;
+  accountChangeForm.setPetType(tempPetType);
+  registedAccountForm.setPetType(tempPetType);
   Float tempPetWeight = ownerInfo.getPetWeight();
   String petWeight = tempPetWeight == null?null:String.valueOf(tempPetWeight);
   accountChangeForm.setPetWeight(petWeight);
@@ -368,8 +375,9 @@ public class AccountChangeService extends BaseService {
   accountChangeForm.setPassword(password);
   registedAccountForm.setPassword(password);
   String sex = trimmerInfo.getSex();
-  accountChangeForm.setSex(sex);
-  registedAccountForm.setSex(sex);
+  String tempSex = sex == null?DEFAULT_SELECT_OR_RADIO_VAL:sex;
+  accountChangeForm.setSex(tempSex);
+  registedAccountForm.setSex(tempSex);
   String birthday = dateFormat.format(trimmerInfo.getBirthday());
   accountChangeForm.setBirthday(birthday);
   registedAccountForm.setBirthday(birthday);
