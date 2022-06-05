@@ -258,8 +258,8 @@
     <label class="control-label">営業時間</label>
     <div>
      <ul class="plugin-multipicker">
-      <c:forEach items="${weekdayMap}" var="weekday">
-       <li>${fn:substringBefore(weekday.value, '曜日')}</li>
+      <c:forEach items="${weekdayMap}" var="weekday" varStatus="status">
+       <li id="check-changed-weekday-${status.index}">${fn:substringBefore(weekday.value, '曜日')}</li>
       </c:forEach>
      </ul>
      <input type="hidden" id="form-business-hours"
@@ -275,19 +275,19 @@
 
      <div class="form-group col-lg-2">
       <label class="control-label">開始時間</label>
-      <input type="time" id="business-hours-start-time-${status.index}" name="business-hours-start-time-${status.index}" class="form-control col-lg col-md-2 col-sm-3">
+      <input type="time" id="business-hours-start-time-${status.index}" name="business-hours-start-time-${status.index}" class="form-control col-lg col-md-2 col-sm-3 check-changed-input">
       <p id="business-hours-start-time-${status.index}-err-msg" class="is-hidden">${msgMap["016"]}</p>
      </div>
 
      <div class="form-group col-lg-2">
       <label class="control-label">終了時間</label>
-      <input type="time" id="business-hours-end-time-${status.index}" name="business-hours-end-time-${status.index}" class="form-control col-lg col-md-2 col-sm-3">
+      <input type="time" id="business-hours-end-time-${status.index}" name="business-hours-end-time-${status.index}" class="form-control col-lg col-md-2 col-sm-3 check-changed-input">
       <p id="business-hours-end-time-${status.index}-err-msg" class="is-hidden">${msgMap["016"]}</p>
      </div>
 
      <div class="form-group col-lg-5">
       <label class="control-label">補足</label>
-      <textarea id="business-hours-remarks-${status.index}" name="business-hours-remarks-${status.index}" class="form-control col-lg col-md-6 col-sm-7" placeholder="第一${weekdayl.value}は休業。"></textarea>
+      <textarea id="business-hours-remarks-${status.index}" name="business-hours-remarks-${status.index}" class="form-control col-lg col-md-6 col-sm-7 check-changed-input" placeholder="第一${weekdayl.value}は休業。"></textarea>
       <p id="business-hours-remarks-${status.index}-err-length-msg" class="is-hidden">${msgMap["017"]}</p>
       <p id="business-hours-remarks-${status.index}-err-xss-msg" class="is-hidden">${msgMap["024"]}</p>
      </div>
@@ -374,11 +374,12 @@
 
    <input type="hidden" id="registed-store-name" value="${userSession.registedAccountForm.storeName}">
    <input type="hidden" id="registed-store-employees" value="${userSession.registedAccountForm.storeEmployees}">
+   <input type="hidden" id="registed-form-business-hours" value="${userSession.registedAccountForm.formBusinessHoursInputValue}">
    <c:forEach items="${userSession.registedAccountForm.formBusinessHoursList}" var="registdFormBusinessHoursList">
     <c:set var="registedBusinessHoursWeekdayNum" value="${registdFormBusinessHoursList.businessHoursWeekdayNum}" />
-    <input type="hidden" id="registedFormBusinessHoursStartTime${registedBusinessHoursWeekdayNum}" value="<c:out value="${registdFormBusinessHoursList.businessHoursStartTime}"/>">
-    <input type="hidden" id="registedFormBusinessHoursEndTime${registedBusinessHoursWeekdayNum}" value="<c:out value="${registdFormBusinessHoursList.businessHoursEndTime}"/>">
-    <input type="hidden" id="registedFormBusinessHoursRemarks${registedBusinessHoursWeekdayNum}" value="<c:out value="${registdFormBusinessHoursList.businessHoursRemarks}"/>">
+    <input type="hidden" id="registed-business-hours-start-time-${registedBusinessHoursWeekdayNum}" value="<c:out value="${registdFormBusinessHoursList.businessHoursStartTime}"/>">
+    <input type="hidden" id="registed-business-hours-end-time-${registedBusinessHoursWeekdayNum}" value="<c:out value="${registdFormBusinessHoursList.businessHoursEndTime}"/>">
+    <input type="hidden" id="registed-business-hours-remarks-${registedBusinessHoursWeekdayNum}" value="<c:out value="${registdFormBusinessHoursList.businessHoursRemarks}"/>">
    </c:forEach>
    <input type="hidden" id="registed-course-info" value="${userSession.registedAccountForm.courseInfo}">
    <input type="hidden" id="registed-commitment" value="${userSession.registedAccountForm.commitment}">

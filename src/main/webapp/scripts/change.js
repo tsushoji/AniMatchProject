@@ -78,6 +78,9 @@ $(document).ready(function(){
   registedId += targetEle.attr('id');
   console.log(registedId);
   let registedVal = $(registedId).val();
+  if(typeof registedVal === "undefined"){
+   registedVal = '';
+  }
   console.log(tarVal);
   console.log(registedVal);
   console.log(targetEle.attr('type'));
@@ -88,6 +91,57 @@ $(document).ready(function(){
    console.log("削除");
   }else{
    targetEle.addClass(redBackGroundClassName);
+   console.log("追加");
+  }
+ });
+
+ //アクション:営業曜日入力値の値が変更される
+ $('#check-changed-weekday-0, #check-changed-weekday-1, #check-changed-weekday-2, #check-changed-weekday-3, #check-changed-weekday-4, #check-changed-weekday-5, #check-changed-weekday-6').click(function() {
+  console.log("変更");
+  let targetEle = $(this);
+  console.log(targetEle);
+  let classNameAry = targetEle.attr('class').split(' ');
+  let targetEleIndex = targetEle.index();
+  let isOn = false;
+  if($.inArray('active',classNameAry)){
+   isOn = true;
+  }
+  let registedIndexVal = $(registedIdPrefix + 'form-business-hours').val();
+  let registedIndexAry = [-1];
+  if(typeof registedIndexVal !== "undefined"){
+   let tempRegistedIndexAry = registedIndexVal.split(',');
+   console.log(tempRegistedIndexAry);
+   console.log(tempRegistedIndexAry.length);
+   // 配列要素の文字列を数値に変換
+   let tempWeekdayAry =['0','1','2','3','4','5','6'];
+   let registedIndexAryIndex = 0;
+   if(isOn){
+    registedIndexAry = new Array(7-(tempRegistedIndexAry.length));
+    $.each(tempWeekdayAry, function(index, val) {
+     if($.inArray(val,tempRegistedIndexAry) === -1){
+      registedIndexAry[registedIndexAryIndex] = Number(val);
+      registedIndexAryIndex++;
+     }
+    });
+   }else{
+    registedIndexAry = new Array(tempRegistedIndexAry.length);
+    $.each(tempWeekdayAry, function(index, val) {
+     if($.inArray(val,tempRegistedIndexAry) !== -1){
+      registedIndexAry[registedIndexAryIndex] = Number(val);
+      registedIndexAryIndex++;
+     }
+    });
+   }
+  }
+  console.log(targetEleIndex);
+  console.log(registedIndexAry);
+
+  //multipickerにより、class属性が削除されてしまうため、style属性で代用
+  if($.inArray(targetEleIndex,registedIndexAry) !== -1){
+   targetEle.css('background-color','');
+   console.log("削除");
+  }else{
+   targetEle.css('background-color','#ffc107');
    console.log("追加");
   }
  });
