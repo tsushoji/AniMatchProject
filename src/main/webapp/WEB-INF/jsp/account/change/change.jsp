@@ -81,7 +81,7 @@
     <div class="form-group col-md-4">
 
      <label class="control-label required-item">パスワード</label>
-     <input type="password" id="password" name="password" class="form-control col-md col-sm-5 check-changed-input" value="<c:out value="${accountChangeForm.password}"/>" data-toggle="password">
+     <input type="password" id="password" name="password" class="form-control col-md col-sm-5" value="<c:out value="${accountChangeForm.password}"/>" data-toggle="password">
      <c:if test="${not empty msgMap['003']}">
       <p>${msgMap["003"]}</p>
      </c:if>

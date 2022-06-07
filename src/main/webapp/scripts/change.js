@@ -31,14 +31,14 @@ $(document).ready(function(){
     return;
    }
    //処理が成功したとき
-   //「都道府県」を表示
-   // JIS X 0401都道府県コード
-   $('#prefectures').val(('000' + res.results[0].prefcode).slice(-3));
-   console.log(('000' + res.results[0].prefcode).slice(-3));
-   console.log(res.results);
+   if(res.results !== null){
+    //「都道府県」を表示
+    // JIS X 0401都道府県コード
+    $('#prefectures').val(('000' + res.results[0].prefcode).slice(-3));
 
-   //「市区町村」を表示
-   $('#cities').val(res.results[0].address2);
+    //「市区町村」を表示
+    $('#cities').val(res.results[0].address2);
+   }
   }).fail(function (XMLHttpRequest, textStatus, errorThrown) {
    console.log(XMLHttpRequest);
   });
@@ -64,11 +64,9 @@ $(document).ready(function(){
   }
  });
 
- //アクション:入力値(input、select)の値が変更される
+ //アクション:入力値(input、select パスワード以外)の値が変更される
  $('.check-changed-input').change(function() {
-  console.log("変更");
   let targetEle = $(this);
-  console.log(targetEle);
 
   //入力値を取得
   let tagName = targetEle[0].tagName;
@@ -76,30 +74,51 @@ $(document).ready(function(){
   let registedId = registedIdPrefix;
   let tarVal = targetEle.val();
   registedId += targetEle.attr('id');
-  console.log(registedId);
   let registedVal = $(registedId).val();
   if(typeof registedVal === "undefined"){
    registedVal = '';
   }
-  console.log(tarVal);
-  console.log(registedVal);
-  console.log(targetEle.attr('type'));
-  console.log(targetEle[0].tagName);
   //入力値が変更されたとき、入力欄を赤色にする
   if(tarVal === registedVal){
    targetEle.removeClass(redBackGroundClassName);
-   console.log("削除");
   }else{
    targetEle.addClass(redBackGroundClassName);
-   console.log("追加");
+  }
+ });
+
+ //アクション:入力値(パスワード)の値が変更される
+ $('#password').change(function() {
+  let targetEle = $(this);
+
+  //入力値を取得
+  let tagName = targetEle[0].tagName;
+  let inputType = targetEle.attr('type');
+  let registedId = registedIdPrefix;
+  let tarVal = targetEle.val();
+  // パスワード表示ボタン押下対策
+  registedId += 'password';
+  let registedVal = $(registedId).val();
+  if(typeof registedVal === "undefined"){
+   registedVal = '';
+  }
+  //入力値が変更されたとき、入力欄を赤色にする
+  //パスワード表示要素も変更
+  let tarTextEle = targetEle.next();
+  if(typeof tarTextEle === "undefined"){
+   tarTextEle = targetEle.prev();
+  }
+  if(tarVal === registedVal){
+   targetEle.removeClass(redBackGroundClassName);
+   tarTextEle.removeClass(redBackGroundClassName);
+  }else{
+   targetEle.addClass(redBackGroundClassName);
+   tarTextEle.addClass(redBackGroundClassName);
   }
  });
 
  //アクション:営業曜日入力値の値が変更される
  $('#check-changed-weekday-0, #check-changed-weekday-1, #check-changed-weekday-2, #check-changed-weekday-3, #check-changed-weekday-4, #check-changed-weekday-5, #check-changed-weekday-6').click(function() {
-  console.log("変更");
   let targetEle = $(this);
-  console.log(targetEle);
   let classNameAry = targetEle.attr('class').split(' ');
   let targetEleIndex = targetEle.index();
   let isOn = false;
@@ -110,8 +129,6 @@ $(document).ready(function(){
   let registedIndexAry = [-1];
   if(typeof registedIndexVal !== "undefined"){
    let tempRegistedIndexAry = registedIndexVal.split(',');
-   console.log(tempRegistedIndexAry);
-   console.log(tempRegistedIndexAry.length);
    // 配列要素の文字列を数値に変換
    let tempWeekdayAry =['0','1','2','3','4','5','6'];
    let registedIndexAryIndex = 0;
@@ -133,39 +150,29 @@ $(document).ready(function(){
     });
    }
   }
-  console.log(targetEleIndex);
-  console.log(registedIndexAry);
 
   //multipickerにより、class属性が削除されてしまうため、style属性で代用
   if($.inArray(targetEleIndex,registedIndexAry) !== -1){
    targetEle.css('background-color','');
-   console.log("削除");
   }else{
    targetEle.css('background-color','#ffc107');
-   console.log("追加");
   }
  });
 
  //アクション:性別が変更される
  $('form.account-change-form input[name="radio-user-sex"]:radio').change(function() {
-  console.log("変更");
   let targetEle = $(this);
-  console.log(targetEle);
 
   //入力値を取得
   let registedId = registedIdPrefix;
   let tarVal = targetEle.val();
   registedId += targetEle.attr('name');
-  console.log(registedId);
   let registedVal = $(registedId).val();
   let tarForName = targetEle.attr('id');
-  console.log(tarVal);
-  console.log(registedVal);
   let changeEle = $('label[for="' + tarForName + '"]');
   //入力値が変更されたとき、入力欄を赤色にする
   if(tarVal !== registedVal){
    changeEle.addClass(redBackGroundClassName);
-   console.log("追加");
   }
   $('form.account-change-form input[name="radio-user-sex"]').each(function(i){
    let tarEle = $(this);
@@ -176,29 +183,22 @@ $(document).ready(function(){
     changeEle.removeClass(redBackGroundClassName);
    }
   });
-  console.log("削除");
  });
 
  //アクション:ペット性別が変更される
  $('form.account-change-form input[name="radio-pet-sex"]:radio').change(function() {
-  console.log("変更");
   let targetEle = $(this);
-  console.log(targetEle);
 
   //入力値を取得
   let registedId = registedIdPrefix;
   let tarVal = targetEle.val();
   registedId += targetEle.attr('name');
-  console.log(registedId);
   let registedVal = $(registedId).val();
   let tarForName = targetEle.attr('id');
-  console.log(tarVal);
-  console.log(registedVal);
   let changeEle = $('label[for="' + tarForName + '"]');
   //入力値が変更されたとき、入力欄を赤色にする
   if(tarVal !== registedVal){
    changeEle.addClass(redBackGroundClassName);
-   console.log("追加");
   }
   $('form.account-change-form input[name="radio-pet-sex"]').each(function(i){
    let tarEle = $(this);
@@ -209,7 +209,6 @@ $(document).ready(function(){
     changeEle.removeClass(redBackGroundClassName);
    }
   });
-  console.log("削除");
  });
 
  let formRegistType = $('#formRegistType').val();

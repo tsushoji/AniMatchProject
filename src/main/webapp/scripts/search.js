@@ -2,8 +2,6 @@ const setCitiesSelectBox = function(paramPrefectures){
  //追加したDomを削除
  $('.api-append-cities').remove();
  $.getJSON("https://postcode.teraren.com/prefectures/" + paramPrefectures + ".json", function(json){
-  console.log('成功');
-  console.log(json);
   targetSelect = $('#cities');
   //追加したDomを区別するため、追加したDomに「api-append-cities」クラスを付与
   $.each(json, function (index, val) {
@@ -154,7 +152,6 @@ $(document).ready(function(){
     startPageParamVal = startPageIndex - 1;
    }
    pageItemPreURL += targetPageParamName + targetPageParamVal + startPageParamName + startPageParamVal;
-   console.log(pageItemPreURL);
    // 同じタグで表示
    location.href = pageItemPreURL;
   }
@@ -170,7 +167,6 @@ $(document).ready(function(){
     startPageParamVal = startPageIndex + 1;
    }
    pageItemNextURL += targetPageParamName + targetPageParamVal + startPageParamName + startPageParamVal;
-   console.log(pageItemNextURL);
    // 同じタグで表示
    location.href = pageItemNextURL;
   }

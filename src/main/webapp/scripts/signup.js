@@ -54,14 +54,14 @@ $(document).ready(function(){
     return;
    }
    //処理が成功したとき
-   //「都道府県」を表示
-   // JIS X 0401都道府県コード
-   $('#prefectures').val(('000' + res.results[0].prefcode).slice(-3));
-   console.log(('000' + res.results[0].prefcode).slice(-3));
-   console.log(res.results);
+   if(res.results !== null){
+    //「都道府県」を表示
+    // JIS X 0401都道府県コード
+    $('#prefectures').val(('000' + res.results[0].prefcode).slice(-3));
 
-   //「市区町村」を表示
-   $('#cities').val(res.results[0].address2);
+    //「市区町村」を表示
+    $('#cities').val(res.results[0].address2);
+   }
   }).fail(function (XMLHttpRequest, textStatus, errorThrown) {
    console.log(XMLHttpRequest);
   });
