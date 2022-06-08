@@ -58,11 +58,12 @@
    <h3>登録区分</h3>
    <p><c:out value="${registTypeName}"/></p>
 
-   <input type="hidden" id="formRegistType" value="${formRegistType}">
   </div>
 
   <!--入力フォーム-->
   <form method="post" class="account-change-form" enctype="multipart/form-data" action="/animatch/signup/">
+
+   <input type="hidden" id="formRegistType" name="formRegistType" value="${formRegistType}">
 
    <div class="form-common">
     <h3 class="mb-3">会員情報</h3>
@@ -355,6 +356,8 @@
    <div class="form-group form-common">
     <input type="submit" class="btn btn-primary" value="更新">
    </div>
+
+   <input type="hidden" id="is-init-account-change-display" value="${userSession.isInitAccountChangeDisplay}">
 
    <input type="hidden" id="registed-user-name" value="${userSession.registedAccountForm.userName}">
    <input type="hidden" id="registed-password" value="${userSession.registedAccountForm.password}">

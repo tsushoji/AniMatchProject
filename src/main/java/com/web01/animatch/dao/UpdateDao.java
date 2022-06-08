@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.web01.animatch.dto.AutoLoginInfo;
+import com.web01.animatch.dto.User;
 
 /**
  * UpdateDaoクラス
@@ -50,6 +51,59 @@ public class UpdateDao extends BaseDao {
   int result = 0;
 
   // t_auto_login
+  setColumnList.add("token");
+  autoLoginDataList.add(createSqlParatemerMap(autoLoginInfo.getToken(), Types.VARCHAR));
+  setColumnList.add("digest");
+  autoLoginDataList.add(createSqlParatemerMap(autoLoginInfo.getDigest(), Types.VARCHAR));
+  setColumnList.add("updated_time");
+  autoLoginDataList.add(createSqlParatemerMap(Timestamp.valueOf(autoLoginInfo.getUpdatedTime()), Types.TIMESTAMP));
+
+  String whereOfuserId = createWhereOfUserId(autoLoginInfo.getUserId(), autoLoginDataList);
+
+  try (PreparedStatement pstmt = createUpdateStatement("t_auto_login", setColumnList, autoLoginDataList, whereOfuserId);) {
+
+   result = pstmt.executeUpdate();
+
+  } catch (SQLException e) {
+   throw e;
+  }
+
+  return result;
+ }
+
+ /**
+  * 飼い主情報更新
+  * @param user ユーザオブジェクト
+  * @return DB更新した件数
+  * 呼び出し元でトランザクション管理
+  */
+ public int updateOwnerInfo(User user) throws SQLException {
+  List<String> setUserColumnList = new ArrayList<>();
+  List<HashMap<String, Object>> userDataList = new ArrayList<>();
+  int result = 0;
+
+  // t_user
+  setColumnList.add("token");
+  autoLoginDataList.add(createSqlParatemerMap(autoLoginInfo.getToken(), Types.VARCHAR));
+  setColumnList.add("digest");
+  autoLoginDataList.add(createSqlParatemerMap(autoLoginInfo.getDigest(), Types.VARCHAR));
+  setColumnList.add("updated_time");
+  autoLoginDataList.add(createSqlParatemerMap(Timestamp.valueOf(autoLoginInfo.getUpdatedTime()), Types.TIMESTAMP));
+
+  String whereOfuserId = createWhereOfUserId(autoLoginInfo.getUserId(), autoLoginDataList);
+
+  try (PreparedStatement pstmt = createUpdateStatement("t_auto_login", setColumnList, autoLoginDataList, whereOfuserId);) {
+
+   result = pstmt.executeUpdate();
+
+  } catch (SQLException e) {
+   throw e;
+  }
+
+  List<String> setPetColumnList = new ArrayList<>();
+  List<HashMap<String, Object>> petDataList = new ArrayList<>();
+
+  // t_pet
   setColumnList.add("token");
   autoLoginDataList.add(createSqlParatemerMap(autoLoginInfo.getToken(), Types.VARCHAR));
   setColumnList.add("digest");

@@ -63,9 +63,7 @@ public class AccountChangeController extends HttpServlet {
   * @param response レスポンスオブジェクト
   */
  protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-  //登録区分取得
-  String registType = request.getParameter("regist-type");
-  AccountChangeService AccountChangeService = new AccountChangeService(registType);
+  AccountChangeService AccountChangeService = new AccountChangeService(request.getParameter("formRegistType"));
   if (AccountChangeService.regist(request)) {
    String path = "/WEB-INF/jsp/change/change_complete.jsp";
    RequestDispatcher dispatcher = request.getRequestDispatcher(path);

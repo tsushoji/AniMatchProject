@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,15 +25,14 @@ import javax.servlet.http.Part;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.web01.animatch.dao.CreateDao;
 import com.web01.animatch.dao.DBConnection;
 import com.web01.animatch.dao.ReadDao;
+import com.web01.animatch.dao.UpdateDao;
 import com.web01.animatch.dto.AccountChangeForm;
 import com.web01.animatch.dto.BusinessHours;
 import com.web01.animatch.dto.FormBusinessHours;
 import com.web01.animatch.dto.OwnerInfo;
 import com.web01.animatch.dto.Pet;
-import com.web01.animatch.dto.RegistForm;
 import com.web01.animatch.dto.RegistedAccountForm;
 import com.web01.animatch.dto.Store;
 import com.web01.animatch.dto.TrimmerInfo;
@@ -145,28 +145,18 @@ public class AccountChangeService extends BaseService {
   */
  public AccountChangeService() {
   this.propertiesService = new PropertiesService();
+  this.messageService = new MessageService();
  }
 
  /**
-  * 引数付きコンストラクタ
-  * @param registType 登録区分
+  * コンストラクタ
   */
- public AccountChangeService(String registType) {
+ public AccountChangeService(String registedType) {
   this.propertiesService = new PropertiesService();
-  switch (UserType.getEnumFromId(registType)) {
-  //飼い主の場合
-  case OWNER:
-   this.registType = UserType.OWNER;
-   break;
-  //トリマーの場合
-  case TRIMMER:
-   this.registType = UserType.TRIMMER;
-   break;
-  default:
-   break;
-  }
-  this.msgMap = new HashMap<>();
+  registType = UserType.getEnumFromId(registedType);
   this.messageService = new MessageService();
+
+  this.msgMap = new HashMap<>();
  }
 
  /**
@@ -351,6 +341,7 @@ public class AccountChangeService extends BaseService {
   }
 
   userSession.setRegistedAccountForm(registedAccountForm);
+  userSession.setInitAccountChangeDisplay(true);
   sessionService.bindSession(AuthService.USER_SESSION_KEY_NAME, userSession);
 
   return accountChangeForm;
@@ -474,13 +465,23 @@ public class AccountChangeService extends BaseService {
   */
  public boolean regist(HttpServletRequest request) {
   try {
-   RegistForm registForm = getFormParameterDto(request);
-   if (isValidate(request, registForm)) {
-    registDao(request, registForm);
-   } else {
-    setAttributeKeyWithCanNotValidate(request, registForm);
+   SessionService sessionService = new SessionService((HttpServletRequest)request);
+   UserSession userSession = (UserSession)sessionService.getBindingKeySessionValue(AuthService.USER_SESSION_KEY_NAME);
+   if(userSession == null) {
+    throw new MyException("msg.error.009",
+    this.messageService.getMessage(MessageService.MessageType.ERROR, "009", "ログイン"));
    }
-  } catch (SQLException | ParseException | IOException | ServletException e) {
+
+   userSession.setInitAccountChangeDisplay(false);
+   sessionService.bindSession(AuthService.USER_SESSION_KEY_NAME, userSession);
+
+   AccountChangeForm accountChangeForm = getFormParameterDto(request);
+   if (isValidate(request, accountChangeForm)) {
+    registDao(request, accountChangeForm);
+   } else {
+    setAttributeKeyWithCanNotValidate(request, accountChangeForm);
+   }
+  }catch (MyException | SQLException | ParseException | IOException | ServletException e) {
    e.printStackTrace();
   }
 
@@ -488,46 +489,45 @@ public class AccountChangeService extends BaseService {
  }
 
  /**
-  * 登録フォームパラメータ取得
+  * フォームパラメータ取得
   * @param request リクエストオブジェクト
-  * @return 登録フォームオブジェクト
+  * @return アカウントフォームオブジェクト
   */
- private RegistForm getFormParameterDto(HttpServletRequest request)
+ private AccountChangeForm getFormParameterDto(HttpServletRequest request)
    throws SQLException, ParseException, IOException, ServletException {
-  RegistForm registForm = new RegistForm();
-  registForm.setUserName(request.getParameter("user-name"));
-  registForm.setPassword(request.getParameter("password"));
-  registForm.setRePassword(request.getParameter("re-password"));
-  registForm.setSex(request.getParameter("radio-user-sex"));
-  registForm.setBirthday(request.getParameter("birthday"));
-  registForm.setPostalCode(request.getParameter("postal-code"));
-  registForm.setPrefectures(request.getParameter("prefectures"));
-  registForm.setCities(request.getParameter("cities"));
-  registForm.setEmailAddress(request.getParameter("email-address"));
-  registForm.setTelephoneNumber(request.getParameter("telephone-number"));
+  AccountChangeForm accountChangeForm = new AccountChangeForm();
+  accountChangeForm.setUserName(request.getParameter("user-name"));
+  accountChangeForm.setPassword(request.getParameter("password"));
+  accountChangeForm.setSex(request.getParameter("radio-user-sex"));
+  accountChangeForm.setBirthday(request.getParameter("birthday"));
+  accountChangeForm.setPostalCode(request.getParameter("postal-code"));
+  accountChangeForm.setPrefectures(request.getParameter("prefectures"));
+  accountChangeForm.setCities(request.getParameter("cities"));
+  accountChangeForm.setEmailAddress(request.getParameter("email-address"));
+  accountChangeForm.setTelephoneNumber(request.getParameter("telephone-number"));
   switch (this.registType) {
   //飼い主の場合
   case OWNER:
-   registForm.setPetName(request.getParameter("pet-name"));
-   registForm.setPetSex(request.getParameter("radio-pet-sex"));
-   registForm.setPetType(request.getParameter("pet-type"));
-   registForm.setPetWeight(request.getParameter("pet-weight"));
-   registForm.setPetRemarks(request.getParameter("pet-remarks"));
+   accountChangeForm.setPetName(request.getParameter("pet-name"));
+   accountChangeForm.setPetSex(request.getParameter("radio-pet-sex"));
+   accountChangeForm.setPetType(request.getParameter("pet-type"));
+   accountChangeForm.setPetWeight(request.getParameter("pet-weight"));
+   accountChangeForm.setPetRemarks(request.getParameter("pet-remarks"));
    break;
   //トリマーの場合
   case TRIMMER:
-   registForm.setStoreName(request.getParameter("store-name"));
-   registForm.setFormBusinessHoursInputValue(request.getParameter("business-hours"));
-   registForm.setFormBusinessHoursList(getFormParameterBusinessHoursDto(request));
-   registForm.setStoreEmployees(request.getParameter("store-employees"));
-   registForm.setCourseInfo(request.getParameter("course-info"));
-   registForm.setCommitment(request.getParameter("commitment"));
+   accountChangeForm.setStoreName(request.getParameter("store-name"));
+   accountChangeForm.setFormBusinessHoursInputValue(request.getParameter("business-hours"));
+   accountChangeForm.setFormBusinessHoursList(getFormParameterBusinessHoursDto(request));
+   accountChangeForm.setStoreEmployees(request.getParameter("store-employees"));
+   accountChangeForm.setCourseInfo(request.getParameter("course-info"));
+   accountChangeForm.setCommitment(request.getParameter("commitment"));
    break;
   default:
    break;
   }
 
-  return registForm;
+  return accountChangeForm;
  }
 
  /**
@@ -560,63 +560,57 @@ public class AccountChangeService extends BaseService {
  /**
   * バリデーションチェック
   * @param request リクエストオブジェクト
-  * @param registForm 登録フォームオブジェクト
+  * @param accountChangeForm アカウント変更フォームオブジェクト
   * @return 登録成功失敗
   */
- private boolean isValidate(HttpServletRequest request, RegistForm registForm)
+ private boolean isValidate(HttpServletRequest request, AccountChangeForm accountChangeForm)
    throws ParseException, IOException, ServletException {
   //ユーザーネーム10文字以下チェック
-  if (registForm.getUserName().length() > 10) {
+  if (accountChangeForm.getUserName().length() > 10) {
    this.msgMap.put("001",
      this.messageService.getMessage(MessageService.MessageType.ERROR, "001", "ユーザーネーム", "10文字以下"));
   }
 
-  //パスワード欄と再入力欄が一致するかチェック
-  if (!registForm.getPassword().equals(registForm.getRePassword())) {
-   this.msgMap.put("002",
-     this.messageService.getMessage(MessageService.MessageType.ERROR, "002", "再入力欄", "入力したパスワード"));
-  }
-
   //パスワード20文字以下チェック
-  if (registForm.getPassword().length() > 20) {
+  if (accountChangeForm.getPassword().length() > 20) {
    this.msgMap.put("003",
      this.messageService.getMessage(MessageService.MessageType.ERROR, "001", "パスワード", "20文字以下"));
   }
 
   //郵便番号形式チェック
-  if (!Pattern.matches(POSTAL_CODE_FORMAT, registForm.getPostalCode())) {
+  if (!Pattern.matches(POSTAL_CODE_FORMAT, accountChangeForm.getPostalCode())) {
    this.msgMap.put("004", this.messageService.getMessage(MessageService.MessageType.ERROR, "003", "郵便番号"));
   }
 
   //都道府県選択チェック
-  if (registForm.getPrefectures().equals("000")) {
+  if (accountChangeForm.getPrefectures().equals("000")) {
    this.msgMap.put("005", this.messageService.getMessage(MessageService.MessageType.ERROR, "004", "都道府県"));
   }
 
   //市区町村形式チェック
-  if (!Pattern.matches(CITIES_FORMAT, registForm.getCities())) {
+  if (!Pattern.matches(CITIES_FORMAT, accountChangeForm.getCities())) {
    this.msgMap.put("006", this.messageService.getMessage(MessageService.MessageType.ERROR, "003", "市区町村"));
   }
 
   //市区町村9文字以下チェック
-  if (registForm.getCities().length() > 9) {
+  if (accountChangeForm.getCities().length() > 9) {
    this.msgMap.put("007",
      this.messageService.getMessage(MessageService.MessageType.ERROR, "001", "市区町村", "9文字以下"));
   }
 
   //メールアドレス形式チェック
-  if (!Pattern.matches(EMAIL_ADDRES_FORMAT, registForm.getEmailAddress())) {
+  if (!Pattern.matches(EMAIL_ADDRES_FORMAT, accountChangeForm.getEmailAddress())) {
    this.msgMap.put("008", this.messageService.getMessage(MessageService.MessageType.ERROR, "003", "メールアドレス"));
   }
 
   //メールアドレス254文字以下チェック
-  if (registForm.getEmailAddress().length() > 254) {
+  if (accountChangeForm.getEmailAddress().length() > 254) {
    this.msgMap.put("009",
      this.messageService.getMessage(MessageService.MessageType.ERROR, "001", "メールアドレス", "254文字以下"));
   }
 
   //電話番号形式チェック
-  if (!Pattern.matches(TELEPHONE_NUMBER_FORMAT, registForm.getTelephoneNumber())) {
+  if (!Pattern.matches(TELEPHONE_NUMBER_FORMAT, accountChangeForm.getTelephoneNumber())) {
    this.msgMap.put("010", this.messageService.getMessage(MessageService.MessageType.ERROR, "003", "電話番号"));
   }
 
@@ -624,26 +618,26 @@ public class AccountChangeService extends BaseService {
   //飼い主の場合
   case OWNER:
    //ペットニックネーム20文字以下チェック
-   if (registForm.getPetName().length() > 20) {
+   if (accountChangeForm.getPetName().length() > 20) {
     this.msgMap.put("011",
       this.messageService.getMessage(MessageService.MessageType.ERROR, "001", "ペットネーム", "20文字以下"));
    }
 
    //ペット体重数値チェック
-   String registFormPetWeight = registForm.getPetWeight();
+   String accountChangeFormPetWeight = accountChangeForm.getPetWeight();
    //任意項目のため
-   if (!registFormPetWeight.isEmpty()) {
-    if (Pattern.matches(DECIMAL_FORMAT, registFormPetWeight)
-      || Pattern.matches(INIT_ZERO_DECIMAL_FORMAT, registFormPetWeight)) {
+   if (!accountChangeFormPetWeight.isEmpty()) {
+    if (Pattern.matches(DECIMAL_FORMAT, accountChangeFormPetWeight)
+      || Pattern.matches(INIT_ZERO_DECIMAL_FORMAT, accountChangeFormPetWeight)) {
      //ペット体重小数桁数チェック
-     if (registFormPetWeight.equals("0") || Pattern.matches(ZERO_DECIMAL_FORMAT, registFormPetWeight)) {
+     if (accountChangeFormPetWeight.equals("0") || Pattern.matches(ZERO_DECIMAL_FORMAT, accountChangeFormPetWeight)) {
       this.msgMap.put("012", this.messageService.getMessage(MessageService.MessageType.ERROR, "001",
         "ペット体重", "0以上の実数値"));
      } else {
-      if (!Pattern.matches(END_ZERO_DECIMAL_FORMAT, registFormPetWeight)) {
-       int pointIndex = registFormPetWeight.indexOf(".");
+      if (!Pattern.matches(END_ZERO_DECIMAL_FORMAT, accountChangeFormPetWeight)) {
+       int pointIndex = accountChangeFormPetWeight.indexOf(".");
        if (pointIndex != -1) {
-        BigDecimal registFormPetWeightVal = new BigDecimal(registFormPetWeight);
+        BigDecimal registFormPetWeightVal = new BigDecimal(accountChangeFormPetWeight);
         if (registFormPetWeightVal.stripTrailingZeros().toString().substring(pointIndex + 1)
           .length() > 2) {
          this.msgMap.put("013", this.messageService
@@ -658,16 +652,16 @@ public class AccountChangeService extends BaseService {
     }
    }
 
-   String registFormPetRemarks = registForm.getPetRemarks();
+   String accountChangeFormPetRemarks = accountChangeForm.getPetRemarks();
    //備考200文字以下チェック
-   if (registFormPetRemarks.length() > 200) {
+   if (accountChangeFormPetRemarks.length() > 200) {
     this.msgMap.put("014",
       this.messageService.getMessage(MessageService.MessageType.ERROR, "001", "備考", "200文字以下"));
    }
 
    //備考XSS対策
-   if (registFormPetRemarks.contains(TEXTAREA_INIT_PART_TAG)
-     || registFormPetRemarks.contains(TEXTAREA_END_TAG)) {
+   if (accountChangeFormPetRemarks.contains(TEXTAREA_INIT_PART_TAG)
+     || accountChangeFormPetRemarks.contains(TEXTAREA_END_TAG)) {
     this.msgMap.put("023", this.messageService.getMessage(MessageService.MessageType.ERROR, "007"));
    }
 
@@ -676,7 +670,7 @@ public class AccountChangeService extends BaseService {
   //トリマーの場合
   case TRIMMER:
    //店名50文字以下チェック
-   if (registForm.getStoreName().length() > 50) {
+   if (accountChangeForm.getStoreName().length() > 50) {
     this.msgMap.put("015",
       this.messageService.getMessage(MessageService.MessageType.ERROR, "001", "店名", "50文字以下"));
    }
@@ -685,7 +679,7 @@ public class AccountChangeService extends BaseService {
    int errorRemarksCount = 0;
    int errorXSSRemarksCount = 0;
    //営業時間チェック
-   List<FormBusinessHours> formBusinessHoursList = registForm.getFormBusinessHoursList();
+   List<FormBusinessHours> formBusinessHoursList = accountChangeForm.getFormBusinessHoursList();
    //Multipickerで選択されている場合
    for (FormBusinessHours formBusinessHours : formBusinessHoursList) {
     boolean judgeTimeFlg = true;
@@ -778,13 +772,13 @@ public class AccountChangeService extends BaseService {
     }
    }
 
-   String registFormStoreEmployees = registForm.getStoreEmployees();
+   String accountChangeFormStoreEmployees = accountChangeForm.getStoreEmployees();
    //任意項目のため
-   if (!registFormStoreEmployees.isEmpty()) {
+   if (!accountChangeFormStoreEmployees.isEmpty()) {
     //従業員数数値チェック
-    if (Pattern.matches(NUMBER_FORMAT, registFormStoreEmployees)) {
+    if (Pattern.matches(NUMBER_FORMAT, accountChangeFormStoreEmployees)) {
      //従業員数桁数チェック
-     if (registFormStoreEmployees.length() > 8) {
+     if (accountChangeFormStoreEmployees.length() > 8) {
       this.msgMap.put("019", this.messageService.getMessage(MessageService.MessageType.ERROR, "001",
         "従業員数", "8桁以下"));
      }
@@ -794,29 +788,29 @@ public class AccountChangeService extends BaseService {
     }
    }
 
-   String registFormCourseInfo = registForm.getCourseInfo();
+   String accountChangeFormCourseInfo = accountChangeForm.getCourseInfo();
    //コース200文字以下チェック
-   if (registFormCourseInfo.length() > 200) {
+   if (accountChangeFormCourseInfo.length() > 200) {
     this.msgMap.put("020",
       this.messageService.getMessage(MessageService.MessageType.ERROR, "001", "コース", "200文字以下"));
    }
 
    //コースXSS対策
-   if (registFormCourseInfo.contains(TEXTAREA_INIT_PART_TAG)
-     || registFormCourseInfo.contains(TEXTAREA_END_TAG)) {
+   if (accountChangeFormCourseInfo.contains(TEXTAREA_INIT_PART_TAG)
+     || accountChangeFormCourseInfo.contains(TEXTAREA_END_TAG)) {
     this.msgMap.put("025", this.messageService.getMessage(MessageService.MessageType.ERROR, "007"));
    }
 
-   String registFormCommitment = registForm.getCommitment();
+   String accountChangeFormCommitment = accountChangeForm.getCommitment();
    //こだわり200文字以下チェック
-   if (registFormCommitment.length() > 200) {
+   if (accountChangeFormCommitment.length() > 200) {
     this.msgMap.put("021",
       this.messageService.getMessage(MessageService.MessageType.ERROR, "001", "こだわり", "200文字以下"));
    }
 
    //こだわりXSS対策
-   if (registFormCommitment.contains(TEXTAREA_INIT_PART_TAG)
-     || registFormCommitment.contains(TEXTAREA_END_TAG)) {
+   if (accountChangeFormCommitment.contains(TEXTAREA_INIT_PART_TAG)
+     || accountChangeFormCommitment.contains(TEXTAREA_END_TAG)) {
     this.msgMap.put("026", this.messageService.getMessage(MessageService.MessageType.ERROR, "007"));
    }
 
@@ -840,11 +834,11 @@ public class AccountChangeService extends BaseService {
  /**
   * バリデーションエラー属性設定
   * @param request リクエストオブジェクト
-  * @param registForm 登録フォームオブジェクト
+  * @param accountChangeForm アカウント変更フォームオブジェクト
   */
- private void setAttributeKeyWithCanNotValidate(HttpServletRequest request, RegistForm registForm) {
-  request.setAttribute("registForm", registForm);
-  request.setAttribute("formBusinessHoursList", registForm.getFormBusinessHoursList());
+ private void setAttributeKeyWithCanNotValidate(HttpServletRequest request, AccountChangeForm accountChangeForm) {
+  request.setAttribute("accountChangeForm", accountChangeForm);
+  request.setAttribute("formBusinessHoursList", accountChangeForm.getFormBusinessHoursList());
   request.setAttribute("formRegistType", getRegistTypeId());
   request.setAttribute("msgMap", this.msgMap);
  }
@@ -852,23 +846,29 @@ public class AccountChangeService extends BaseService {
  /**
   * 登録DB処理
   * @param request リクエストオブジェクト
-  * @param registForm 登録フォームオブジェクト
+  * @param accountChangeForm アカウントフォームオブジェクト
   */
- private void registDao(HttpServletRequest request, RegistForm registForm) {
+ private void registDao(HttpServletRequest request, AccountChangeForm accountChangeForm) {
   DBConnection con = new DBConnection();
   Connection conSQL = con.getConnection();
-  CreateDao createDao = new CreateDao(conSQL);
+  UpdateDao updateDao = new UpdateDao(conSQL);
   try {
-   User user = getParameterUserDto(registForm);
+   SessionService sessionService = new SessionService((HttpServletRequest)request);
+   UserSession userSession = (UserSession)sessionService.getBindingKeySessionValue(AuthService.USER_SESSION_KEY_NAME);
+   if(userSession == null) {
+    throw new MyException("msg.error.009",
+    this.messageService.getMessage(MessageService.MessageType.ERROR, "009", "ログイン"));
+   }
+   User user = getParameterUserDto(accountChangeForm, userSession);
    switch (this.registType) {
    //飼い主の場合
    case OWNER:
-    Pet pet = getParameterPetDto(request, registForm);
+    Pet pet = getParameterPetDto(request, accountChangeForm, userSession);
     user.setPet(pet);
     if (this.canRegist) {
      //DB登録処理前に登録成功失敗リセット
      this.canRegist = false;
-     this.canRegist = createDao.registOwner(user);
+     this.canRegist = updateDao.registOwner(user);
      setAttributeRegistOwner(request, user);
      conSQL.commit();
     }
@@ -876,14 +876,14 @@ public class AccountChangeService extends BaseService {
 
    //トリマーの場合
    case TRIMMER:
-    Store store = getParameterStoreDto(request, registForm);
-    List<BusinessHours> businessHoursList = getParameterBusinessHoursDto(registForm);
+    Store store = getParameterStoreDto(request, accountChangeForm, userSession);
+    List<BusinessHours> businessHoursList = getParameterBusinessHoursDto(accountChangeForm, userSession);
     store.setBusinessHoursList(businessHoursList);
     user.setStore(store);
     if (this.canRegist) {
      //DB登録処理前に登録成功失敗リセット
      this.canRegist = false;
-     this.canRegist = createDao.registTrimmer(user);
+     this.canRegist = updateDao.registTrimmer(user);
      setAttributeRegistTrimmer(request, user);
      conSQL.commit();
     }
@@ -892,7 +892,7 @@ public class AccountChangeService extends BaseService {
    default:
     break;
    }
-  } catch (SQLException | ParseException | IOException | ServletException e) {
+  } catch (MyException | SQLException | ParseException | IOException | ServletException e) {
    try {
     conSQL.rollback();
    } catch (SQLException e1) {
@@ -906,25 +906,84 @@ public class AccountChangeService extends BaseService {
 
  /**
   * パラメータセットユーザオブジェクト取得
-  * @param registForm 登録フォームオブジェクト
+  * @param accountChangeForm アカウント変更フォームオブジェクト
+  * @param userSession ユーザセッション
   * @return ユーザオブジェクト
   */
- private User getParameterUserDto(RegistForm registForm) throws SQLException, ParseException {
+ private User getParameterUserDto(AccountChangeForm accountChangeForm, UserSession userSession) throws SQLException, ParseException {
   User user = new User();
 
-  user.setUserName(registForm.getUserName());
-  user.setPassword(registForm.getPassword());
-  user.setSex(getParameterData(registForm.getSex()));
-  SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
-  user.setBirthday(dateFormat.parse(registForm.getBirthday()));
-  user.setPostalCode(registForm.getPostalCode());
-  String prefectures = this.propertiesService
-    .getValue(PropertiesService.PREFECTURES_KEY_INIT_STR + registForm.getPrefectures());
-  String cities = registForm.getCities();
-  String address = prefectures + cities;
+  RegistedAccountForm registedAccountForm = userSession.getRegistedAccountForm();
+
+  String userName = null;
+  String tempUserName = accountChangeForm.getUserName();
+  if(!tempUserName.equals(registedAccountForm.getUserName())) {
+   userName = tempUserName;
+  }
+  user.setUserName(userName);
+
+  String password = null;
+  String tempPassword = accountChangeForm.getPassword();
+  if(!tempPassword.equals(registedAccountForm.getPassword())) {
+   password = tempPassword;
+  }
+  user.setPassword(password);
+
+  String sex = null;
+  String tempSex = accountChangeForm.getSex();
+  if(!tempSex.equals(registedAccountForm.getSex())) {
+   sex = tempSex;
+  }
+  user.setSex(sex);
+
+  Date birthday = null;
+  String tempBirthday = accountChangeForm.getBirthday();
+  if(!tempBirthday.equals(registedAccountForm.getBirthday())) {
+   SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+   birthday = dateFormat.parse(tempBirthday);
+  }
+  user.setBirthday(birthday);
+
+  String postalCode = null;
+  String tempPostalCode = accountChangeForm.getPostalCode();
+  if(!tempPostalCode.equals(registedAccountForm.getPostalCode())) {
+   postalCode = tempPostalCode;
+  }
+  user.setPostalCode(postalCode);
+
+  String address = null;
+  boolean changedPrefectures = false;
+  boolean changedCities = false;
+  String tempPrefectures = accountChangeForm.getPrefectures();
+  if(!tempPrefectures.equals(registedAccountForm.getPrefectures())) {
+   changedPrefectures = true;
+  }
+  String tempCities = accountChangeForm.getCities();
+  if(!tempCities.equals(registedAccountForm.getCities())) {
+   changedCities = true;
+  }
+  if(changedPrefectures || changedCities) {
+   String prefectures = this.propertiesService
+    .getValue(PropertiesService.PREFECTURES_KEY_INIT_STR + tempPrefectures);
+   String cities = tempCities;
+   address = prefectures + cities;
+  }
   user.setStreetAddress(address);
-  user.setEmailAddress(registForm.getEmailAddress());
-  user.setTelephoneNumber(registForm.getTelephoneNumber());
+
+  String emailAddress = null;
+  String tempEmailAddress = accountChangeForm.getEmailAddress();
+  if(!tempEmailAddress.equals(registedAccountForm.getEmailAddress())) {
+   emailAddress = tempEmailAddress;
+  }
+  user.setEmailAddress(emailAddress);
+
+  String telephoneNumber = null;
+  String tempTelephoneNumber = accountChangeForm.getTelephoneNumber();
+  if(!tempTelephoneNumber.equals(registedAccountForm.getTelephoneNumber())) {
+   telephoneNumber = tempTelephoneNumber;
+  }
+  user.setTelephoneNumber(telephoneNumber);
+
   user.setIsDeleted(0);
   LocalDateTime now = LocalDateTime.now();
   user.setInsertedTime(now);
@@ -936,26 +995,59 @@ public class AccountChangeService extends BaseService {
  /**
   * パラメータセットペットオブジェクト取得
   * @param request リクエストオブジェクト
-  * @param registForm 登録フォームオブジェクト
+  * @param accountChangeForm アカウント変更フォームオブジェクト
+  * @param userSession ユーザセッション
   * @return ペットオブジェクト
   */
- private Pet getParameterPetDto(HttpServletRequest request, RegistForm registForm)
+ private Pet getParameterPetDto(HttpServletRequest request, AccountChangeForm accountChangeForm, UserSession userSession)
    throws SQLException, IOException, ServletException {
   Pet pet = new Pet();
+
+  RegistedAccountForm registedAccountForm = userSession.getRegistedAccountForm();
 
   Part part = request.getPart("file");
   if (part.getSize() > 0) {
    byte[] fileData = convertPartToByteArray(part);
    pet.setImage(fileData);
   }
-  pet.setNickName(registForm.getPetName());
-  pet.setSex(getParameterData(registForm.getPetSex()));
-  pet.setType(getSelectParameterData(registForm.getPetType()));
-  String petWeight = registForm.getPetWeight();
-  if (!StringUtils.isEmpty(petWeight)) {
-   pet.setWeight(Float.parseFloat(petWeight));
+
+  String nickName = null;
+  String tempNickName = accountChangeForm.getPetName();
+  if(!tempNickName.equals(registedAccountForm.getPetName())) {
+   nickName = tempNickName;
   }
-  pet.setRemarks(getParameterData(registForm.getPetRemarks()));
+  pet.setNickName(nickName);
+
+  String petSex = null;
+  String tempPetSex = accountChangeForm.getPetSex();
+  if(!tempPetSex.equals(registedAccountForm.getPetSex())) {
+   petSex = tempPetSex;
+  }
+  pet.setSex(petSex);
+
+  String petType = null;
+  String tempPetType = accountChangeForm.getPetType();
+  if(!tempPetType.equals(registedAccountForm.getPetType())) {
+   petType = tempPetType;
+  }
+  pet.setType(petType);
+
+  Float petWeight = null;
+  String tempPetWeight = accountChangeForm.getPetWeight();
+  if(!tempPetWeight.equals(registedAccountForm.getPetWeight())) {
+   if (!StringUtils.isEmpty(tempPetWeight)) {
+    petWeight = Float.parseFloat(tempPetWeight);
+   }
+  }
+  pet.setWeight(petWeight);
+
+  String remarks = null;
+  String tempRemarks = accountChangeForm.getPetRemarks();
+  if(!tempRemarks.equals(registedAccountForm.getPetRemarks())) {
+   remarks = tempRemarks;
+  }
+  pet.setRemarks(remarks);
+
   pet.setIsDeleted(0);
   LocalDateTime now = LocalDateTime.now();
   pet.setInsertedTime(now);
@@ -967,25 +1059,52 @@ public class AccountChangeService extends BaseService {
  /**
   * パラメータセット店舗オブジェクト取得
   * @param request リクエストオブジェクト
-  * @param registForm 登録フォームオブジェクト
+  * @param accountChangeForm アカウント変更フォームオブジェクト
+  * @param userSession ユーザセッション
   * @return 店舗オブジェクト
   */
- private Store getParameterStoreDto(HttpServletRequest request, RegistForm registForm)
+ private Store getParameterStoreDto(HttpServletRequest request, AccountChangeForm accountChangeForm, UserSession userSession)
    throws SQLException, IOException, ServletException {
   Store store = new Store();
+
+  RegistedAccountForm registedAccountForm = userSession.getRegistedAccountForm();
 
   Part part = request.getPart("file");
   if (part.getSize() > 0) {
    byte[] fileData = convertPartToByteArray(part);
    store.setImage(fileData);
   }
-  store.setStoreName(registForm.getStoreName());
-  String storeEmployees = registForm.getStoreEmployees();
-  if (!StringUtils.isEmpty(storeEmployees)) {
-   store.setEmployeesNumber(Integer.parseInt(storeEmployees));
+
+  String storeName = null;
+  String tempStoreName = accountChangeForm.getStoreName();
+  if(!tempStoreName.equals(registedAccountForm.getStoreName())) {
+   storeName = tempStoreName;
   }
-  store.setCourseInfo(getParameterData(registForm.getCourseInfo()));
-  store.setCommitment(getParameterData(registForm.getCommitment()));
+  store.setStoreName(storeName);
+
+  Integer storeEmployees = null;
+  String tempStoreEmployees = accountChangeForm.getStoreEmployees();
+  if(!tempStoreEmployees.equals(registedAccountForm.getStoreEmployees())) {
+   if (!StringUtils.isEmpty(tempStoreEmployees)) {
+    storeEmployees = Integer.parseInt(tempStoreEmployees);
+   }
+  }
+  store.setEmployeesNumber(storeEmployees);
+
+  String courseInfo = null;
+  String tempCourseInfo = accountChangeForm.getCourseInfo();
+  if(!tempCourseInfo.equals(registedAccountForm.getCourseInfo())) {
+   courseInfo = tempCourseInfo;
+  }
+  store.setCourseInfo(courseInfo);
+
+  String commitment = null;
+  String tempCommitment = accountChangeForm.getCommitment();
+  if(!tempCommitment.equals(registedAccountForm.getCommitment())) {
+   commitment = tempCommitment;
+  }
+  store.setCommitment(commitment);
+
   store.setIsDeleted(0);
   LocalDateTime now = LocalDateTime.now();
   store.setInsertedTime(now);
@@ -1037,24 +1156,45 @@ public class AccountChangeService extends BaseService {
 
  /**
   * パラメータセット営業時間オブジェクト取得
-  * @param registForm 登録フォームオブジェクト
+  * @param accountChangeForm アカウント変更フォームオブジェクト
+  * @param userSession ユーザセッション
   * @return 登録営業時間リスト
   */
- private List<BusinessHours> getParameterBusinessHoursDto(RegistForm registForm)
+ private List<BusinessHours> getParameterBusinessHoursDto(AccountChangeForm accountChangeForm, UserSession userSession)
    throws IOException, ServletException, ParseException {
   List<BusinessHours> businessHoursList = new ArrayList<>();
-  List<FormBusinessHours> formBusinessHoursList = registForm.getFormBusinessHoursList();
+  List<FormBusinessHours> formBusinessHoursList = accountChangeForm.getFormBusinessHoursList();
+  List<FormBusinessHours> registedFormBusinessHoursList = userSession.getRegistedAccountForm().getFormBusinessHoursList();
 
-  for (FormBusinessHours formBusinessHours : formBusinessHoursList) {
+  //for (FormBusinessHours formBusinessHours : formBusinessHoursList) {
+  for (var i = 0; i < formBusinessHoursList.size(); i++) {
+   FormBusinessHours formBusinessHours = formBusinessHoursList.get(i);
+   FormBusinessHours registedFormBusinessHours = registedFormBusinessHoursList.get(i);
    BusinessHours businessHours = new BusinessHours();
    businessHours.setBusinessDay("00" + formBusinessHours.getBusinessHoursWeekdayNum());
-   String[] startBusinessTimeAry = formBusinessHours.getBusinessHoursStartTime().split(":");
-   String[] endBusinessTimeAry = formBusinessHours.getBusinessHoursEndTime().split(":");
-   businessHours.setStartBusinessTime(
-     LocalTime.of(Integer.parseInt(startBusinessTimeAry[0]), Integer.parseInt(startBusinessTimeAry[1])));
-   businessHours.setEndBusinessTime(
-     LocalTime.of(Integer.parseInt(endBusinessTimeAry[0]), Integer.parseInt(endBusinessTimeAry[1])));
-   businessHours.setComplement(getParameterData(formBusinessHours.getBusinessHoursRemarks()));
+   LocalTime startBusinessTime = null;
+   String tempStartBusinessTime = formBusinessHours.getBusinessHoursStartTime();
+   if(!tempStartBusinessTime.equals(registedFormBusinessHours.getBusinessHoursStartTime())) {
+    String[] startBusinessTimeAry = tempStartBusinessTime.split(":");
+    startBusinessTime = LocalTime.of(Integer.parseInt(startBusinessTimeAry[0]), Integer.parseInt(startBusinessTimeAry[1]));
+   }
+   businessHours.setStartBusinessTime(startBusinessTime);
+
+   LocalTime endBusinessTime = null;
+   String tempEndBusinessTime = formBusinessHours.getBusinessHoursEndTime();
+   if(!tempEndBusinessTime.equals(registedFormBusinessHours.getBusinessHoursEndTime())) {
+    String[] endBusinessTimeAry = tempEndBusinessTime.split(":");
+    endBusinessTime = LocalTime.of(Integer.parseInt(endBusinessTimeAry[0]), Integer.parseInt(endBusinessTimeAry[1]));
+   }
+   businessHours.setEndBusinessTime(endBusinessTime);
+
+   String complement = null;
+   String tempComplement = formBusinessHours.getBusinessHoursRemarks();
+   if(!tempComplement.equals(registedFormBusinessHours.getBusinessHoursRemarks())) {
+    complement = tempComplement;
+   }
+   businessHours.setComplement(complement);
+
    businessHours.setIsDeleted(0);
    LocalDateTime now = LocalDateTime.now();
    businessHours.setInsertedTime(now);
