@@ -868,9 +868,10 @@ public class AccountChangeService extends BaseService {
     if (this.canRegist) {
      //DB登録処理前に登録成功失敗リセット
      this.canRegist = false;
-     this.canRegist = updateDao.registOwner(user);
+     updateDao.updateOwnerInfo(user);
      setAttributeRegistOwner(request, user);
      conSQL.commit();
+     this.canRegist = true;
     }
     break;
 
@@ -883,9 +884,10 @@ public class AccountChangeService extends BaseService {
     if (this.canRegist) {
      //DB登録処理前に登録成功失敗リセット
      this.canRegist = false;
-     this.canRegist = updateDao.registTrimmer(user);
+     updateDao.updateTrimmerInfo(user);
      setAttributeRegistTrimmer(request, user);
      conSQL.commit();
+     this.canRegist = true;
     }
     break;
 
@@ -914,6 +916,8 @@ public class AccountChangeService extends BaseService {
   User user = new User();
 
   RegistedAccountForm registedAccountForm = userSession.getRegistedAccountForm();
+  
+  user.setUserId(userSession.getUserId());
 
   String userName = null;
   String tempUserName = accountChangeForm.getUserName();
@@ -984,9 +988,7 @@ public class AccountChangeService extends BaseService {
   }
   user.setTelephoneNumber(telephoneNumber);
 
-  user.setIsDeleted(0);
   LocalDateTime now = LocalDateTime.now();
-  user.setInsertedTime(now);
   user.setUpdatedTime(now);
 
   return user;
@@ -1004,6 +1006,8 @@ public class AccountChangeService extends BaseService {
   Pet pet = new Pet();
 
   RegistedAccountForm registedAccountForm = userSession.getRegistedAccountForm();
+
+  pet.setPetId(userSession.getPetId());
 
   Part part = request.getPart("file");
   if (part.getSize() > 0) {
@@ -1069,6 +1073,8 @@ public class AccountChangeService extends BaseService {
 
   RegistedAccountForm registedAccountForm = userSession.getRegistedAccountForm();
 
+  store.setStoreId(userSession.getStoreId());
+  
   Part part = request.getPart("file");
   if (part.getSize() > 0) {
    byte[] fileData = convertPartToByteArray(part);

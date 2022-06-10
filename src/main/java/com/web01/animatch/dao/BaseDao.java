@@ -115,4 +115,45 @@ public class BaseDao {
 
   return whereOfUserId;
  }
+
+ /**
+  * ペットIDWhere句作成
+  * @param petId ペットID
+  * @param paramDataList SQLパラメータデータリスト
+  * @return ペットIDWhere句
+  */
+ protected String createWhereOfPetId(int petId, List<HashMap<String, Object>> paramDataList) {
+  String whereOfPetId = "pet_id = ?";
+  paramDataList.add(createSqlParatemerMap(petId, Types.INTEGER));
+
+  return whereOfPetId;
+ }
+
+ /**
+  * 店舗IDWhere句作成
+  * @param storeId 店舗ID
+  * @param paramDataList SQLパラメータデータリスト
+  * @return 店舗IDWhere句
+  */
+ protected String createWhereOfStoreId(int storeId, List<HashMap<String, Object>> paramDataList) {
+  String whereOfStoreId = "store_id = ?";
+  paramDataList.add(createSqlParatemerMap(storeId, Types.INTEGER));
+
+  return whereOfStoreId;
+ }
+
+ /**
+  * 店舗ID、営業日Where句作成
+  * @param storeId 店舗ID
+  * @param businessDay 営業日
+  * @param paramDataList SQLパラメータデータリスト
+  * @return 店舗ID、営業日Where句
+  */
+ protected String createWhereOfStoreIdAndBusinessDay(int storeId, String businessDay, List<HashMap<String, Object>> paramDataList) {
+  String whereOfStoreIdAndBusinessDay = "store_id = ? AND business_day = ?";
+  paramDataList.add(createSqlParatemerMap(storeId, Types.INTEGER));
+  paramDataList.add(createSqlParatemerMap(businessDay, Types.VARCHAR));
+
+  return whereOfStoreIdAndBusinessDay;
+ }
 }
