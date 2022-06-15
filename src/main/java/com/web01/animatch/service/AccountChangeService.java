@@ -341,7 +341,6 @@ public class AccountChangeService extends BaseService {
   }
 
   userSession.setRegistedAccountForm(registedAccountForm);
-  userSession.setInitAccountChangeDisplay(true);
   sessionService.bindSession(AuthService.USER_SESSION_KEY_NAME, userSession);
 
   return accountChangeForm;
@@ -459,11 +458,11 @@ public class AccountChangeService extends BaseService {
  }
 
  /**
-  * 登録
+  * 変更
   * @param request リクエストオブジェクト
-  * @return 登録成功失敗
+  * @return 変更成功失敗
   */
- public boolean regist(HttpServletRequest request) {
+ public boolean change(HttpServletRequest request) {
   try {
    SessionService sessionService = new SessionService((HttpServletRequest)request);
    UserSession userSession = (UserSession)sessionService.getBindingKeySessionValue(AuthService.USER_SESSION_KEY_NAME);
@@ -472,15 +471,13 @@ public class AccountChangeService extends BaseService {
     this.messageService.getMessage(MessageService.MessageType.ERROR, "009", "ログイン"));
    }
 
-   userSession.setInitAccountChangeDisplay(false);
-   sessionService.bindSession(AuthService.USER_SESSION_KEY_NAME, userSession);
-
    AccountChangeForm accountChangeForm = getFormParameterDto(request);
    if (isValidate(request, accountChangeForm)) {
-    registDao(request, accountChangeForm);
+    changeDao(request, accountChangeForm, userSession);
    } else {
     setAttributeKeyWithCanNotValidate(request, accountChangeForm);
    }
+
   }catch (MyException | SQLException | ParseException | IOException | ServletException e) {
    e.printStackTrace();
   }
@@ -844,21 +841,15 @@ public class AccountChangeService extends BaseService {
  }
 
  /**
-  * 登録DB処理
+  * 変更DB処理
   * @param request リクエストオブジェクト
   * @param accountChangeForm アカウントフォームオブジェクト
   */
- private void registDao(HttpServletRequest request, AccountChangeForm accountChangeForm) {
+ private void changeDao(HttpServletRequest request, AccountChangeForm accountChangeForm, UserSession userSession) {
   DBConnection con = new DBConnection();
   Connection conSQL = con.getConnection();
   UpdateDao updateDao = new UpdateDao(conSQL);
   try {
-   SessionService sessionService = new SessionService((HttpServletRequest)request);
-   UserSession userSession = (UserSession)sessionService.getBindingKeySessionValue(AuthService.USER_SESSION_KEY_NAME);
-   if(userSession == null) {
-    throw new MyException("msg.error.009",
-    this.messageService.getMessage(MessageService.MessageType.ERROR, "009", "ログイン"));
-   }
    User user = getParameterUserDto(accountChangeForm, userSession);
    switch (this.registType) {
    //飼い主の場合
@@ -869,7 +860,7 @@ public class AccountChangeService extends BaseService {
      //DB登録処理前に登録成功失敗リセット
      this.canRegist = false;
      updateDao.updateOwnerInfo(user);
-     setAttributeRegistOwner(request, user);
+     setAttributeChangeOwner(request, user, userSession);
      conSQL.commit();
      this.canRegist = true;
     }
@@ -885,7 +876,7 @@ public class AccountChangeService extends BaseService {
      //DB登録処理前に登録成功失敗リセット
      this.canRegist = false;
      updateDao.updateTrimmerInfo(user);
-     setAttributeRegistTrimmer(request, user);
+     setAttributeChangeTrimmer(request, user, userSession);
      conSQL.commit();
      this.canRegist = true;
     }
@@ -894,7 +885,7 @@ public class AccountChangeService extends BaseService {
    default:
     break;
    }
-  } catch (MyException | SQLException | ParseException | IOException | ServletException e) {
+  } catch (SQLException | ParseException | IOException | ServletException e) {
    try {
     conSQL.rollback();
    } catch (SQLException e1) {
@@ -1227,57 +1218,141 @@ public class AccountChangeService extends BaseService {
  }
 
  /**
-  * 飼い主用登録オブジェクト属性設定
+  * 飼い主用変更オブジェクト属性設定
   * @param request リクエストオブジェクト
   * @param user ユーザオブジェクト
+  * @param userSession ユーザセッション
   */
- private void setAttributeRegistOwner(HttpServletRequest request, User user) {
+ private void setAttributeChangeOwner(HttpServletRequest request, User user, UserSession userSession) {
   Pet pet = user.getPet();
 
-  //登録完了画面表示文字セット
+  //変更完了画面表示文字セット
+  String registTypeId = this.getRegistTypeId();
   String registTypeName = this.propertiesService
-    .getValue(PropertiesService.REGIST_TYPE_KEY_INIT_STR + this.getRegistTypeId());
-  String userSex = this.propertiesService.getValue(PropertiesService.HUMAN_SEX_KEY_INIT_STR + user.getSex());
-  String petSex = this.propertiesService.getValue(PropertiesService.PET_SEX_KEY_INIT_STR + pet.getSex());
-  String petType = this.propertiesService.getValue(PropertiesService.PET_TYPE_KEY_INIT_STR + pet.getType());
-  user.setSex(userSex);
-  pet.setSex(petSex);
-  pet.setType(petType);
+    .getValue(PropertiesService.REGIST_TYPE_KEY_INIT_STR + registTypeId);
+
+  RegistedAccountForm beforeAccoutInfo = userSession.getRegistedAccountForm();
+
+  String tempUserSex = user.getSex();
+  if(tempUserSex != null) {  
+   String userSex = this.propertiesService.getValue(PropertiesService.HUMAN_SEX_KEY_INIT_STR + tempUserSex);
+   user.setSex(userSex);
+  }
+  tempUserSex = beforeAccoutInfo.getSex();
+  if(tempUserSex != null) {  
+   String userSex = this.propertiesService.getValue(PropertiesService.HUMAN_SEX_KEY_INIT_STR + tempUserSex);
+   beforeAccoutInfo.setSex(userSex);
+  }
+
+  String tempPrefectures = beforeAccoutInfo.getPrefectures();
+  if(tempPrefectures != null) {
+   String prefectures = this.propertiesService.getValue(PropertiesService.PREFECTURES_KEY_INIT_STR + tempPrefectures);
+   beforeAccoutInfo.setPrefectures(prefectures);
+  }
+
+  String tempPetSex = pet.getSex();
+  if(tempPetSex != null) {  
+   String petSex = this.propertiesService.getValue(PropertiesService.PET_SEX_KEY_INIT_STR + tempPetSex);
+   pet.setSex(petSex);
+  }
+  tempPetSex = beforeAccoutInfo.getPetSex();
+  if(tempPetSex != null) {  
+   String petSex = this.propertiesService.getValue(PropertiesService.PET_SEX_KEY_INIT_STR + tempPetSex);
+   beforeAccoutInfo.setPetSex(petSex);
+  }
+
+  String tempPetType = pet.getType();
+  if(tempPetType != null) {  
+   String petType = this.propertiesService.getValue(PropertiesService.PET_TYPE_KEY_INIT_STR + tempPetType);
+   pet.setType(petType);
+  }
+  tempPetType = beforeAccoutInfo.getPetType();
+  if(tempPetType != null) {  
+   String petType = this.propertiesService.getValue(PropertiesService.PET_TYPE_KEY_INIT_STR + tempPetType);
+   beforeAccoutInfo.setPetType(petType);
+  }
 
   request.setAttribute("registTypeName", registTypeName);
-  request.setAttribute("registType", this.getRegistTypeId());
+  request.setAttribute("registType", registTypeId);
   request.setAttribute("user", user);
   request.setAttribute("pet", pet);
   //画像をBase64化
   request.setAttribute("petImage", convertByteAryToBase64(pet.getImage()));
+  request.setAttribute("beforeAccoutInfo", beforeAccoutInfo);
  }
 
  /**
-  * トリマー用登録オブジェクト属性設定
+  * トリマー用変更オブジェクト属性設定
   * @param request リクエストオブジェクト
   * @param user ユーザオブジェクト
+  * @param userSession ユーザセッション
   */
- private void setAttributeRegistTrimmer(HttpServletRequest request, User user) {
+ private void setAttributeChangeTrimmer(HttpServletRequest request, User user, UserSession userSession) {
   Store store = user.getStore();
 
-  //登録完了画面表示文字セット
+  //変更完了画面表示文字セット
+  String registTypeId = this.getRegistTypeId();
   String registTypeName = this.propertiesService
-    .getValue(PropertiesService.REGIST_TYPE_KEY_INIT_STR + this.getRegistTypeId());
-  String userSex = this.propertiesService.getValue(PropertiesService.HUMAN_SEX_KEY_INIT_STR + user.getSex());
-  user.setSex(userSex);
-  List<BusinessHours> businessHoursList = store.getBusinessHoursList();
-  for (BusinessHours businessHours : businessHoursList) {
-   businessHours.setBusinessDay(this.propertiesService
-     .getValue(PropertiesService.WEEKDAY_KEY_INIT_STR + businessHours.getBusinessDay()));
+    .getValue(PropertiesService.REGIST_TYPE_KEY_INIT_STR + registTypeId);
+
+  RegistedAccountForm beforeAccoutInfo = userSession.getRegistedAccountForm();
+
+  String tempUserSex = user.getSex();
+  if(tempUserSex != null) {  
+   String userSex = this.propertiesService.getValue(PropertiesService.HUMAN_SEX_KEY_INIT_STR + tempUserSex);
+   user.setSex(userSex);
+  }
+  tempUserSex = beforeAccoutInfo.getSex();
+  if(tempUserSex != null) {  
+   String userSex = this.propertiesService.getValue(PropertiesService.HUMAN_SEX_KEY_INIT_STR + tempUserSex);
+   beforeAccoutInfo.setSex(userSex);
   }
 
+  String tempPrefectures = beforeAccoutInfo.getPrefectures();
+  if(tempPrefectures != null) {
+   String prefectures = this.propertiesService.getValue(PropertiesService.PREFECTURES_KEY_INIT_STR + tempPrefectures);
+   beforeAccoutInfo.setPrefectures(prefectures);
+  }
+
+  // 登録された営業時間リストを元に更新した営業時間リストの曜日番号に合わせて、表示営業時間リストを作成
+  List<BusinessHours> businessHoursList = store.getBusinessHoursList();
+  List<FormBusinessHours> registedBusinessHoursList = beforeAccoutInfo.getFormBusinessHoursList();
+  List<BusinessHours> beforeBusinessHoursList = new ArrayList<>();
+  for (BusinessHours businessHours : businessHoursList) {
+   BusinessHours beforeBusinessHours = new BusinessHours();
+   String businessDay = businessHours.getBusinessDay();
+   FormBusinessHours targetBusinessHours = registedBusinessHoursList.stream().filter(e->e.getBusinessHoursWeekdayNum().equals(businessDay)).findFirst().orElse(new FormBusinessHours());
+   String weekday = this.propertiesService.getValue(PropertiesService.WEEKDAY_KEY_INIT_STR + businessDay);
+   businessHours.setBusinessDay(weekday);
+   beforeBusinessHours.setBusinessDay(weekday);
+   LocalTime startBusinessTime = null;
+   String tempStartBusinessTime = targetBusinessHours.getBusinessHoursStartTime();
+   if(tempStartBusinessTime != null) {
+    String[] startBusinessTimeAry = tempStartBusinessTime.split(":");
+    startBusinessTime = LocalTime.of(Integer.parseInt(startBusinessTimeAry[0]), Integer.parseInt(startBusinessTimeAry[1]));
+   }
+   businessHours.setStartBusinessTime(startBusinessTime);
+   LocalTime endBusinessTime = null;
+   String tempEndBusinessTime = targetBusinessHours.getBusinessHoursStartTime();
+   if(tempEndBusinessTime != null) {
+    String[] endBusinessTimeAry = tempEndBusinessTime.split(":");
+    endBusinessTime = LocalTime.of(Integer.parseInt(endBusinessTimeAry[0]), Integer.parseInt(endBusinessTimeAry[1]));
+   }
+   businessHours.setEndBusinessTime(endBusinessTime);
+   beforeBusinessHours.setComplement(targetBusinessHours.getBusinessHoursRemarks());
+   beforeBusinessHoursList.add(beforeBusinessHours);
+  }
+
+
   request.setAttribute("registTypeName", registTypeName);
-  request.setAttribute("registType", this.getRegistTypeId());
+  request.setAttribute("registType", registTypeId);
   request.setAttribute("user", user);
   request.setAttribute("store", store);
   //画像をBase64化
   request.setAttribute("storeImage", convertByteAryToBase64(store.getImage()));
   request.setAttribute("businessHoursList", businessHoursList);
+  request.setAttribute("beforeBusinessHoursList", beforeBusinessHoursList);
+  request.setAttribute("beforeAccoutInfo", beforeAccoutInfo);
  }
 
 }

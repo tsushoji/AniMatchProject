@@ -357,8 +357,6 @@
     <input type="submit" class="btn btn-primary" value="更新">
    </div>
 
-   <input type="hidden" id="is-init-account-change-display" value="${userSession.isInitAccountChangeDisplay}">
-
    <input type="hidden" id="registed-user-name" value="${userSession.registedAccountForm.userName}">
    <input type="hidden" id="registed-password" value="${userSession.registedAccountForm.password}">
    <input type="hidden" id="registed-radio-user-sex" value="${userSession.registedAccountForm.sex}">

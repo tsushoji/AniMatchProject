@@ -31,8 +31,4 @@ public class UserSession {
   * 登録されたアカウントフォーム
   */
  private RegistedAccountForm registedAccountForm;
- /**
-  * アカウント変更画面初期表示であるか
-  */
- private boolean isInitAccountChangeDisplay;
 }
