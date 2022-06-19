@@ -164,7 +164,7 @@ public class UpdateDao extends BaseDao {
 
   // t_pet
   byte[] petImage = pet.getImage();
-  if(petImage.length > 0) {
+  if(petImage != null && petImage.length > 0) {
    setPetColumnList.add("image");
    petDataList.add(createSqlParatemerMap(petImage, Types.BLOB));
   }
@@ -303,7 +303,7 @@ public class UpdateDao extends BaseDao {
 
   // t_store
   byte[] storeImage = store.getImage();
-  if(storeImage.length > 0) {
+  if(storeImage != null && storeImage.length > 0) {
    setStoreColumnList.add("image");
    storeDataList.add(createSqlParatemerMap(storeImage, Types.BLOB));
   }

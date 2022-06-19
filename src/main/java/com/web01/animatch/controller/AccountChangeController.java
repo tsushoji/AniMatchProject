@@ -65,7 +65,7 @@ public class AccountChangeController extends HttpServlet {
  protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
   AccountChangeService AccountChangeService = new AccountChangeService(request.getParameter("formRegistType"));
   if (AccountChangeService.change(request)) {
-   String path = "/WEB-INF/jsp/change/change_complete.jsp";
+   String path = "/WEB-INF/jsp/account/change/change_complete.jsp";
    RequestDispatcher dispatcher = request.getRequestDispatcher(path);
    dispatcher.forward(request, response);
   } else {

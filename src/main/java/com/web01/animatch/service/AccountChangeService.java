@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -926,7 +927,7 @@ public class AccountChangeService extends BaseService {
 
   String sex = null;
   String tempSex = accountChangeForm.getSex();
-  if(!tempSex.equals(registedAccountForm.getSex())) {
+  if(!Objects.equals(tempSex,registedAccountForm.getSex())) {
    sex = tempSex;
   }
   user.setSex(sex);
@@ -1015,21 +1016,21 @@ public class AccountChangeService extends BaseService {
 
   String petSex = null;
   String tempPetSex = accountChangeForm.getPetSex();
-  if(!tempPetSex.equals(registedAccountForm.getPetSex())) {
+  if(!Objects.equals(tempPetSex,registedAccountForm.getPetSex())) {
    petSex = tempPetSex;
   }
   pet.setSex(petSex);
 
   String petType = null;
   String tempPetType = accountChangeForm.getPetType();
-  if(!tempPetType.equals(registedAccountForm.getPetType())) {
+  if(!Objects.equals(tempPetType,registedAccountForm.getPetType())) {
    petType = tempPetType;
   }
   pet.setType(petType);
 
   Float petWeight = null;
   String tempPetWeight = accountChangeForm.getPetWeight();
-  if(!tempPetWeight.equals(registedAccountForm.getPetWeight())) {
+  if(!Objects.equals(tempPetWeight,registedAccountForm.getPetWeight())) {
    if (!StringUtils.isEmpty(tempPetWeight)) {
     petWeight = Float.parseFloat(tempPetWeight);
    }
@@ -1038,7 +1039,7 @@ public class AccountChangeService extends BaseService {
 
   String remarks = null;
   String tempRemarks = accountChangeForm.getPetRemarks();
-  if(!tempRemarks.equals(registedAccountForm.getPetRemarks())) {
+  if(!Objects.equals(tempRemarks,registedAccountForm.getPetRemarks()) && StringUtils.isNotEmpty(tempRemarks)) {
    remarks = tempRemarks;
   }
   pet.setRemarks(remarks);
@@ -1081,7 +1082,7 @@ public class AccountChangeService extends BaseService {
 
   Integer storeEmployees = null;
   String tempStoreEmployees = accountChangeForm.getStoreEmployees();
-  if(!tempStoreEmployees.equals(registedAccountForm.getStoreEmployees())) {
+  if(!Objects.equals(tempStoreEmployees,registedAccountForm.getStoreEmployees())) {
    if (!StringUtils.isEmpty(tempStoreEmployees)) {
     storeEmployees = Integer.parseInt(tempStoreEmployees);
    }
@@ -1090,14 +1091,14 @@ public class AccountChangeService extends BaseService {
 
   String courseInfo = null;
   String tempCourseInfo = accountChangeForm.getCourseInfo();
-  if(!tempCourseInfo.equals(registedAccountForm.getCourseInfo())) {
+  if(!Objects.equals(tempCourseInfo,registedAccountForm.getCourseInfo()) && StringUtils.isNotEmpty(tempCourseInfo)) {
    courseInfo = tempCourseInfo;
   }
   store.setCourseInfo(courseInfo);
 
   String commitment = null;
   String tempCommitment = accountChangeForm.getCommitment();
-  if(!tempCommitment.equals(registedAccountForm.getCommitment())) {
+  if(!Objects.equals(tempCommitment,registedAccountForm.getCommitment()) && StringUtils.isNotEmpty(tempCommitment)) {
    commitment = tempCommitment;
   }
   store.setCommitment(commitment);
@@ -1187,7 +1188,7 @@ public class AccountChangeService extends BaseService {
 
    String complement = null;
    String tempComplement = formBusinessHours.getBusinessHoursRemarks();
-   if(!tempComplement.equals(registedFormBusinessHours.getBusinessHoursRemarks())) {
+   if(!Objects.equals(tempComplement,registedFormBusinessHours.getBusinessHoursRemarks())) {
     complement = tempComplement;
    }
    businessHours.setComplement(complement);

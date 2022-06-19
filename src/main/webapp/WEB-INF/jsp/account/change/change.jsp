@@ -61,7 +61,7 @@
   </div>
 
   <!--入力フォーム-->
-  <form method="post" class="account-change-form" enctype="multipart/form-data" action="/animatch/signup/">
+  <form method="post" class="account-change-form" enctype="multipart/form-data" action="/animatch/account/change/">
 
    <input type="hidden" id="formRegistType" name="formRegistType" value="${formRegistType}">
 
