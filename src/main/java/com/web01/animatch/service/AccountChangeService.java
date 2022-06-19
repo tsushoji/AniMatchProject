@@ -190,10 +190,25 @@ public class AccountChangeService extends BaseService {
  }
 
  /**
+  * 初回表示設定
+  * @param request リクエストオブジェクト
+  */
+ public void setFirstDisplay(HttpServletRequest request) {
+  setInitPropertiesKey(request);
+  UserSession userSession = new UserSession();
+  SessionService sessionService = new SessionService((HttpServletRequest)request);
+  userSession = (UserSession)sessionService.getBindingKeySessionValue(AuthService.USER_SESSION_KEY_NAME);
+  Integer userId = userSession.getUserId();
+  Integer petId = userSession.getPetId();
+  Integer storeId = userSession.getStoreId();
+  setRegistedInfoAttributeKey(request, userId, petId, storeId);
+ }
+
+ /**
   * 初期プロパティ設定
   * @param request リクエストオブジェクト
   */
- public void setInitPropertiesKey(HttpServletRequest request) {
+ private void setInitPropertiesKey(HttpServletRequest request) {
   Map<String, String> registTypeMap = new HashMap<>();
   Map<String, String> prefecturesMap = new HashMap<>();
   Map<String, String> petTypeMap = new HashMap<>();
@@ -222,7 +237,7 @@ public class AccountChangeService extends BaseService {
   * @param petId ペットID
   * @param storeId 店舗ID
   */
- public void setRegistedInfoAttributeKey(HttpServletRequest request, int userId, int petId, int storeId) {
+ private void setRegistedInfoAttributeKey(HttpServletRequest request, int userId, int petId, int storeId) {
   DBConnection con = new DBConnection();
   ReadDao readDao = new ReadDao(con.getConnection());
   AccountChangeForm accountChangeForm = null;
@@ -835,9 +850,14 @@ public class AccountChangeService extends BaseService {
   * @param accountChangeForm アカウント変更フォームオブジェクト
   */
  private void setAttributeKeyWithCanNotValidate(HttpServletRequest request, AccountChangeForm accountChangeForm) {
+  setInitPropertiesKey(request);
+  String registTypeId = this.getRegistTypeId();
+  String registTypeName = this.propertiesService
+    .getValue(PropertiesService.REGIST_TYPE_KEY_INIT_STR + registTypeId);
+  request.setAttribute("formRegistType", registTypeId);
+  request.setAttribute("registTypeName", registTypeName);
   request.setAttribute("accountChangeForm", accountChangeForm);
   request.setAttribute("formBusinessHoursList", accountChangeForm.getFormBusinessHoursList());
-  request.setAttribute("formRegistType", getRegistTypeId());
   request.setAttribute("msgMap", this.msgMap);
  }
 
@@ -926,7 +946,7 @@ public class AccountChangeService extends BaseService {
   user.setPassword(password);
 
   String sex = null;
-  String tempSex = accountChangeForm.getSex();
+  String tempSex = getParameterData(accountChangeForm.getSex());
   if(!Objects.equals(tempSex,registedAccountForm.getSex())) {
    sex = tempSex;
   }
@@ -1015,14 +1035,14 @@ public class AccountChangeService extends BaseService {
   pet.setNickName(nickName);
 
   String petSex = null;
-  String tempPetSex = accountChangeForm.getPetSex();
+  String tempPetSex = getParameterData(accountChangeForm.getPetSex());
   if(!Objects.equals(tempPetSex,registedAccountForm.getPetSex())) {
    petSex = tempPetSex;
   }
   pet.setSex(petSex);
 
   String petType = null;
-  String tempPetType = accountChangeForm.getPetType();
+  String tempPetType = getSelectParameterData(accountChangeForm.getPetType());
   if(!Objects.equals(tempPetType,registedAccountForm.getPetType())) {
    petType = tempPetType;
   }
@@ -1038,8 +1058,8 @@ public class AccountChangeService extends BaseService {
   pet.setWeight(petWeight);
 
   String remarks = null;
-  String tempRemarks = accountChangeForm.getPetRemarks();
-  if(!Objects.equals(tempRemarks,registedAccountForm.getPetRemarks()) && StringUtils.isNotEmpty(tempRemarks)) {
+  String tempRemarks = getParameterData(accountChangeForm.getPetRemarks());
+  if(!Objects.equals(tempRemarks,registedAccountForm.getPetRemarks())) {
    remarks = tempRemarks;
   }
   pet.setRemarks(remarks);
@@ -1090,15 +1110,15 @@ public class AccountChangeService extends BaseService {
   store.setEmployeesNumber(storeEmployees);
 
   String courseInfo = null;
-  String tempCourseInfo = accountChangeForm.getCourseInfo();
-  if(!Objects.equals(tempCourseInfo,registedAccountForm.getCourseInfo()) && StringUtils.isNotEmpty(tempCourseInfo)) {
+  String tempCourseInfo = getParameterData(accountChangeForm.getCourseInfo());
+  if(!Objects.equals(tempCourseInfo,registedAccountForm.getCourseInfo())) {
    courseInfo = tempCourseInfo;
   }
   store.setCourseInfo(courseInfo);
 
   String commitment = null;
-  String tempCommitment = accountChangeForm.getCommitment();
-  if(!Objects.equals(tempCommitment,registedAccountForm.getCommitment()) && StringUtils.isNotEmpty(tempCommitment)) {
+  String tempCommitment = getParameterData(accountChangeForm.getCommitment());
+  if(!Objects.equals(tempCommitment,registedAccountForm.getCommitment())) {
    commitment = tempCommitment;
   }
   store.setCommitment(commitment);
@@ -1187,7 +1207,7 @@ public class AccountChangeService extends BaseService {
    businessHours.setEndBusinessTime(endBusinessTime);
 
    String complement = null;
-   String tempComplement = formBusinessHours.getBusinessHoursRemarks();
+   String tempComplement = getParameterData(formBusinessHours.getBusinessHoursRemarks());
    if(!Objects.equals(tempComplement,registedFormBusinessHours.getBusinessHoursRemarks())) {
     complement = tempComplement;
    }

@@ -73,7 +73,7 @@
 
     <div class="form-group col-md-4 col-sm-5">
      <label class="control-label required-item">ユーザー名</label>
-     <input type="text" id="user-name" name="user-name" class="form-control check-changed-input" value="<c:out value="${accountChangeForm.userName}"/>">
+     <input type="text" id="user-name" name="user-name" class="form-control check-changed-input" value="<c:out value="${accountChangeForm.userName}"/>" required>
      <c:if test="${not empty msgMap['001']}">
       <p>${msgMap["001"]}</p>
      </c:if>
@@ -82,7 +82,7 @@
     <div class="form-group col-md-4">
 
      <label class="control-label required-item">パスワード</label>
-     <input type="password" id="password" name="password" class="form-control col-md col-sm-5" value="<c:out value="${accountChangeForm.password}"/>" data-toggle="password">
+     <input type="password" id="password" name="password" class="form-control col-md col-sm-5" value="<c:out value="${accountChangeForm.password}"/>" required data-toggle="password">
      <c:if test="${not empty msgMap['003']}">
       <p>${msgMap["003"]}</p>
      </c:if>
@@ -108,7 +108,7 @@
    <div class="form-row mt-3 form-common">
     <div class="form-group col-md-4 col-sm-5">
      <label class="control-label required-item">生年月日</label>
-     <input type="text" id="birthday" name="birthday" class="form-control check-changed-input plugin-datepicker" value="<c:out value="${accountChangeForm.birthday}"/>">
+     <input type="text" id="birthday" name="birthday" class="form-control check-changed-input plugin-datepicker" value="<c:out value="${accountChangeForm.birthday}"/>" required>
     </div>
    </div>
 
@@ -124,7 +124,7 @@
 
     <div class="form-group col-md-3">
      <label class="control-label required-item" for="postal-code">郵便番号</label>
-     <input type="text" id="postal-code" name="postal-code" class="form-control col-md col-sm-3 check-changed-input" placeholder="9991234" id="postal-code" maxlength="7" value="<c:out value="${accountChangeForm.postalCode}"/>">
+     <input type="text" id="postal-code" name="postal-code" class="form-control col-md col-sm-3 check-changed-input" placeholder="9991234" id="postal-code" maxlength="7" value="<c:out value="${accountChangeForm.postalCode}"/>" required>
      <c:if test="${not empty msgMap['004']}">
       <p>${msgMap["004"]}</p>
      </c:if>
@@ -148,7 +148,7 @@
 
     <div class="form-group col-md-3">
      <label class="control-label required-item" for="cities">住所&ndash;市区町村</label>
-     <input type="text" name="cities" id="cities" class="form-control col-md col-sm-3 check-changed-input" value="<c:out value="${accountChangeForm.cities}"/>">
+     <input type="text" name="cities" id="cities" class="form-control col-md col-sm-3 check-changed-input" value="<c:out value="${accountChangeForm.cities}"/>" required>
      <c:if test="${not empty msgMap['006']}">
       <p>${msgMap["006"]}</p>
      </c:if>
@@ -162,7 +162,7 @@
    <div class="form-row form-common">
     <div class="form-group col-md-5 col-sm-6">
      <label class="control-label required-item">メールアドレス</label>
-     <input type="text" id="email-address" name="email-address" class="form-control check-changed-input" placeholder="xxxxxxx@xx.xx.xx" value="<c:out value="${accountChangeForm.emailAddress}"/>">
+     <input type="text" id="email-address" name="email-address" class="form-control check-changed-input" placeholder="xxxxxxx@xx.xx.xx" value="<c:out value="${accountChangeForm.emailAddress}"/>" required>
      <c:if test="${not empty msgMap['008']}">
       <p>${msgMap["008"]}</p>
      </c:if>
@@ -175,7 +175,7 @@
    <div class="form-row form-common">
     <div class="form-group col-md-4 col-sm-5">
      <label class="control-label required-item">電話番号</label>
-     <input type="tel" id="telephone-number" name="telephone-number" class="form-control check-changed-input" placeholder="09012345678" value="<c:out value="${accountChangeForm.telephoneNumber}"/>">
+     <input type="tel" id="telephone-number" name="telephone-number" class="form-control check-changed-input" placeholder="09012345678" value="<c:out value="${accountChangeForm.telephoneNumber}"/>" required>
      <c:if test="${not empty msgMap['010']}">
       <p>${msgMap["010"]}</p>
      </c:if>

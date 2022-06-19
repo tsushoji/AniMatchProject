@@ -215,9 +215,15 @@ $(document).ready(function(){
  if(formRegistType == ownerType){
   //飼い主用フォームを表示
   $('.form-common,.form-owner,.footer-top-content').show();
+  //post送信時、必須項目未入力対応
+  $('#pet-name').prop('required', true);
+  $('#store-name').prop('required', false);
  }else if(formRegistType == trimmerType){
   //トリマー用フォームを表示
   $('.form-common,.form-trimmer,.footer-top-content').show();
+  //post送信時、必須項目未入力対応
+  $('#pet-name').prop('required', true);
+  $('#store-name').prop('required', false);
  }
 
  //入力間違いの場合、入力値を「multipicker」にセット

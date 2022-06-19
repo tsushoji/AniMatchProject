@@ -9,10 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.web01.animatch.dto.UserSession;
 import com.web01.animatch.service.AccountChangeService;
-import com.web01.animatch.service.AuthService;
-import com.web01.animatch.service.SessionService;
 
 /**
  * AccountChangeControllerクラス
@@ -42,15 +39,7 @@ public class AccountChangeController extends HttpServlet {
   */
  protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
   AccountChangeService AccountChangeService = new AccountChangeService();
-
-  AccountChangeService.setInitPropertiesKey(request);
-  UserSession userSession = new UserSession();
-  SessionService sessionService = new SessionService((HttpServletRequest)request);
-  userSession = (UserSession)sessionService.getBindingKeySessionValue(AuthService.USER_SESSION_KEY_NAME);
-  Integer userId = userSession.getUserId();
-  Integer petId = userSession.getPetId();
-  Integer storeId = userSession.getStoreId();
-  AccountChangeService.setRegistedInfoAttributeKey(request, userId, petId, storeId);
+  AccountChangeService.setFirstDisplay(request);
 
   String path = "/WEB-INF/jsp/account/change/change.jsp";
   RequestDispatcher dispatcher = request.getRequestDispatcher(path);
@@ -70,7 +59,9 @@ public class AccountChangeController extends HttpServlet {
    dispatcher.forward(request, response);
   } else {
    //登録に失敗した場合
-   doGet(request, response);
+   String path = "/WEB-INF/jsp/account/change/change.jsp";
+   RequestDispatcher dispatcher = request.getRequestDispatcher(path);
+   dispatcher.forward(request, response);
   }
  }
 }
