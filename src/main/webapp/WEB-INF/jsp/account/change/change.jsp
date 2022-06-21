@@ -272,7 +272,7 @@
 
     <div class="form-row form-trimmer-business-hours day-val-${status.index}">
 
-     <h3 class="pt-3">${weekdayl.value}</h3>
+     <h3 class="pt-3">${weekday.value}</h3>
 
      <div class="form-group col-lg-2">
       <label class="control-label">開始時間</label>
