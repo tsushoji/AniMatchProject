@@ -38,7 +38,7 @@
    <p>以下情報でアカウント変更いたしました。</p>
 
    <div>
-    <label class="regist-complete-item-name"> &lt;登録区分&gt;</label>
+    <label class="change-complete-item-name"> &lt;登録区分&gt;</label>
     <p>
      <c:out value="${registTypeName}" />
     </p>
@@ -46,7 +46,7 @@
 
    <c:if test="${not empty user.userName}">
     <div>
-     <label class="regist-complete-item-name"> &lt;ユーザー名&gt;</label>
+     <label class="change-complete-item-name"> &lt;ユーザー名&gt;</label>
      <p>
       <c:out value="${beforeAccoutInfo.userName}" />&rarr;<c:out value="${user.userName}" />
      </p>
@@ -55,7 +55,7 @@
 
    <c:if test="${not empty user.password}">
     <div>
-     <label class="regist-complete-item-name"> &lt;パスワード&gt;</label>
+     <label class="change-complete-item-name"> &lt;パスワード&gt;</label>
      <p>
       <c:out value="${beforeAccoutInfo.password}" />&rarr;<c:out value="${user.password}" />
      </p>
@@ -64,7 +64,7 @@
 
    <c:if test="${not empty user.sex}">
     <div>
-     <label class="regist-complete-item-name">&lt;性別&gt;</label>
+     <label class="change-complete-item-name">&lt;性別&gt;</label>
      <p>
       <c:out value="${beforeAccoutInfo.sex}" />&rarr;<c:out value="${user.sex}" />
      </p>
@@ -73,7 +73,7 @@
 
    <c:if test="${not empty user.birthday}">
     <div>
-     <label class="regist-complete-item-name">&lt;生年月日&gt;</label>
+     <label class="change-complete-item-name">&lt;生年月日&gt;</label>
      <p>
       <fmt:formatDate type="DATE" pattern="yyyy-MM-dd" value="${beforeAccoutInfo.birthday}" />&rarr;<fmt:formatDate type="DATE" pattern="yyyy-MM-dd" value="${user.birthday}" />
      </p>
@@ -82,7 +82,7 @@
 
    <c:if test="${not empty user.postalCode}">
     <div>
-     <label class="regist-complete-item-name">&lt;郵便番号&gt;</label>
+     <label class="change-complete-item-name">&lt;郵便番号&gt;</label>
      <p>
       <c:out value="${beforeAccoutInfo.postalCode}" />&rarr;<c:out value="${user.postalCode}" />
      </p>
@@ -91,7 +91,7 @@
 
    <c:if test="${not empty user.streetAddress}">
     <div>
-     <label class="regist-complete-item-name">&lt;住所&gt;</label>
+     <label class="change-complete-item-name">&lt;住所&gt;</label>
      <p>
       <c:out value="${beforeAccoutInfo.prefectures}" /><c:out value="${beforeAccoutInfo.cities}" />&rarr;<c:out value="${user.streetAddress}" />
      </p>
@@ -100,7 +100,7 @@
 
    <c:if test="${not empty user.emailAddress}">
     <div>
-     <label class="regist-complete-item-name">&lt;メールアドレス&gt;</label>
+     <label class="change-complete-item-name">&lt;メールアドレス&gt;</label>
      <p class="line-break">
       <c:out value="${beforeAccoutInfo.emailAddress}" />&rarr;<c:out value="${user.emailAddress}" />
      </p>
@@ -109,7 +109,7 @@
 
    <c:if test="${not empty user.telephoneNumber}">
     <div>
-     <label class="regist-complete-item-name">&lt;電話番号&gt;</label>
+     <label class="change-complete-item-name">&lt;電話番号&gt;</label>
      <p>
       <c:out value="${beforeAccoutInfo.telephoneNumber}" />&rarr;<c:out value="${user.telephoneNumber}" />
      </p>
@@ -118,7 +118,7 @@
 
    <c:if test="${(registType == '001' and not empty petImage) or (registType == '002' and not empty storeImage)}">
     <div>
-     <label class="regist-complete-item-name">&lt;イメージ画像&gt;</label>
+     <label class="change-complete-item-name">&lt;イメージ画像&gt;</label>
      <p class="regist-complete-item-image">
       <img src="data:image/png;base64,${petImage}" class="resize-img-base64">
 
@@ -131,7 +131,7 @@
 
     <c:if test="${not empty pet.nickName}">
      <div>
-      <label class="regist-complete-item-name">&lt;ペットニックネーム&gt;</label>
+      <label class="change-complete-item-name">&lt;ペットニックネーム&gt;</label>
       <p class="line-break">
        <c:out value="${beforeAccoutInfo.petName}" />&rarr;<c:out value="${pet.nickName}" />
       </p>
@@ -140,7 +140,7 @@
 
     <c:if test="${not empty pet.sex}">
      <div>
-      <label class="regist-complete-item-name">&lt;ペット性別&gt;</label>
+      <label class="change-complete-item-name">&lt;ペット性別&gt;</label>
       <p>
        <c:out value="${beforeAccoutInfo.petSex}" />&rarr;<c:out value="${pet.sex}" />
       </p>
@@ -149,7 +149,7 @@
 
     <c:if test="${not empty pet.type}">
      <div>
-      <label class="regist-complete-item-name">&lt;ペット種別&gt;</label>
+      <label class="change-complete-item-name">&lt;ペット種別&gt;</label>
       <p>
        <c:out value="${beforeAccoutInfo.petType}" />&rarr;<c:out value="${pet.type}" />
       </p>
@@ -158,7 +158,7 @@
 
     <c:if test="${pet.weight != null}">
      <div>
-      <label class="regist-complete-item-name">&lt;ペット体重&gt;</label>
+      <label class="change-complete-item-name">&lt;ペット体重&gt;</label>
       <p>
        <c:if test="${beforeAccoutInfo.petWeight != null}">
         <fmt:formatNumber value="${beforeAccoutInfo.petWeight}" />
@@ -170,7 +170,7 @@
 
     <c:if test="${not empty pet.remarks}">
      <div>
-      <label class="regist-complete-item-name">&lt;備考&gt;</label>
+      <label class="change-complete-item-name">&lt;備考&gt;</label>
       <p class="line-break">
        <c:set var="registedPetRemarks" value="${beforeAccoutInfo.petRemarks}" />
        <c:forEach var="registedPetRemarksStr" items="${fn:split(registedPetRemarks, newLine)}">
@@ -192,7 +192,7 @@
 
     <c:if test="${not empty store.storeName}">
      <div>
-      <label class="regist-complete-item-name">&lt;店名&gt;</label>
+      <label class="change-complete-item-name">&lt;店名&gt;</label>
       <p class="line-break">
        <c:out value="${beforeAccoutInfo.storeName}" />&rarr;<c:out value="${store.storeName}" />
       </p>
@@ -201,7 +201,7 @@
 
     <c:if test="${fn:length(businessHoursList) > 0}">
      <div>
-      <label class="regist-complete-item-name">&lt;営業日時&gt;</label>
+      <label class="change-complete-item-name">&lt;営業日時&gt;</label>
 
       <c:forEach items="${businessHoursList}" var="businessHours" varStatus="status">
 
@@ -209,13 +209,13 @@
 
        <div>
 
-        <p class="regist-complete-item-name under-line">
+        <p class="change-complete-item-name under-line">
          <c:out value="${businessHours.businessDay}" />
         </p>
 
         <c:if test="${not empty businessHours.startBusinessTime}">
          <div>
-          <label class="regist-complete-item-name">&lt;開始時間&gt;</label>
+          <label class="change-complete-item-name">&lt;開始時間&gt;</label>
           <p>
            <c:if test="${not empty beforeBusinessHoursList[listIndex].startBusinessTime}">
             <c:out value="${beforeBusinessHoursList[listIndex].startBusinessTime.getHour()}" />
@@ -231,7 +231,7 @@
 
         <c:if test="${not empty businessHours.endBusinessTime}">
          <div>
-          <label class="regist-complete-item-name">&lt;終了時間&gt;</label>
+          <label class="change-complete-item-name">&lt;終了時間&gt;</label>
           <p>
            <c:if test="${not empty beforeBusinessHoursList[listIndex].endBusinessTime}">
             <c:out value="${beforeBusinessHoursList[listIndex].endBusinessTime.getHour()}" />
@@ -247,7 +247,7 @@
 
         <c:if test="${not empty businessHours.complement}">
          <div>
-          <label class="regist-complete-item-name">&lt;補足&gt;</label>
+          <label class="change-complete-item-name">&lt;補足&gt;</label>
           <p class="line-break">
            <c:set var="registedBusinessHoursComplement" value="${beforeBusinessHoursList[listIndex].complement}" />
            <c:forEach var="registedBusinessHoursComplementStr" items="${fn:split(registedBusinessHoursComplement, newLine)}">
@@ -271,7 +271,7 @@
 
     <c:if test="${store.employeesNumber != null}">
      <div>
-      <label class="regist-complete-item-name">&lt;従業員数&ndash;人&gt;</label>
+      <label class="change-complete-item-name">&lt;従業員数&ndash;人&gt;</label>
       <p>
        <c:if test="${beforeAccoutInfo.storeEmployees != null}">
         <fmt:formatNumber value="${beforeAccoutInfo.storeEmployees}" />
@@ -283,7 +283,7 @@
 
     <c:if test="${not empty store.courseInfo}">
      <div>
-      <label class="regist-complete-item-name">&lt;コース・値段&gt;</label>
+      <label class="change-complete-item-name">&lt;コース・値段&gt;</label>
       <p class="line-break">
        <c:set var="registedStoreCourseInfo" value="${beforeAccoutInfo.courseInfo}" />
        <c:forEach var="registedStoreCourseInfoStr" items="${fn:split(registedStoreCourseInfo, newLine)}">
@@ -301,7 +301,7 @@
 
     <c:if test="${not empty store.commitment}">
      <div>
-      <label class="regist-complete-item-name">&lt;こだわりポイント&gt;</label>
+      <label class="change-complete-item-name">&lt;こだわりポイント&gt;</label>
       <p class="line-break">
        <c:set var="registedStoreCommitment" value="${beforeAccoutInfo.commitment}" />
        <c:forEach var="registedStoreCommitmentStr" items="${fn:split(registedStoreCommitment, newLine)}">
