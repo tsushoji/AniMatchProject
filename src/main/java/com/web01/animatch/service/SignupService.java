@@ -24,12 +24,14 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.web01.animatch.dao.CreateDao;
 import com.web01.animatch.dao.DBConnection;
+import com.web01.animatch.dao.ReadDao;
 import com.web01.animatch.dto.BusinessHours;
 import com.web01.animatch.dto.FormBusinessHours;
 import com.web01.animatch.dto.Pet;
 import com.web01.animatch.dto.RegistForm;
 import com.web01.animatch.dto.Store;
 import com.web01.animatch.dto.User;
+import com.web01.animatch.exception.MyException;
 
 /**
  * サインアップサービスクラス
@@ -604,7 +606,7 @@ public class SignupService extends BaseService {
      //DB登録処理前に登録成功失敗リセット
      this.canRegist = false;
      this.canRegist = createDao.registOwner(user);
-     setAttributeRegistOwner(request, user);
+     setAttributeRegistOwner(request, user, conSQL);
      conSQL.commit();
     }
     break;
@@ -619,7 +621,7 @@ public class SignupService extends BaseService {
      //DB登録処理前に登録成功失敗リセット
      this.canRegist = false;
      this.canRegist = createDao.registTrimmer(user);
-     setAttributeRegistTrimmer(request, user);
+     setAttributeRegistTrimmer(request, user, conSQL);
      conSQL.commit();
     }
     break;
@@ -627,7 +629,7 @@ public class SignupService extends BaseService {
    default:
     break;
    }
-  } catch (SQLException | ParseException | IOException | ServletException e) {
+  } catch (MyException | SQLException | ParseException | IOException | ServletException e) {
    try {
     conSQL.rollback();
    } catch (SQLException e1) {
@@ -819,8 +821,23 @@ public class SignupService extends BaseService {
   * 飼い主用登録オブジェクト属性設定
   * @param request リクエストオブジェクト
   * @param user ユーザオブジェクト
+  * @param conSQL DB接続
   */
- private void setAttributeRegistOwner(HttpServletRequest request, User user) {
+ private void setAttributeRegistOwner(HttpServletRequest request, User user, Connection conSQL) throws MyException{
+  ReadDao readDao = new ReadDao(conSQL);
+
+  Integer userId = null;
+  try {
+   userId = readDao.findUserIdByUserInfo(user);
+  }catch(SQLException e) {
+   throw new MyException("msg.error.011",this.messageService.getMessage(MessageService.MessageType.ERROR, "011", "アカウント情報"));
+  }
+
+  if(userId == null) {
+   throw new MyException("msg.error.011",this.messageService.getMessage(MessageService.MessageType.ERROR, "011", "アカウント情報"));
+  }
+  user.setUserId(userId);
+
   Pet pet = user.getPet();
 
   //登録完了画面表示文字セット
@@ -845,8 +862,23 @@ public class SignupService extends BaseService {
   * トリマー用登録オブジェクト属性設定
   * @param request リクエストオブジェクト
   * @param user ユーザオブジェクト
+  * @param conSQL DB接続
   */
- private void setAttributeRegistTrimmer(HttpServletRequest request, User user) {
+ private void setAttributeRegistTrimmer(HttpServletRequest request, User user, Connection conSQL) throws MyException{
+  ReadDao readDao = new ReadDao(conSQL);
+
+  Integer userId = null;
+  try {
+   userId = readDao.findUserIdByUserInfo(user);
+  }catch(SQLException e) {
+   throw new MyException("msg.error.011",this.messageService.getMessage(MessageService.MessageType.ERROR, "011", "アカウント情報"));
+  }
+
+  if(userId == null) {
+   throw new MyException("msg.error.011",this.messageService.getMessage(MessageService.MessageType.ERROR, "011", "アカウント情報"));
+  }
+  user.setUserId(userId);
+
   Store store = user.getStore();
 
   //登録完了画面表示文字セット
