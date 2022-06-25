@@ -111,7 +111,7 @@ public class UpdateDao extends BaseDao {
   Date birthday = user.getBirthday();
   if(birthday != null) {
    setUserColumnList.add("birthday");
-   userDataList.add(createSqlParatemerMap(new Date(birthday.getTime()), Types.DATE));
+   userDataList.add(createSqlParatemerMap(new java.sql.Date(birthday.getTime()), Types.DATE));
   }
 
   String postalCode = user.getPostalCode();
@@ -250,7 +250,7 @@ public class UpdateDao extends BaseDao {
   Date birthday = user.getBirthday();
   if(birthday != null) {
    setUserColumnList.add("birthday");
-   userDataList.add(createSqlParatemerMap(new Date(birthday.getTime()), Types.DATE));
+   userDataList.add(createSqlParatemerMap(new java.sql.Date(birthday.getTime()), Types.DATE));
   }
 
   String postalCode = user.getPostalCode();

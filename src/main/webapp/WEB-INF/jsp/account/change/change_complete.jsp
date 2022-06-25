@@ -75,7 +75,7 @@
     <div>
      <label class="change-complete-item-name">&lt;生年月日&gt;</label>
      <p>
-      <fmt:formatDate type="DATE" pattern="yyyy-MM-dd" value="${beforeAccoutInfo.birthday}" />&rarr;<fmt:formatDate type="DATE" pattern="yyyy-MM-dd" value="${user.birthday}" />
+      <c:out value="${beforeAccoutInfo.birthday}" />&rarr;<fmt:formatDate type="DATE" pattern="yyyy/MM/dd" value="${user.birthday}" />
      </p>
     </div>
    </c:if>
@@ -161,7 +161,7 @@
       <label class="change-complete-item-name">&lt;ペット体重&gt;</label>
       <p>
        <c:if test="${beforeAccoutInfo.petWeight != null}">
-        <fmt:formatNumber value="${beforeAccoutInfo.petWeight}" />
+        <c:out value="${beforeAccoutInfo.petWeight}" />
        </c:if>
        &rarr;<fmt:formatNumber value="${pet.weight}" />
       </p>
@@ -176,7 +176,7 @@
        <c:forEach var="registedPetRemarksStr" items="${fn:split(registedPetRemarks, newLine)}">
         <c:out value="${registedPetRemarksStr}" />
         <br />
-       </c:forEach>&rarr;
+       </c:forEach>&rarr;<br>
        <c:set var="petRemarks" value="${pet.remarks}" />
        <c:forEach var="petRemarksStr" items="${fn:split(petRemarks, newLine)}">
         <c:out value="${petRemarksStr}" />
@@ -274,7 +274,7 @@
       <label class="change-complete-item-name">&lt;従業員数&ndash;人&gt;</label>
       <p>
        <c:if test="${beforeAccoutInfo.storeEmployees != null}">
-        <fmt:formatNumber value="${beforeAccoutInfo.storeEmployees}" />
+        <c:out value="${beforeAccoutInfo.storeEmployees}" />
        </c:if>&rarr;
        <fmt:formatNumber value="${store.employeesNumber}" />
       </p>
@@ -289,7 +289,7 @@
        <c:forEach var="registedStoreCourseInfoStr" items="${fn:split(registedStoreCourseInfo, newLine)}">
         <c:out value="${registedStoreCourseInfoStr}" />
         <br />
-       </c:forEach>&rarr;
+       </c:forEach>&rarr;<br>
        <c:set var="storeCourseInfo" value="${store.courseInfo}" />
        <c:forEach var="storeCourseInfoStr" items="${fn:split(storeCourseInfo, newLine)}">
         <c:out value="${storeCourseInfoStr}" />
@@ -307,7 +307,7 @@
        <c:forEach var="registedStoreCommitmentStr" items="${fn:split(registedStoreCommitment, newLine)}">
         <c:out value="${registedStoreCommitmentStr}" />
         <br />
-       </c:forEach>
+       </c:forEach>&rarr;<br>
        <c:set var="storeCommitment" value="${store.commitment}" />
        <c:forEach var="storeCommitmentStr" items="${fn:split(storeCommitment, newLine)}">
         <c:out value="${storeCommitmentStr}" />
