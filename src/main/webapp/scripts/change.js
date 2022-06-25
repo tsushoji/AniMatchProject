@@ -11,6 +11,18 @@ const setChangeItemAttributeByInputOrSelect = function(targetEle, registedVal, c
  }
 }
 
+const setChangeItemAttributeByInitDisplayBusinessHoursInput = function(targetEle, targetVal, registedVal, className){
+ if(typeof registedVal === "undefined"){
+  registedVal = '';
+ }
+ //入力値が変更されたとき、クラス属性付与
+ if(targetVal === registedVal){
+  targetEle.removeClass(className);
+ }else{
+  targetEle.addClass(className);
+ }
+}
+
 const setChangeItemAttributeByInputPassword = function(targetEle, registedVal, className){
  if(typeof registedVal === "undefined"){
   registedVal = '';
@@ -19,7 +31,8 @@ const setChangeItemAttributeByInputPassword = function(targetEle, registedVal, c
  //入力値が変更されたとき、クラス属性を付与
  //パスワード表示要素も変更
  let tarTextEle = targetEle.next();
- if(typeof tarTextEle === "undefined"){
+ let tarTextEleTagName = tarTextEle.get(0).tagName;
+ if(tarTextEleTagName !== 'INPUT'){
   tarTextEle = targetEle.prev();
  }
  if(tarVal === registedVal){
@@ -32,7 +45,11 @@ const setChangeItemAttributeByInputPassword = function(targetEle, registedVal, c
 }
 
 const setChangeItemCssByWeekday = function(targetEle, registedIndexVal, attributeName, attributeValue){
- let classNameAry = targetEle.attr('class').split(' ');
+ let classNameAry = [''];
+ let className = targetEle.attr('class');
+ if(typeof className !== 'undefined'){
+  classNameAry = className.split(' ');
+ }
  let targetEleIndex = targetEle.index();
  let isOn = false;
  if($.inArray('active',classNameAry)){
@@ -71,7 +88,7 @@ const setChangeItemCssByWeekday = function(targetEle, registedIndexVal, attribut
  }
 }
 
-const setChangeItemAttributeByUserSex = function(targetEle, registedVal, radioInputName, className){
+const setChangeItemAttributeBySex = function(targetEle, registedVal, radioInputName, className){
  let tarVal = targetEle.val();
  let tarForName = targetEle.attr('id');
  let changeEle = $('label[for="' + tarForName + '"]');
@@ -128,9 +145,9 @@ $(document).ready(function(){
  const commitmentId = 'commitment';
 
  const formBusinessHoursId = 'form-business-hours';
- const formBusinessStartHoursPartId = 'business-hours-start-time-';
- const formBusinessEndHoursPartId = 'business-hours-end-time-';
- const formBusinessHoursRemarksPartId = 'business-hours-remarks-';
+ const businessStartHoursPartId = 'business-hours-start-time-';
+ const businessEndHoursPartId = 'business-hours-end-time-';
+ const businessHoursRemarksPartId = 'business-hours-remarks-';
 
  //アクション:「郵便番号」を入力する
  $("#postal-code").change(function(){
@@ -216,24 +233,39 @@ $(document).ready(function(){
 
  //アクション:性別が変更される
  $(userSexEleName).change(function() {
-  let targetEle = $(this);
+  let targetElements = $(this);
+  let targetEle;
+  for(let i = 0; i < targetElements.length; i++){
+   if(targetElements[i].checked){
+    let targetEleId = targetElements[i].getAttribute('id');
+    targetEle = $('#'+targetEleId);
+    //入力値を取得
+    let registedId = registedIdPrefix;
+    registedId += targetEle.attr('name');
+    let registedVal = $(registedId).val();
+    setChangeItemAttributeBySex(targetEle,registedVal,userSexRadioInputName,redBackGroundClassName);
+    break;
+   }
+  }
 
-  //入力値を取得
-  let registedId = registedIdPrefix;
-  registedId += targetEle.attr('name');
-  let registedVal = $(registedId).val();
-  setChangeItemAttributeByUserSex(targetEle,registedVal,userSexRadioInputName,redBackGroundClassName);
  });
 
  //アクション:ペット性別が変更される
  $(petSexEleName).change(function() {
-  let targetEle = $(this);
-
-  //入力値を取得
-  let registedId = registedIdPrefix;
-  registedId += targetEle.attr('name');
-  let registedVal = $(registedId).val();
-  setChangeItemAttributeByUserSex(targetEle,registedVal,petSexRadioInputName,redBackGroundClassName);
+  let targetElements = $(this);
+  let targetEle;
+  for(let i = 0; i < targetElements.length; i++){
+   if(targetElements[i].checked){
+    let targetEleId = targetElements[i].getAttribute('id');
+    targetEle = $('#'+targetEleId);
+    //入力値を取得
+    let registedId = registedIdPrefix;
+    registedId += targetEle.attr('name');
+    let registedVal = $(registedId).val();
+    setChangeItemAttributeBySex(targetEle,registedVal,petSexRadioInputName,redBackGroundClassName);
+    break;
+   }
+  }
  });
 
  //共通変更項目チェック
@@ -245,9 +277,17 @@ $(document).ready(function(){
  let registedPasswordVal = $(registedIdPrefix+passwordId).val();
  setChangeItemAttributeByInputPassword(passwordEle, registedPasswordVal, redBackGroundClassName);
 
- let userSexEle = $(userSexEleName);
- let registedUserSexVal = $(registedIdPrefix+'radio-user-sex').val();
- setChangeItemAttributeByUserSex(userSexEle, registedUserSexVal, userSexRadioInputName, redBackGroundClassName);
+ let userSexElements = $(userSexEleName);
+ let userSexEle = '';
+ for(let i = 0; i < userSexElements.length; i++){
+  if(userSexElements[i].checked){
+   let userSexEleId = userSexElements[i].getAttribute('id');
+   userSexEle = $('#'+userSexEleId);
+   let registedUserSexVal = $(registedIdPrefix+'radio-user-sex').val();
+   setChangeItemAttributeBySex(userSexEle, registedUserSexVal, userSexRadioInputName, redBackGroundClassName);
+   break;
+  }
+ }
 
  let birthdayEle = $('#'+birthdayId);
  let registedBirthdayVal = $(registedIdPrefix+birthdayId).val();
@@ -287,9 +327,17 @@ $(document).ready(function(){
   let registedPetNameVal = $(registedIdPrefix+petNameId).val();
   setChangeItemAttributeByInputOrSelect(petNameEle, registedPetNameVal, redBackGroundClassName);
 
-  let petSexEle = $(petSexEleName);
-  let registedPetSexVal = $(registedIdPrefix+'radio-pet-sex').val();
-  setChangeItemAttributeByUserSex(petSexEle, registedPetSexVal, petSexRadioInputName, redBackGroundClassName);
+  let petSexElements = $(petSexEleName);
+  let petSexEle = '';
+  for(let i = 0; i < petSexElements.length; i++){
+   if(petSexElements[i].checked){
+    let petSexEleId = petSexElements[i].getAttribute('id');
+    petSexEle = $('#'+petSexEleId);
+    let registedPetSexVal = $(registedIdPrefix+'radio-pet-sex').val();
+    setChangeItemAttributeBySex(petSexEle, registedPetSexVal, petSexRadioInputName, redBackGroundClassName);
+    break;
+   }
+  }
 
   let petTypeEle = $('#'+petTypeId);
   let registedPetTypeVal = $(registedIdPrefix+petTypeId).val();
@@ -308,8 +356,8 @@ $(document).ready(function(){
   $('.form-common,.form-trimmer,.footer-top-content').show();
 
   //post送信時、必須項目未入力対応
-  $('#'+petNameId).prop('required', true);
-  $('#'+storeNameId).prop('required', false);
+  $('#'+petNameId).prop('required', false);
+  $('#'+storeNameId).prop('required', true);
 
   //トリマー変更項目チェック
   let storeNameEle = $('#'+storeNameId);
@@ -329,21 +377,34 @@ $(document).ready(function(){
   setChangeItemAttributeByInputOrSelect(commitmentEle, registedCommitmentVal, redBackGroundClassName);
 
   let formInputVal = $('#'+formBusinessHoursId).val();
-  if(formInputVal){
-   let formInputValAry = formInputVal.split(',');
-   $.each(formInputValAry, function(index, value){
-    let formBusinessStartHoursEle = $('#'+formBusinessStartHoursPartId+value);
-    let registedFormBusinessStartHoursVal = $(registedIdPrefix+formBusinessStartHoursPartId+value).val();
-    setChangeItemAttributeByInputOrSelect(formBusinessStartHoursEle, registedFormBusinessStartHoursVal, redBackGroundClassName);
+  for(let i = 0; i <= 6; i++){
+   let targetWeekdayEle = $('#check-changed-weekday-'+i);
+   let registedWeekdayIndexVal = $(registedIdPrefix + formBusinessHoursId).val();
+   setChangeItemCssByWeekday(targetWeekdayEle,registedWeekdayIndexVal,'background-color','#ffc107');
 
-    let formBusinessEndHoursEle = $('#'+formBusinessEndHoursPartId+value);
-    let registedFormBusinessEndHoursVal = $(registedIdPrefix+formBusinessEndHoursPartId+value).val();
-    setChangeItemAttributeByInputOrSelect(formBusinessEndHoursEle, registedFormBusinessEndHoursVal, redBackGroundClassName);
+   let businessStartHoursEle = $('#'+businessStartHoursPartId+i);
+   let registedFormBusinessStartHoursVal = $(registedIdPrefix+businessStartHoursPartId+i).val();
 
-    let formBusinessHoursRemarksEle = $('#'+formBusinessHoursRemarksPartId+value);
-    let registedFormBusinessHoursRemarksVal = $(registedIdPrefix+formBusinessHoursRemarksPartId+value).val();
-    setChangeItemAttributeByInputOrSelect(formBusinessHoursRemarksEle, registedFormBusinessHoursRemarksVal, redBackGroundClassName);
-   });
+   let businessEndHoursEle = $('#'+businessEndHoursPartId+i);
+   let registedFormBusinessEndHoursVal = $(registedIdPrefix+businessEndHoursPartId+i).val();
+
+   let businessHoursRemarksEle = $('#'+businessHoursRemarksPartId+i);
+   let registedFormBusinessHoursRemarksVal = $(registedIdPrefix+businessHoursRemarksPartId+i).val();
+
+   if(formInputVal && $.inArray(String(i),formInputVal.split(',')) !== -1){
+    let formBusinessStartHoursVal = $('#' + formBusinessHoursId + '-start-time-' + i).val();
+    setChangeItemAttributeByInitDisplayBusinessHoursInput(businessStartHoursEle, formBusinessStartHoursVal, registedFormBusinessStartHoursVal, redBackGroundClassName);
+
+    let formBusinessEndHoursVal = $('#' + formBusinessHoursId + '-end-time-' + i).val();
+    setChangeItemAttributeByInitDisplayBusinessHoursInput(businessEndHoursEle, formBusinessEndHoursVal, registedFormBusinessEndHoursVal, redBackGroundClassName);
+
+    let formBusinessHoursRemarksVal = $('#' + formBusinessHoursId + '-remarks-' + i).val();
+    setChangeItemAttributeByInitDisplayBusinessHoursInput(businessHoursRemarksEle, formBusinessHoursRemarksVal, registedFormBusinessHoursRemarksVal, redBackGroundClassName);
+   }else{
+    setChangeItemAttributeByInputOrSelect(businessStartHoursEle,registedFormBusinessStartHoursVal,redBackGroundClassName);
+    setChangeItemAttributeByInputOrSelect(businessEndHoursEle,registedFormBusinessEndHoursVal,redBackGroundClassName);
+    setChangeItemAttributeByInputOrSelect(businessHoursRemarksEle,registedFormBusinessHoursRemarksVal,redBackGroundClassName);
+   }
   }
  }
 
@@ -353,24 +414,24 @@ $(document).ready(function(){
   let formInputValAry = formInputVal.split(',');
   $.each(formInputValAry, function(index, value){
    $('.day-val-' + value).show();
-   $('#' + formBusinessStartHoursPartId + value).val($('#' + formBusinessHoursId + '-start-time-' + value).val());
-   $('#' + formBusinessEndHoursPartId + value).val($('#' + formBusinessHoursId + '-end-time-' + value).val());
-   $('#' + formBusinessHoursRemarksPartId + value).val($('#' + formBusinessHoursId + '-remarks-' + value).val());
+   $('#' + businessStartHoursPartId + value).val($('#' + formBusinessHoursId + '-start-time-' + value).val());
+   $('#' + businessEndHoursPartId + value).val($('#' + formBusinessHoursId + '-end-time-' + value).val());
+   $('#' + businessHoursRemarksPartId + value).val($('#' + formBusinessHoursId + '-remarks-' + value).val());
 
    if($('#err-' + formBusinessHoursId + '-start-time-' + value).val() === '1'){
-    $('#' + formBusinessStartHoursPartId  + value + '-err-msg').removeClass('is-hidden');
+    $('#' + businessStartHoursPartId  + value + '-err-msg').removeClass('is-hidden');
    }
 
    if($('#err-' + formBusinessHoursId + '-end-time-' + value).val() === '1'){
-    $('#' + formBusinessEndHoursPartId + value + '-err-msg').removeClass('is-hidden');
+    $('#' + businessEndHoursPartId + value + '-err-msg').removeClass('is-hidden');
    }
 
    if($('#err-length-' + formBusinessHoursId + '-remarks-' + value).val() === '1'){
-    $('#' + formBusinessHoursRemarksPartId + value + '-err-length-msg').removeClass('is-hidden');
+    $('#' + businessHoursRemarksPartId + value + '-err-length-msg').removeClass('is-hidden');
    }
 
    if($('#err-xss-' + formBusinessHoursId + '-remarks-' + value).val() === '1'){
-    $('#' + formBusinessHoursRemarksPartId + value + '-err-xss-msg').removeClass('is-hidden');
+    $('#' + businessHoursRemarksPartId + value + '-err-xss-msg').removeClass('is-hidden');
    }
   });
  }
