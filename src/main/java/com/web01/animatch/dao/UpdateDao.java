@@ -81,10 +81,12 @@ public class UpdateDao extends BaseDao {
  /**
   * 飼い主情報更新
   * @param user ユーザオブジェクト
+  * @param isUpdatePetWeight ペット体重を更新するか
+  * @param isUpdateRemarks 補足を更新するか
   * @return DB更新した件数
   * 呼び出し元でトランザクション管理
   */
- public int updateOwnerInfo(User user) throws SQLException {
+ public int updateOwnerInfo(User user, boolean isUpdatePetWeight, boolean isUpdateRemarks) throws SQLException {
   List<String> setUserColumnList = new ArrayList<>();
   List<HashMap<String, Object>> userDataList = new ArrayList<>();
   int userResult = 0;
@@ -187,16 +189,14 @@ public class UpdateDao extends BaseDao {
    petDataList.add(createSqlParatemerMap(petType, Types.VARCHAR));
   }
 
-  Float petWeight = pet.getWeight();
-  if(petWeight != null) {
+  if(isUpdatePetWeight) {
    setPetColumnList.add("weight");
-   petDataList.add(createSqlParatemerMap(petWeight, Types.FLOAT));
+   petDataList.add(createSqlParatemerMap(pet.getWeight(), Types.FLOAT));
   }
 
-  String petRemarks = pet.getRemarks();
-  if(petRemarks != null) {
+  if(isUpdateRemarks) {
    setPetColumnList.add("remarks");
-   petDataList.add(createSqlParatemerMap(petRemarks, Types.VARCHAR));
+   petDataList.add(createSqlParatemerMap(pet.getRemarks(), Types.VARCHAR));
   }
 
   if(setPetColumnList.size() > 0) {
@@ -220,10 +220,14 @@ public class UpdateDao extends BaseDao {
  /**
   * トリマー情報更新
   * @param user ユーザオブジェクト
+  * @param isUpdateEmployeesNum 従業員数を更新するか
+  * @param isUpdateCourseInfo コース情報を更新するか
+  *  @param isUpdateCommitment こだわりポイントを更新するか
+  * @param isUpdateBusinessHoursComplementList 営業時間補足を更新するか
   * @return DB更新した件数
   * 呼び出し元でトランザクション管理
   */
- public int updateTrimmerInfo(User user) throws SQLException {
+ public int updateTrimmerInfo(User user, boolean isUpdateEmployeesNum, boolean isUpdateCourseInfo, boolean isUpdateCommitment, List<Boolean> isUpdateBusinessHoursComplementList) throws SQLException {
   List<String> setUserColumnList = new ArrayList<>();
   List<HashMap<String, Object>> userDataList = new ArrayList<>();
   int userResult = 0;
@@ -314,22 +318,19 @@ public class UpdateDao extends BaseDao {
    storeDataList.add(createSqlParatemerMap(storeName, Types.VARCHAR));
   }
 
-  Integer storeEmployeesNum = store.getEmployeesNumber();
-  if(storeEmployeesNum != null) {
+  if(isUpdateEmployeesNum) {
    setStoreColumnList.add("employees_number");
-   storeDataList.add(createSqlParatemerMap(storeEmployeesNum, Types.INTEGER));
+   storeDataList.add(createSqlParatemerMap(store.getEmployeesNumber(), Types.INTEGER));
   }
 
-  String storeCourceInfo = store.getCourseInfo();
-  if(storeCourceInfo != null) {
+  if(isUpdateCourseInfo) {
    setStoreColumnList.add("course_info");
-   storeDataList.add(createSqlParatemerMap(storeCourceInfo, Types.VARCHAR));
+   storeDataList.add(createSqlParatemerMap(store.getCourseInfo(), Types.VARCHAR));
   }
 
-  String storeCommitment = store.getCommitment();
-  if(storeCommitment != null) {
+  if(isUpdateCommitment) {
    setStoreColumnList.add("commitment");
-   storeDataList.add(createSqlParatemerMap(storeCommitment, Types.VARCHAR));
+   storeDataList.add(createSqlParatemerMap(store.getCommitment(), Types.VARCHAR));
   }
 
   Integer storeId = store.getStoreId();
@@ -373,10 +374,9 @@ public class UpdateDao extends BaseDao {
       businessHoursDataList.add(createSqlParatemerMap(Time.valueOf(endBusinessTime), Types.TIME));
      }
 
-     String complement = businessHours.getComplement();
-     if(complement != null) {
+     if(isUpdateBusinessHoursComplementList.get(i)) {
       setBusinessHoursColumnList.add("complement");
-      businessHoursDataList.add(createSqlParatemerMap(complement, Types.VARCHAR));
+      businessHoursDataList.add(createSqlParatemerMap(businessHours.getComplement(), Types.VARCHAR));
      }
 
      if(setBusinessHoursColumnList.size() == 0) {

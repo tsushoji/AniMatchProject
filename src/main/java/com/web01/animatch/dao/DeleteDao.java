@@ -72,11 +72,11 @@ public class DeleteDao extends BaseDao {
  public int deleteBusinessHours(int storeId, List<BusinessHours> businessHoursList) throws SQLException {
   Map<Integer, List<HashMap<String, Object>>> businessHoursDataMap = new HashMap<>();
   Map<Integer, String> businessHoursWhereMap = new HashMap<>();
-  List<HashMap<String, Object>> businessHoursDataList = new ArrayList<>();
   int result = 0;
 
   // t_business_hours
   for (var i = 0; i < businessHoursList.size(); i++) {
+   List<HashMap<String, Object>> businessHoursDataList = new ArrayList<>();
    String weekNum = businessHoursList.get(i).getBusinessDay();
    String whereOfBusinessHours = createWhereOfBusinessHours(storeId, weekNum, businessHoursDataList);
    businessHoursDataMap.put(i, businessHoursDataList);

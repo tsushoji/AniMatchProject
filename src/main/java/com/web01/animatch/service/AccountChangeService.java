@@ -74,6 +74,33 @@ public class AccountChangeService extends BaseService {
   */
  private boolean canRegist = true;
 
+ /**
+  * ペット体重を更新するか
+  */
+ private boolean isUpdatePetWeight = false;
+ /**
+  * 補足を更新するか
+  */
+ private boolean isUpdateRemarks = false;
+
+ /**
+  * 従業員数を更新するか
+  */
+ private boolean isUpdateEmployeesNum = false;
+ /**
+  * コース情報を更新するか
+  */
+ private boolean isUpdateCourseInfo = false;
+ /**
+  * こだわりポイントを更新するか
+  */
+ private boolean isUpdateCommitment = false;
+
+ /**
+  * 営業時間補足を更新するか
+  */
+ private Map<String, Boolean> isUpdateBusinessHoursComplementMap = new HashMap<>();
+
  //定数
  /**
   * IDデフォルト値
@@ -878,7 +905,7 @@ public class AccountChangeService extends BaseService {
     if (this.canRegist) {
      //DB登録処理前に登録成功失敗リセット
      this.canRegist = false;
-     updateDao.updateOwnerInfo(user);
+     updateDao.updateOwnerInfo(user, this.isUpdatePetWeight, this.isUpdateRemarks);
      setAttributeChangeOwner(request, user, userSession);
      conSQL.commit();
      this.canRegist = true;
@@ -888,6 +915,8 @@ public class AccountChangeService extends BaseService {
    //トリマーの場合
    case TRIMMER:
     Store store = getParameterStoreDto(request, accountChangeForm, userSession);
+    user.setStore(store);
+
     ChangeBusinessHoursInfo changeBusinessHoursInfo = getParameterBusinessHoursDto(accountChangeForm, userSession);
     if (this.canRegist) {
      //DB登録処理前に登録成功失敗リセット
@@ -896,11 +925,10 @@ public class AccountChangeService extends BaseService {
      List<BusinessHours> createBusinessHoursList = changeBusinessHoursInfo.getCreateBusinessHoursList();
      List<BusinessHours> deleteBusinessHoursList = changeBusinessHoursInfo.getDeleteBusinessHoursList();
 
-     if(updateBusinessHoursList.size() > 0) {
-      store.setBusinessHoursList(updateBusinessHoursList);
-      user.setStore(store);
-      updateDao.updateTrimmerInfo(user);
-     }
+     store.setBusinessHoursList(updateBusinessHoursList);
+     user.setStore(store);
+     List<Boolean> isUpdateBusinessHoursComplementList = new ArrayList<>(this.isUpdateBusinessHoursComplementMap.values());
+     updateDao.updateTrimmerInfo(user, this.isUpdateEmployeesNum, this.isUpdateCourseInfo, this.isUpdateCommitment, isUpdateBusinessHoursComplementList);
 
      Integer storeId = userSession.getStoreId();
      if(createBusinessHoursList.size() > 0) {
@@ -1066,7 +1094,11 @@ public class AccountChangeService extends BaseService {
 
   Float petWeight = null;
   String tempPetWeight = accountChangeForm.getPetWeight();
+  if(StringUtils.isEmpty(tempPetWeight)){
+   tempPetWeight = null;
+  }
   if(!Objects.equals(tempPetWeight,registedAccountForm.getPetWeight())) {
+   this.isUpdatePetWeight = true;
    if (!StringUtils.isEmpty(tempPetWeight)) {
     petWeight = Float.parseFloat(tempPetWeight);
    }
@@ -1076,6 +1108,7 @@ public class AccountChangeService extends BaseService {
   String remarks = null;
   String tempRemarks = getParameterData(accountChangeForm.getPetRemarks());
   if(!Objects.equals(tempRemarks,registedAccountForm.getPetRemarks())) {
+   this.isUpdateRemarks = true;
    remarks = tempRemarks;
   }
   pet.setRemarks(remarks);
@@ -1118,8 +1151,12 @@ public class AccountChangeService extends BaseService {
 
   Integer storeEmployees = null;
   String tempStoreEmployees = accountChangeForm.getStoreEmployees();
+  if(StringUtils.isEmpty(tempStoreEmployees)){
+   tempStoreEmployees = null;
+  }
   if(!Objects.equals(tempStoreEmployees,registedAccountForm.getStoreEmployees())) {
-   if (!StringUtils.isEmpty(tempStoreEmployees)) {
+   this.isUpdateEmployeesNum = true;
+   if (tempStoreEmployees != null) {
     storeEmployees = Integer.parseInt(tempStoreEmployees);
    }
   }
@@ -1128,6 +1165,7 @@ public class AccountChangeService extends BaseService {
   String courseInfo = null;
   String tempCourseInfo = getParameterData(accountChangeForm.getCourseInfo());
   if(!Objects.equals(tempCourseInfo,registedAccountForm.getCourseInfo())) {
+   this.isUpdateCourseInfo = true;
    courseInfo = tempCourseInfo;
   }
   store.setCourseInfo(courseInfo);
@@ -1135,6 +1173,7 @@ public class AccountChangeService extends BaseService {
   String commitment = null;
   String tempCommitment = getParameterData(accountChangeForm.getCommitment());
   if(!Objects.equals(tempCommitment,registedAccountForm.getCommitment())) {
+   this.isUpdateCommitment = true;
    commitment = tempCommitment;
   }
   store.setCommitment(commitment);
@@ -1202,18 +1241,29 @@ public class AccountChangeService extends BaseService {
   List<BusinessHours> deleteBusinessHoursList = new ArrayList<>();
   List<FormBusinessHours> formBusinessHoursList = accountChangeForm.getFormBusinessHoursList();
   String formBusinessHoursWeekday = accountChangeForm.getFormBusinessHoursInputValue();
+  if(StringUtils.isEmpty(formBusinessHoursWeekday)) {
+   formBusinessHoursWeekday = null;
+  }
   List<FormBusinessHours> registedFormBusinessHoursList = userSession.getRegistedAccountForm().getFormBusinessHoursList();
   String registedFormBusinessHoursWeekday = userSession.getRegistedAccountForm().getFormBusinessHoursInputValue();
+  if(formBusinessHoursWeekday == null && registedFormBusinessHoursWeekday == null) {
+   changeBusinessHoursInfo.setCreateBusinessHoursList(createBusinessHoursList);
+   changeBusinessHoursInfo.setUpdateBusinessHoursList(updateBusinessHoursList);
+   changeBusinessHoursInfo.setDeleteBusinessHoursList(deleteBusinessHoursList);
+
+   return changeBusinessHoursInfo;
+  }
   LocalDateTime now = LocalDateTime.now();
   for (var i = 0; i < 7; i++) {
    String weekNumStr = String.valueOf(i);
-   boolean isContainsForm = formBusinessHoursWeekday.contains(weekNumStr);
-   boolean isContainsRegisted = registedFormBusinessHoursWeekday.contains(weekNumStr);
+   boolean isContainsForm = formBusinessHoursWeekday == null?false:formBusinessHoursWeekday.contains(weekNumStr);
+   boolean isContainsRegisted = registedFormBusinessHoursWeekday == null?false:registedFormBusinessHoursWeekday.contains(weekNumStr);
    if(isContainsForm && isContainsRegisted) {
     BusinessHours businessHours = new BusinessHours();
     FormBusinessHours formBusinessHours = formBusinessHoursList.stream().filter(e->e.getBusinessHoursWeekdayNum().equals(weekNumStr)).findFirst().orElse(new FormBusinessHours());
     FormBusinessHours registedFormBusinessHours = registedFormBusinessHoursList.stream().filter(e->e.getBusinessHoursWeekdayNum().equals(weekNumStr)).findFirst().orElse(new FormBusinessHours());
-    businessHours.setBusinessDay("00" + i);
+    String weekNum = "00" + i;
+    businessHours.setBusinessDay(weekNum);
     LocalTime startBusinessTime = null;
     String tempStartBusinessTime = formBusinessHours.getBusinessHoursStartTime();
     if(!tempStartBusinessTime.equals(registedFormBusinessHours.getBusinessHoursStartTime())) {
@@ -1231,10 +1281,13 @@ public class AccountChangeService extends BaseService {
     businessHours.setEndBusinessTime(endBusinessTime);
 
     String complement = null;
+    boolean isUpdatedBusinessHoursComplement = false;
     String tempComplement = getParameterData(formBusinessHours.getBusinessHoursRemarks());
     if(!Objects.equals(tempComplement,registedFormBusinessHours.getBusinessHoursRemarks())) {
+     isUpdatedBusinessHoursComplement = true;
      complement = tempComplement;
     }
+    this.isUpdateBusinessHoursComplementMap.put(weekNum, isUpdatedBusinessHoursComplement);
     businessHours.setComplement(complement);
 
     businessHours.setIsDeleted(0);
@@ -1253,7 +1306,7 @@ public class AccountChangeService extends BaseService {
     String tempEndBusinessTime = formBusinessHours.getBusinessHoursEndTime();
     String[] endBusinessTimeAry = tempEndBusinessTime.split(":");
     LocalTime endBusinessTime = LocalTime.of(Integer.parseInt(endBusinessTimeAry[0]), Integer.parseInt(endBusinessTimeAry[1]));
-    businessHours.setStartBusinessTime(endBusinessTime);
+    businessHours.setEndBusinessTime(endBusinessTime);
 
     String complement = getParameterData(formBusinessHours.getBusinessHoursRemarks());
     businessHours.setComplement(complement);
@@ -1353,6 +1406,8 @@ public class AccountChangeService extends BaseService {
   request.setAttribute("pet", pet);
   //画像をBase64化
   request.setAttribute("petImage", convertByteAryToBase64(pet.getImage()));
+  request.setAttribute("isUpdatePetWeight", this.isUpdatePetWeight);
+  request.setAttribute("isUpdateRemarks", this.isUpdateRemarks);
   request.setAttribute("beforeAccoutInfo", beforeAccoutInfo);
  }
 
@@ -1396,12 +1451,14 @@ public class AccountChangeService extends BaseService {
   List<BusinessHours> beforeBusinessHoursList = new ArrayList<>();
   List<BusinessHours> createBusinessHoursList = changeBusinessHoursInfo.getCreateBusinessHoursList();
   List<BusinessHours> updateBusinessHoursList = changeBusinessHoursInfo.getUpdateBusinessHoursList();
+  List<Boolean> isUpdateBusinessHoursComplementList = new ArrayList<>();
   List<BusinessHours> deleteBusinessHoursList = changeBusinessHoursInfo.getDeleteBusinessHoursList();
   for(var i = 0; i < 7; i++) {
    String weekNumStr = String.valueOf(i);
    String weekNum = "00" + weekNumStr;
    BusinessHours createBusinessHours = createBusinessHoursList.stream().filter(e->e.getBusinessDay().equals(weekNum)).findFirst().orElse(null);
    BusinessHours updateBusinessHours = updateBusinessHoursList.stream().filter(e->e.getBusinessDay().equals(weekNum)).findFirst().orElse(null);
+   boolean isUpdateBusinessHoursComplement = false;
    BusinessHours deleteBusinessHours = deleteBusinessHoursList.stream().filter(e->e.getBusinessDay().equals(weekNum)).findFirst().orElse(null);
    if(createBusinessHours != null && updateBusinessHours == null && deleteBusinessHours == null) {
     businessDayList.add(this.propertiesService.getValue(PropertiesService.WEEKDAY_KEY_INIT_STR + weekNum));
@@ -1417,9 +1474,12 @@ public class AccountChangeService extends BaseService {
     List<FormBusinessHours> registedBusinessHoursList = beforeAccoutInfo.getFormBusinessHoursList();
     FormBusinessHours registedBusinessHours = registedBusinessHoursList.stream().filter(e->e.getBusinessHoursWeekdayNum().equals(weekNumStr)).findFirst().orElse(new FormBusinessHours());
     BusinessHours businessHours = new BusinessHours();
-    businessHours.setStartBusinessTime(updateBusinessHours.getStartBusinessTime());
-    businessHours.setEndBusinessTime(updateBusinessHours.getEndBusinessTime());
-    businessHours.setComplement(updateBusinessHours.getComplement());
+    LocalTime updateStartBusinessTime = updateBusinessHours.getStartBusinessTime();
+    LocalTime updateEndBusinessTime = updateBusinessHours.getEndBusinessTime();
+    businessHours.setStartBusinessTime(updateStartBusinessTime);
+    businessHours.setEndBusinessTime(updateEndBusinessTime);
+    isUpdateBusinessHoursComplement = this.isUpdateBusinessHoursComplementMap.get(weekNum);
+    businessHours.setComplement(isUpdateBusinessHoursComplement?updateBusinessHours.getComplement():null);
     businessHoursList.add(businessHours);
     BusinessHours beforeBusinessHours = new BusinessHours();
     LocalTime startBusinessTime = null;
@@ -1428,17 +1488,17 @@ public class AccountChangeService extends BaseService {
      String[] startBusinessTimeAry = tempStartBusinessTime.split(":");
      startBusinessTime = LocalTime.of(Integer.parseInt(startBusinessTimeAry[0]), Integer.parseInt(startBusinessTimeAry[1]));
     }
-    beforeBusinessHours.setStartBusinessTime(startBusinessTime);
+    beforeBusinessHours.setStartBusinessTime(updateStartBusinessTime==null?null:startBusinessTime);
     LocalTime endBusinessTime = null;
-    String tempEndBusinessTime = registedBusinessHours.getBusinessHoursStartTime();
+    String tempEndBusinessTime = registedBusinessHours.getBusinessHoursEndTime();
     if(tempEndBusinessTime != null) {
      String[] endBusinessTimeAry = tempEndBusinessTime.split(":");
      endBusinessTime = LocalTime.of(Integer.parseInt(endBusinessTimeAry[0]), Integer.parseInt(endBusinessTimeAry[1]));
     }
-    beforeBusinessHours.setEndBusinessTime(endBusinessTime);
-    beforeBusinessHours.setComplement(registedBusinessHours.getBusinessHoursRemarks());
+    beforeBusinessHours.setEndBusinessTime(updateEndBusinessTime==null?null:endBusinessTime);
+    beforeBusinessHours.setComplement(isUpdateBusinessHoursComplement?registedBusinessHours.getBusinessHoursRemarks():null);
     beforeBusinessHoursList.add(beforeBusinessHours);
-   }else if(createBusinessHours != null && updateBusinessHours == null && deleteBusinessHours != null) {
+   }else if(createBusinessHours == null && updateBusinessHours == null && deleteBusinessHours != null) {
     businessDayList.add(this.propertiesService.getValue(PropertiesService.WEEKDAY_KEY_INIT_STR + weekNum));
     List<FormBusinessHours> registedBusinessHoursList = beforeAccoutInfo.getFormBusinessHoursList();
     FormBusinessHours registedBusinessHours = registedBusinessHoursList.stream().filter(e->e.getBusinessHoursWeekdayNum().equals(weekNumStr)).findFirst().orElse(new FormBusinessHours());
@@ -1453,7 +1513,7 @@ public class AccountChangeService extends BaseService {
     }
     beforeBusinessHours.setStartBusinessTime(startBusinessTime);
     LocalTime endBusinessTime = null;
-    String tempEndBusinessTime = registedBusinessHours.getBusinessHoursStartTime();
+    String tempEndBusinessTime = registedBusinessHours.getBusinessHoursEndTime();
     if(tempEndBusinessTime != null) {
      String[] endBusinessTimeAry = tempEndBusinessTime.split(":");
      endBusinessTime = LocalTime.of(Integer.parseInt(endBusinessTimeAry[0]), Integer.parseInt(endBusinessTimeAry[1]));
@@ -1462,6 +1522,7 @@ public class AccountChangeService extends BaseService {
     beforeBusinessHours.setComplement(registedBusinessHours.getBusinessHoursRemarks());
     beforeBusinessHoursList.add(beforeBusinessHours);
    }
+   isUpdateBusinessHoursComplementList.add(isUpdateBusinessHoursComplement);
   }
 
 
@@ -1471,9 +1532,13 @@ public class AccountChangeService extends BaseService {
   request.setAttribute("store", store);
   //画像をBase64化
   request.setAttribute("storeImage", convertByteAryToBase64(store.getImage()));
+  request.setAttribute("isUpdateEmployeesNum", this.isUpdateEmployeesNum);
+  request.setAttribute("isUpdateCourseInfo", this.isUpdateCourseInfo);
+  request.setAttribute("isUpdateCommitment", this.isUpdateCommitment);
   request.setAttribute("businessDayList", businessDayList);
   request.setAttribute("businessHoursList", businessHoursList);
   request.setAttribute("beforeBusinessHoursList", beforeBusinessHoursList);
+  request.setAttribute("isUpdateBusinessHoursComplementList", isUpdateBusinessHoursComplementList);
   request.setAttribute("beforeAccoutInfo", beforeAccoutInfo);
  }
 

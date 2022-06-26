@@ -156,19 +156,20 @@
      </div>
     </c:if>
 
-    <c:if test="${pet.weight != null}">
+    <c:if test="${isUpdatePetWeight}">
      <div>
       <label class="change-complete-item-name">&lt;ペット体重&gt;</label>
       <p>
-       <c:if test="${beforeAccoutInfo.petWeight != null}">
-        <c:out value="${beforeAccoutInfo.petWeight}" />
+       <c:out value="${beforeAccoutInfo.petWeight}" />
+       &rarr;
+       <c:if test="${pet.weight != null}">
+        <fmt:formatNumber value="${pet.weight}" />
        </c:if>
-       &rarr;<fmt:formatNumber value="${pet.weight}" />
       </p>
      </div>
     </c:if>
 
-    <c:if test="${not empty pet.remarks}">
+    <c:if test="${isUpdateRemarks}">
      <div>
       <label class="change-complete-item-name">&lt;備考&gt;</label>
       <p class="line-break">
@@ -217,7 +218,7 @@
          <div>
           <label class="change-complete-item-name">&lt;開始時間&gt;</label>
           <p>
-           <c:if test="${not empty businessHoursList[listIndex].startBusinessTime and not empty beforeBusinessHoursList[listIndex].startBusinessTime}}">
+           <c:if test="${not empty businessHoursList[listIndex].startBusinessTime and not empty beforeBusinessHoursList[listIndex].startBusinessTime}">
             <c:out value="${beforeBusinessHoursList[listIndex].startBusinessTime.getHour()}" />
             :
             <fmt:formatNumber value="${beforeBusinessHoursList[listIndex].startBusinessTime.getMinute()}" minIntegerDigits="2" />&rarr;
@@ -225,13 +226,13 @@
             :
             <fmt:formatNumber value="${businessHoursList[listIndex].startBusinessTime.getMinute()}" minIntegerDigits="2" />
            </c:if>
-           <c:if test="${not empty businessHoursList[listIndex].startBusinessTime and empty beforeBusinessHoursList[listIndex].startBusinessTime}}">
+           <c:if test="${not empty businessHoursList[listIndex].startBusinessTime and empty beforeBusinessHoursList[listIndex].startBusinessTime}">
             <span class="mr-3"></span>&rarr;
             <c:out value="${businessHoursList[listIndex].startBusinessTime.getHour()}" />
             :
             <fmt:formatNumber value="${businessHoursList[listIndex].startBusinessTime.getMinute()}" minIntegerDigits="2" />
            </c:if>
-           <c:if test="${empty businessHoursList[listIndex].startBusinessTime and not empty beforeBusinessHoursList[listIndex].startBusinessTime}}">
+           <c:if test="${empty businessHoursList[listIndex].startBusinessTime and not empty beforeBusinessHoursList[listIndex].startBusinessTime}">
             <c:out value="${beforeBusinessHoursList[listIndex].startBusinessTime.getHour()}" />
             :
             <fmt:formatNumber value="${beforeBusinessHoursList[listIndex].startBusinessTime.getMinute()}" minIntegerDigits="2" />&rarr;
@@ -269,11 +270,11 @@
          </div>
         </c:if>
 
-        <c:if test="${not empty businessHoursList[listIndex].complement or not empty beforeBusinessHoursList[listIndex].complement}">
+        <c:if test="${businessHoursList[listIndex].complement != beforeBusinessHoursList[listIndex].complement}">
          <div>
           <label class="change-complete-item-name">&lt;補足&gt;</label>
           <p class="line-break">
-           <c:if test="${not empty businessHoursList[listIndex].endBusinessTime and not empty beforeBusinessHoursList[listIndex].endBusinessTime}">
+           <c:if test="${isUpdateBusinessHoursComplementList[listIndex]}">
             <c:set var="registedBusinessHoursComplement" value="${beforeBusinessHoursList[listIndex].complement}" />
             <c:forEach var="registedBusinessHoursComplementStr" items="${fn:split(registedBusinessHoursComplement, newLine)}">
              <c:out value="${registedBusinessHoursComplementStr}" />
@@ -311,19 +312,20 @@
     </c:if>
 
 
-    <c:if test="${store.employeesNumber != null}">
+    <c:if test="${isUpdateEmployeesNum}">
      <div>
       <label class="change-complete-item-name">&lt;従業員数&ndash;人&gt;</label>
       <p>
-       <c:if test="${beforeAccoutInfo.storeEmployees != null}">
-        <c:out value="${beforeAccoutInfo.storeEmployees}" />
-       </c:if>&rarr;
-       <fmt:formatNumber value="${store.employeesNumber}" />
+       <c:out value="${beforeAccoutInfo.storeEmployees}" />
+       &rarr;
+       <c:if test="${store.employeesNumber != null}">
+        <fmt:formatNumber value="${store.employeesNumber}" />
+       </c:if>
       </p>
      </div>
     </c:if>
 
-    <c:if test="${not empty store.courseInfo}">
+    <c:if test="${isUpdateCourseInfo}">
      <div>
       <label class="change-complete-item-name">&lt;コース・値段&gt;</label>
       <p class="line-break">
@@ -341,7 +343,7 @@
      </div>
     </c:if>
 
-    <c:if test="${not empty store.commitment}">
+    <c:if test="${isUpdateCommitment}">
      <div>
       <label class="change-complete-item-name">&lt;こだわりポイント&gt;</label>
       <p class="line-break">
