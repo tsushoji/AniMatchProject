@@ -26,11 +26,14 @@ import javax.servlet.http.Part;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.web01.animatch.dao.CreateDao;
 import com.web01.animatch.dao.DBConnection;
+import com.web01.animatch.dao.DeleteDao;
 import com.web01.animatch.dao.ReadDao;
 import com.web01.animatch.dao.UpdateDao;
 import com.web01.animatch.dto.AccountChangeForm;
 import com.web01.animatch.dto.BusinessHours;
+import com.web01.animatch.dto.ChangeBusinessHoursInfo;
 import com.web01.animatch.dto.FormBusinessHours;
 import com.web01.animatch.dto.OwnerInfo;
 import com.web01.animatch.dto.Pet;
@@ -869,7 +872,10 @@ public class AccountChangeService extends BaseService {
  private void changeDao(HttpServletRequest request, AccountChangeForm accountChangeForm, UserSession userSession) {
   DBConnection con = new DBConnection();
   Connection conSQL = con.getConnection();
+  CreateDao createDao = new CreateDao(conSQL);
   UpdateDao updateDao = new UpdateDao(conSQL);
+  DeleteDao deleteDao = new DeleteDao(conSQL);
+
   try {
    User user = getParameterUserDto(accountChangeForm, userSession);
    switch (this.registType) {
@@ -890,14 +896,30 @@ public class AccountChangeService extends BaseService {
    //トリマーの場合
    case TRIMMER:
     Store store = getParameterStoreDto(request, accountChangeForm, userSession);
-    List<BusinessHours> businessHoursList = getParameterBusinessHoursDto(accountChangeForm, userSession);
-    store.setBusinessHoursList(businessHoursList);
-    user.setStore(store);
+    ChangeBusinessHoursInfo changeBusinessHoursInfo = getParameterBusinessHoursDto(accountChangeForm, userSession);
     if (this.canRegist) {
      //DB登録処理前に登録成功失敗リセット
      this.canRegist = false;
-     updateDao.updateTrimmerInfo(user);
-     setAttributeChangeTrimmer(request, user, userSession);
+     List<BusinessHours> updateBusinessHoursList = changeBusinessHoursInfo.getUpdateBusinessHoursList();
+     List<BusinessHours> createBusinessHoursList = changeBusinessHoursInfo.getCreateBusinessHoursList();
+     List<BusinessHours> deleteBusinessHoursList = changeBusinessHoursInfo.getDeleteBusinessHoursList();
+
+     if(updateBusinessHoursList.size() > 0) {
+      store.setBusinessHoursList(updateBusinessHoursList);
+      user.setStore(store);
+      updateDao.updateTrimmerInfo(user);
+     }
+
+     Integer storeId = userSession.getStoreId();
+     if(createBusinessHoursList.size() > 0) {
+      createDao.registBusinessHours(storeId, createBusinessHoursList);
+     }
+
+     if(deleteBusinessHoursList.size() > 0) {
+      deleteDao.deleteBusinessHours(storeId, deleteBusinessHoursList);
+     }
+
+     setAttributeChangeTrimmer(request, user, changeBusinessHoursInfo, userSession);
      conSQL.commit();
      this.canRegist = true;
     }
@@ -1176,52 +1198,90 @@ public class AccountChangeService extends BaseService {
   * パラメータセット営業時間オブジェクト取得
   * @param accountChangeForm アカウント変更フォームオブジェクト
   * @param userSession ユーザセッション
-  * @return 登録営業時間リスト
+  * @return 変更営業時間情報
   */
- private List<BusinessHours> getParameterBusinessHoursDto(AccountChangeForm accountChangeForm, UserSession userSession)
+ private ChangeBusinessHoursInfo getParameterBusinessHoursDto(AccountChangeForm accountChangeForm, UserSession userSession)
    throws IOException, ServletException, ParseException {
-  List<BusinessHours> businessHoursList = new ArrayList<>();
+  ChangeBusinessHoursInfo changeBusinessHoursInfo = new ChangeBusinessHoursInfo();
+  List<BusinessHours> createBusinessHoursList = new ArrayList<>();
+  List<BusinessHours> updateBusinessHoursList = new ArrayList<>();
+  List<BusinessHours> deleteBusinessHoursList = new ArrayList<>();
   List<FormBusinessHours> formBusinessHoursList = accountChangeForm.getFormBusinessHoursList();
+  String formBusinessHoursWeekday = accountChangeForm.getFormBusinessHoursInputValue();
   List<FormBusinessHours> registedFormBusinessHoursList = userSession.getRegistedAccountForm().getFormBusinessHoursList();
+  String registedFormBusinessHoursWeekday = userSession.getRegistedAccountForm().getFormBusinessHoursInputValue();
+  LocalDateTime now = LocalDateTime.now();
+  for (var i = 0; i < 7; i++) {
+   String weekNumStr = String.valueOf(i);
+   boolean isContainsForm = formBusinessHoursWeekday.contains(weekNumStr);
+   boolean isContainsRegisted = registedFormBusinessHoursWeekday.contains(weekNumStr);
+   if(isContainsForm && isContainsRegisted) {
+    BusinessHours businessHours = new BusinessHours();
+    FormBusinessHours formBusinessHours = formBusinessHoursList.stream().filter(e->e.getBusinessHoursWeekdayNum().equals(weekNumStr)).findFirst().orElse(new FormBusinessHours());
+    FormBusinessHours registedFormBusinessHours = registedFormBusinessHoursList.stream().filter(e->e.getBusinessHoursWeekdayNum().equals(weekNumStr)).findFirst().orElse(new FormBusinessHours());
+    businessHours.setBusinessDay("00" + i);
+    LocalTime startBusinessTime = null;
+    String tempStartBusinessTime = formBusinessHours.getBusinessHoursStartTime();
+    if(!tempStartBusinessTime.equals(registedFormBusinessHours.getBusinessHoursStartTime())) {
+     String[] startBusinessTimeAry = tempStartBusinessTime.split(":");
+     startBusinessTime = LocalTime.of(Integer.parseInt(startBusinessTimeAry[0]), Integer.parseInt(startBusinessTimeAry[1]));
+    }
+    businessHours.setStartBusinessTime(startBusinessTime);
 
-  //for (FormBusinessHours formBusinessHours : formBusinessHoursList) {
-  for (var i = 0; i < formBusinessHoursList.size(); i++) {
-   FormBusinessHours formBusinessHours = formBusinessHoursList.get(i);
-   FormBusinessHours registedFormBusinessHours = registedFormBusinessHoursList.get(i);
-   BusinessHours businessHours = new BusinessHours();
-   businessHours.setBusinessDay("00" + formBusinessHours.getBusinessHoursWeekdayNum());
-   LocalTime startBusinessTime = null;
-   String tempStartBusinessTime = formBusinessHours.getBusinessHoursStartTime();
-   if(!tempStartBusinessTime.equals(registedFormBusinessHours.getBusinessHoursStartTime())) {
+    LocalTime endBusinessTime = null;
+    String tempEndBusinessTime = formBusinessHours.getBusinessHoursEndTime();
+    if(!tempEndBusinessTime.equals(registedFormBusinessHours.getBusinessHoursEndTime())) {
+     String[] endBusinessTimeAry = tempEndBusinessTime.split(":");
+     endBusinessTime = LocalTime.of(Integer.parseInt(endBusinessTimeAry[0]), Integer.parseInt(endBusinessTimeAry[1]));
+    }
+    businessHours.setEndBusinessTime(endBusinessTime);
+
+    String complement = null;
+    String tempComplement = getParameterData(formBusinessHours.getBusinessHoursRemarks());
+    if(!Objects.equals(tempComplement,registedFormBusinessHours.getBusinessHoursRemarks())) {
+     complement = tempComplement;
+    }
+    businessHours.setComplement(complement);
+
+    businessHours.setIsDeleted(0);
+    businessHours.setUpdatedTime(now);
+
+    updateBusinessHoursList.add(businessHours);
+   }else if(isContainsForm && !isContainsRegisted) {
+    BusinessHours businessHours = new BusinessHours();
+    FormBusinessHours formBusinessHours = formBusinessHoursList.stream().filter(e->e.getBusinessHoursWeekdayNum().equals(weekNumStr)).findFirst().orElse(new FormBusinessHours());
+    businessHours.setBusinessDay("00" + i);
+    String tempStartBusinessTime = formBusinessHours.getBusinessHoursStartTime();
     String[] startBusinessTimeAry = tempStartBusinessTime.split(":");
-    startBusinessTime = LocalTime.of(Integer.parseInt(startBusinessTimeAry[0]), Integer.parseInt(startBusinessTimeAry[1]));
-   }
-   businessHours.setStartBusinessTime(startBusinessTime);
+    LocalTime startBusinessTime = LocalTime.of(Integer.parseInt(startBusinessTimeAry[0]), Integer.parseInt(startBusinessTimeAry[1]));
+    businessHours.setStartBusinessTime(startBusinessTime);
 
-   LocalTime endBusinessTime = null;
-   String tempEndBusinessTime = formBusinessHours.getBusinessHoursEndTime();
-   if(!tempEndBusinessTime.equals(registedFormBusinessHours.getBusinessHoursEndTime())) {
+    String tempEndBusinessTime = formBusinessHours.getBusinessHoursEndTime();
     String[] endBusinessTimeAry = tempEndBusinessTime.split(":");
-    endBusinessTime = LocalTime.of(Integer.parseInt(endBusinessTimeAry[0]), Integer.parseInt(endBusinessTimeAry[1]));
+    LocalTime endBusinessTime = LocalTime.of(Integer.parseInt(endBusinessTimeAry[0]), Integer.parseInt(endBusinessTimeAry[1]));
+    businessHours.setStartBusinessTime(endBusinessTime);
+
+    String complement = getParameterData(formBusinessHours.getBusinessHoursRemarks());
+    businessHours.setComplement(complement);
+
+    businessHours.setIsDeleted(0);
+    businessHours.setInsertedTime(now);
+    businessHours.setUpdatedTime(now);
+
+    createBusinessHoursList.add(businessHours);
+   }else if(!isContainsForm && isContainsRegisted) {
+    BusinessHours businessHours = new BusinessHours();
+    businessHours.setBusinessDay("00" + i);
+
+    deleteBusinessHoursList.add(businessHours);
    }
-   businessHours.setEndBusinessTime(endBusinessTime);
-
-   String complement = null;
-   String tempComplement = getParameterData(formBusinessHours.getBusinessHoursRemarks());
-   if(!Objects.equals(tempComplement,registedFormBusinessHours.getBusinessHoursRemarks())) {
-    complement = tempComplement;
-   }
-   businessHours.setComplement(complement);
-
-   businessHours.setIsDeleted(0);
-   LocalDateTime now = LocalDateTime.now();
-   businessHours.setInsertedTime(now);
-   businessHours.setUpdatedTime(now);
-
-   businessHoursList.add(businessHours);
   }
 
-  return businessHoursList;
+  changeBusinessHoursInfo.setCreateBusinessHoursList(createBusinessHoursList);
+  changeBusinessHoursInfo.setUpdateBusinessHoursList(updateBusinessHoursList);
+  changeBusinessHoursInfo.setDeleteBusinessHoursList(deleteBusinessHoursList);
+
+  return changeBusinessHoursInfo;
  }
 
  /**
@@ -1306,9 +1366,10 @@ public class AccountChangeService extends BaseService {
   * トリマー用変更オブジェクト属性設定
   * @param request リクエストオブジェクト
   * @param user ユーザオブジェクト
+  * @param changeBusinessHoursInfo 変更営業時間情報
   * @param userSession ユーザセッション
   */
- private void setAttributeChangeTrimmer(HttpServletRequest request, User user, UserSession userSession) {
+ private void setAttributeChangeTrimmer(HttpServletRequest request, User user, ChangeBusinessHoursInfo changeBusinessHoursInfo, UserSession userSession) {
   Store store = user.getStore();
 
   //変更完了画面表示文字セット
@@ -1336,32 +1397,77 @@ public class AccountChangeService extends BaseService {
   }
 
   // 登録された営業時間リストを元に更新した営業時間リストの曜日番号に合わせて、表示営業時間リストを作成
-  List<BusinessHours> businessHoursList = store.getBusinessHoursList();
-  List<FormBusinessHours> registedBusinessHoursList = beforeAccoutInfo.getFormBusinessHoursList();
+  List<String> businessDayList = new ArrayList<>();
+  List<BusinessHours> businessHoursList = new ArrayList<>();
   List<BusinessHours> beforeBusinessHoursList = new ArrayList<>();
-  for (BusinessHours businessHours : businessHoursList) {
-   BusinessHours beforeBusinessHours = new BusinessHours();
-   String businessDay = businessHours.getBusinessDay();
-   FormBusinessHours targetBusinessHours = registedBusinessHoursList.stream().filter(e->e.getBusinessHoursWeekdayNum().equals(businessDay)).findFirst().orElse(new FormBusinessHours());
-   String weekday = this.propertiesService.getValue(PropertiesService.WEEKDAY_KEY_INIT_STR + businessDay);
-   businessHours.setBusinessDay(weekday);
-   beforeBusinessHours.setBusinessDay(weekday);
-   LocalTime startBusinessTime = null;
-   String tempStartBusinessTime = targetBusinessHours.getBusinessHoursStartTime();
-   if(tempStartBusinessTime != null) {
-    String[] startBusinessTimeAry = tempStartBusinessTime.split(":");
-    startBusinessTime = LocalTime.of(Integer.parseInt(startBusinessTimeAry[0]), Integer.parseInt(startBusinessTimeAry[1]));
+  List<BusinessHours> createBusinessHoursList = changeBusinessHoursInfo.getCreateBusinessHoursList();
+  List<BusinessHours> updateBusinessHoursList = changeBusinessHoursInfo.getUpdateBusinessHoursList();
+  List<BusinessHours> deleteBusinessHoursList = changeBusinessHoursInfo.getDeleteBusinessHoursList();
+  for(var i = 0; i < 7; i++) {
+   String weekNumStr = String.valueOf(i);
+   String weekNum = "00" + weekNumStr;
+   BusinessHours createBusinessHours = createBusinessHoursList.stream().filter(e->e.getBusinessDay().equals(weekNum)).findFirst().orElse(null);
+   BusinessHours updateBusinessHours = updateBusinessHoursList.stream().filter(e->e.getBusinessDay().equals(weekNum)).findFirst().orElse(null);
+   BusinessHours deleteBusinessHours = deleteBusinessHoursList.stream().filter(e->e.getBusinessDay().equals(weekNum)).findFirst().orElse(null);
+   if(createBusinessHours != null && updateBusinessHours == null && deleteBusinessHours == null) {
+    businessDayList.add(this.propertiesService.getValue(PropertiesService.WEEKDAY_KEY_INIT_STR + weekNum));
+    BusinessHours businessHours = new BusinessHours();
+    businessHours.setStartBusinessTime(createBusinessHours.getStartBusinessTime());
+    businessHours.setEndBusinessTime(createBusinessHours.getEndBusinessTime());
+    businessHours.setComplement(createBusinessHours.getComplement());
+    businessHoursList.add(businessHours);
+    BusinessHours beforeBusinessHours = new BusinessHours();
+    beforeBusinessHoursList.add(beforeBusinessHours);
+   }else if(createBusinessHours == null && updateBusinessHours != null && deleteBusinessHours == null) {
+    businessDayList.add(this.propertiesService.getValue(PropertiesService.WEEKDAY_KEY_INIT_STR + weekNum));
+    List<FormBusinessHours> registedBusinessHoursList = beforeAccoutInfo.getFormBusinessHoursList();
+    FormBusinessHours registedBusinessHours = registedBusinessHoursList.stream().filter(e->e.getBusinessHoursWeekdayNum().equals(weekNumStr)).findFirst().orElse(new FormBusinessHours());
+    BusinessHours businessHours = new BusinessHours();
+    businessHours.setStartBusinessTime(updateBusinessHours.getStartBusinessTime());
+    businessHours.setEndBusinessTime(updateBusinessHours.getEndBusinessTime());
+    businessHours.setComplement(updateBusinessHours.getComplement());
+    businessHoursList.add(businessHours);
+    BusinessHours beforeBusinessHours = new BusinessHours();
+    LocalTime startBusinessTime = null;
+    String tempStartBusinessTime = registedBusinessHours.getBusinessHoursStartTime();
+    if(tempStartBusinessTime != null) {
+     String[] startBusinessTimeAry = tempStartBusinessTime.split(":");
+     startBusinessTime = LocalTime.of(Integer.parseInt(startBusinessTimeAry[0]), Integer.parseInt(startBusinessTimeAry[1]));
+    }
+    beforeBusinessHours.setStartBusinessTime(startBusinessTime);
+    LocalTime endBusinessTime = null;
+    String tempEndBusinessTime = registedBusinessHours.getBusinessHoursStartTime();
+    if(tempEndBusinessTime != null) {
+     String[] endBusinessTimeAry = tempEndBusinessTime.split(":");
+     endBusinessTime = LocalTime.of(Integer.parseInt(endBusinessTimeAry[0]), Integer.parseInt(endBusinessTimeAry[1]));
+    }
+    beforeBusinessHours.setEndBusinessTime(endBusinessTime);
+    beforeBusinessHours.setComplement(registedBusinessHours.getBusinessHoursRemarks());
+    beforeBusinessHoursList.add(beforeBusinessHours);
+   }else if(createBusinessHours != null && updateBusinessHours == null && deleteBusinessHours != null) {
+    businessDayList.add(this.propertiesService.getValue(PropertiesService.WEEKDAY_KEY_INIT_STR + weekNum));
+    List<FormBusinessHours> registedBusinessHoursList = beforeAccoutInfo.getFormBusinessHoursList();
+    FormBusinessHours registedBusinessHours = registedBusinessHoursList.stream().filter(e->e.getBusinessHoursWeekdayNum().equals(weekNumStr)).findFirst().orElse(new FormBusinessHours());
+    BusinessHours businessHours = new BusinessHours();
+    businessHoursList.add(businessHours);
+    BusinessHours beforeBusinessHours = new BusinessHours();
+    LocalTime startBusinessTime = null;
+    String tempStartBusinessTime = registedBusinessHours.getBusinessHoursStartTime();
+    if(tempStartBusinessTime != null) {
+     String[] startBusinessTimeAry = tempStartBusinessTime.split(":");
+     startBusinessTime = LocalTime.of(Integer.parseInt(startBusinessTimeAry[0]), Integer.parseInt(startBusinessTimeAry[1]));
+    }
+    beforeBusinessHours.setStartBusinessTime(startBusinessTime);
+    LocalTime endBusinessTime = null;
+    String tempEndBusinessTime = registedBusinessHours.getBusinessHoursStartTime();
+    if(tempEndBusinessTime != null) {
+     String[] endBusinessTimeAry = tempEndBusinessTime.split(":");
+     endBusinessTime = LocalTime.of(Integer.parseInt(endBusinessTimeAry[0]), Integer.parseInt(endBusinessTimeAry[1]));
+    }
+    beforeBusinessHours.setEndBusinessTime(endBusinessTime);
+    beforeBusinessHours.setComplement(registedBusinessHours.getBusinessHoursRemarks());
+    beforeBusinessHoursList.add(beforeBusinessHours);
    }
-   businessHours.setStartBusinessTime(startBusinessTime);
-   LocalTime endBusinessTime = null;
-   String tempEndBusinessTime = targetBusinessHours.getBusinessHoursStartTime();
-   if(tempEndBusinessTime != null) {
-    String[] endBusinessTimeAry = tempEndBusinessTime.split(":");
-    endBusinessTime = LocalTime.of(Integer.parseInt(endBusinessTimeAry[0]), Integer.parseInt(endBusinessTimeAry[1]));
-   }
-   businessHours.setEndBusinessTime(endBusinessTime);
-   beforeBusinessHours.setComplement(targetBusinessHours.getBusinessHoursRemarks());
-   beforeBusinessHoursList.add(beforeBusinessHours);
   }
 
 
@@ -1371,6 +1477,7 @@ public class AccountChangeService extends BaseService {
   request.setAttribute("store", store);
   //画像をBase64化
   request.setAttribute("storeImage", convertByteAryToBase64(store.getImage()));
+  request.setAttribute("businessDayList", businessDayList);
   request.setAttribute("businessHoursList", businessHoursList);
   request.setAttribute("beforeBusinessHoursList", beforeBusinessHoursList);
   request.setAttribute("beforeAccoutInfo", beforeAccoutInfo);

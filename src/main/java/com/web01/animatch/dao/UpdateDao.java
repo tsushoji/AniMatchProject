@@ -322,7 +322,7 @@ public class UpdateDao extends BaseDao {
 
   String storeCourceInfo = store.getCourseInfo();
   if(storeCourceInfo != null) {
-   setStoreColumnList.add("cource_info");
+   setStoreColumnList.add("course_info");
    storeDataList.add(createSqlParatemerMap(storeCourceInfo, Types.VARCHAR));
   }
 
@@ -364,13 +364,13 @@ public class UpdateDao extends BaseDao {
      LocalTime startBusinessTime = businessHours.getStartBusinessTime();
      if(startBusinessTime != null) {
       setBusinessHoursColumnList.add("start_business_time");
-      businessHoursDataList.add(createSqlParatemerMap(Time.valueOf(startBusinessTime), Types.TIMESTAMP));
+      businessHoursDataList.add(createSqlParatemerMap(Time.valueOf(startBusinessTime), Types.TIME));
      }
 
      LocalTime endBusinessTime = businessHours.getEndBusinessTime();
      if(endBusinessTime != null) {
       setBusinessHoursColumnList.add("end_business_time");
-      businessHoursDataList.add(createSqlParatemerMap(Time.valueOf(endBusinessTime), Types.TIMESTAMP));
+      businessHoursDataList.add(createSqlParatemerMap(Time.valueOf(endBusinessTime), Types.TIME));
      }
 
      String complement = businessHours.getComplement();
@@ -386,7 +386,7 @@ public class UpdateDao extends BaseDao {
      setBusinessHoursColumnList.add("updated_time");
      businessHoursDataList.add(createSqlParatemerMap(Timestamp.valueOf(updatedTime), Types.TIMESTAMP));
      
-     String whereOfStoreIdAndBusinessDay = createWhereOfStoreIdAndBusinessDay(storeId, businessHours.getBusinessDay(),storeDataList);
+     String whereOfStoreIdAndBusinessDay = createWhereOfStoreIdAndBusinessDay(storeId, businessHours.getBusinessDay(),businessHoursDataList);
      
      try (PreparedStatement pstmt = createUpdateStatement("t_business_hours", setBusinessHoursColumnList, businessHoursDataList, whereOfStoreIdAndBusinessDay);) {
 

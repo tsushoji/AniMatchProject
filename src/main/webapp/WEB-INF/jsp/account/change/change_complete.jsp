@@ -203,62 +203,104 @@
      <div>
       <label class="change-complete-item-name">&lt;営業日時&gt;</label>
 
-      <c:forEach items="${businessHoursList}" var="businessHours" varStatus="status">
+      <c:forEach items="${businessDayList}" var="businessDay" varStatus="status">
 
        <fmt:parseNumber var="listIndex" value="${status.index}" />
 
        <div>
 
         <p class="change-complete-item-name under-line">
-         <c:out value="${businessHours.businessDay}" />
+         <c:out value="${businessDay}" />
         </p>
 
-        <c:if test="${not empty businessHours.startBusinessTime}">
+        <c:if test="${not empty businessHoursList[listIndex].startBusinessTime or not empty beforeBusinessHoursList[listIndex].startBusinessTime}">
          <div>
           <label class="change-complete-item-name">&lt;開始時間&gt;</label>
           <p>
-           <c:if test="${not empty beforeBusinessHoursList[listIndex].startBusinessTime}">
+           <c:if test="${not empty businessHoursList[listIndex].startBusinessTime and not empty beforeBusinessHoursList[listIndex].startBusinessTime}}">
             <c:out value="${beforeBusinessHoursList[listIndex].startBusinessTime.getHour()}" />
             :
             <fmt:formatNumber value="${beforeBusinessHoursList[listIndex].startBusinessTime.getMinute()}" minIntegerDigits="2" />&rarr;
-           </c:if>&rarr;
-           <c:out value="${businessHours.startBusinessTime.getHour()}" />
-           :
-           <fmt:formatNumber value="${businessHours.startBusinessTime.getMinute()}" minIntegerDigits="2" />
+            <c:out value="${businessHoursList[listIndex].startBusinessTime.getHour()}" />
+            :
+            <fmt:formatNumber value="${businessHoursList[listIndex].startBusinessTime.getMinute()}" minIntegerDigits="2" />
+           </c:if>
+           <c:if test="${not empty businessHoursList[listIndex].startBusinessTime and empty beforeBusinessHoursList[listIndex].startBusinessTime}}">
+            <span class="mr-3"></span>&rarr;
+            <c:out value="${businessHoursList[listIndex].startBusinessTime.getHour()}" />
+            :
+            <fmt:formatNumber value="${businessHoursList[listIndex].startBusinessTime.getMinute()}" minIntegerDigits="2" />
+           </c:if>
+           <c:if test="${empty businessHoursList[listIndex].startBusinessTime and not empty beforeBusinessHoursList[listIndex].startBusinessTime}}">
+            <c:out value="${beforeBusinessHoursList[listIndex].startBusinessTime.getHour()}" />
+            :
+            <fmt:formatNumber value="${beforeBusinessHoursList[listIndex].startBusinessTime.getMinute()}" minIntegerDigits="2" />&rarr;
+            <span class="mr-3"></span>
+           </c:if>
           </p>
          </div>
         </c:if>
 
-        <c:if test="${not empty businessHours.endBusinessTime}">
+        <c:if test="${not empty businessHoursList[listIndex].endBusinessTime or not empty beforeBusinessHoursList[listIndex].endBusinessTime}">
          <div>
           <label class="change-complete-item-name">&lt;終了時間&gt;</label>
           <p>
-           <c:if test="${not empty beforeBusinessHoursList[listIndex].endBusinessTime}">
+           <c:if test="${not empty businessHoursList[listIndex].endBusinessTime and not empty beforeBusinessHoursList[listIndex].endBusinessTime}">
             <c:out value="${beforeBusinessHoursList[listIndex].endBusinessTime.getHour()}" />
             :
-            <fmt:formatNumber value="${beforeBusinessHoursList[listIndex].endBusinessTime.getMinute()}" minIntegerDigits="2" />
-           </c:if>&rarr;
-           <c:out value="${businessHours.endBusinessTime.getHour()}" />
-           :
-           <fmt:formatNumber value="${businessHours.endBusinessTime.getMinute()}" minIntegerDigits="2" />
+            <fmt:formatNumber value="${beforeBusinessHoursList[listIndex].endBusinessTime.getMinute()}" minIntegerDigits="2" />&rarr;
+            <c:out value="${businessHoursList[listIndex].endBusinessTime.getHour()}" />
+            :
+            <fmt:formatNumber value="${businessHoursList[listIndex].endBusinessTime.getMinute()}" minIntegerDigits="2" />
+           </c:if>
+           <c:if test="${not empty businessHoursList[listIndex].endBusinessTime and empty beforeBusinessHoursList[listIndex].endBusinessTime}">
+            <span class="mr-3"></span>&rarr;
+            <c:out value="${businessHoursList[listIndex].endBusinessTime.getHour()}" />
+            :
+            <fmt:formatNumber value="${businessHoursList[listIndex].endBusinessTime.getMinute()}" minIntegerDigits="2" />
+           </c:if>
+           <c:if test="${empty businessHoursList[listIndex].endBusinessTime and not empty beforeBusinessHoursList[listIndex].endBusinessTime}">
+            <c:out value="${beforeBusinessHoursList[listIndex].endBusinessTime.getHour()}" />
+            :
+            <fmt:formatNumber value="${beforeBusinessHoursList[listIndex].endBusinessTime.getMinute()}" minIntegerDigits="2" />&rarr;
+            <span class="mr-3"></span>
+           </c:if>
           </p>
          </div>
         </c:if>
 
-        <c:if test="${not empty businessHours.complement}">
+        <c:if test="${not empty businessHoursList[listIndex].complement or not empty beforeBusinessHoursList[listIndex].complement}">
          <div>
           <label class="change-complete-item-name">&lt;補足&gt;</label>
           <p class="line-break">
-           <c:set var="registedBusinessHoursComplement" value="${beforeBusinessHoursList[listIndex].complement}" />
-           <c:forEach var="registedBusinessHoursComplementStr" items="${fn:split(registedBusinessHoursComplement, newLine)}">
-            <c:out value="${registedBusinessHoursComplementStr}" />
-            <br />
-           </c:forEach>&rarr;
-           <c:set var="businessHoursComplement" value="${businessHours.complement}" />
-           <c:forEach var="businessHoursComplementStr" items="${fn:split(businessHoursComplement, newLine)}">
-            <c:out value="${businessHoursComplementStr}" />
-            <br />
-           </c:forEach>
+           <c:if test="${not empty businessHoursList[listIndex].endBusinessTime and not empty beforeBusinessHoursList[listIndex].endBusinessTime}">
+            <c:set var="registedBusinessHoursComplement" value="${beforeBusinessHoursList[listIndex].complement}" />
+            <c:forEach var="registedBusinessHoursComplementStr" items="${fn:split(registedBusinessHoursComplement, newLine)}">
+             <c:out value="${registedBusinessHoursComplementStr}" />
+             <br />
+            </c:forEach>&rarr;<br>
+            <c:set var="businessHoursComplement" value="${businessHoursList[listIndex].complement}" />
+            <c:forEach var="businessHoursComplementStr" items="${fn:split(businessHoursComplement, newLine)}">
+             <c:out value="${businessHoursComplementStr}" />
+             <br />
+            </c:forEach>
+           </c:if>
+           <c:if test="${not empty businessHoursList[listIndex].endBusinessTime and empty beforeBusinessHoursList[listIndex].endBusinessTime}">
+            <span class="mr-3"></span>&rarr;<br>
+            <c:set var="businessHoursComplement" value="${businessHoursList[listIndex].complement}" />
+            <c:forEach var="businessHoursComplementStr" items="${fn:split(businessHoursComplement, newLine)}">
+             <c:out value="${businessHoursComplementStr}" />
+             <br />
+            </c:forEach>
+           </c:if>
+           <c:if test="${empty businessHoursList[listIndex].endBusinessTime and not empty beforeBusinessHoursList[listIndex].endBusinessTime}">
+            <c:set var="registedBusinessHoursComplement" value="${beforeBusinessHoursList[listIndex].complement}" />
+            <c:forEach var="registedBusinessHoursComplementStr" items="${fn:split(registedBusinessHoursComplement, newLine)}">
+             <c:out value="${registedBusinessHoursComplementStr}" />
+             <br />
+            </c:forEach>&rarr;
+            <span class="mr-3"></span>
+           </c:if>
           </p>
          </div>
         </c:if>
