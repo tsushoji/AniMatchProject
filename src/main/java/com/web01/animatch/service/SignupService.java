@@ -326,7 +326,7 @@ public class SignupService extends BaseService {
   }
 
   //都道府県選択チェック
-  if (registForm.getPrefectures().equals("000")) {
+  if (registForm.getPrefectures().equals(DEFAULT_SELECT_OR_RADIO_VAL)) {
    this.msgMap.put("005", this.messageService.getMessage(MessageService.MessageType.ERROR, "004", "都道府県"));
   }
 
@@ -651,7 +651,8 @@ public class SignupService extends BaseService {
 
   user.setUserName(registForm.getUserName());
   user.setPassword(registForm.getPassword());
-  user.setSex(getParameterData(registForm.getSex()));
+  String tempSex = registForm.getSex();
+  user.setSex(tempSex == null?DEFAULT_SELECT_OR_RADIO_VAL:tempSex);
   SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
   user.setBirthday(dateFormat.parse(registForm.getBirthday()));
   user.setPostalCode(registForm.getPostalCode());
@@ -686,8 +687,9 @@ public class SignupService extends BaseService {
    pet.setImage(fileData);
   }
   pet.setNickName(registForm.getPetName());
-  pet.setSex(getParameterData(registForm.getPetSex()));
-  pet.setType(getSelectParameterData(registForm.getPetType()));
+  String tempPetSex = registForm.getPetSex();
+  pet.setSex(tempPetSex == null?DEFAULT_SELECT_OR_RADIO_VAL:tempPetSex);
+  pet.setType(registForm.getPetType());
   String petWeight = registForm.getPetWeight();
   if (!StringUtils.isEmpty(petWeight)) {
    pet.setWeight(Float.parseFloat(petWeight));
@@ -754,22 +756,6 @@ public class SignupService extends BaseService {
   }
 
   return buffer.toByteArray();
- }
-
- /**
-  * 選択ボックスパラメータデータ取得
-  * @param param 文字列引数
-  * @return 文字列引数がnullまたは空であるかつ選択されていない場合、null<br>
-  * そうでない場合、文字列引数
-  */
- private String getSelectParameterData(String param) {
-  String rtnVal = null;
-  if (!StringUtils.isEmpty(param)) {
-   if (!param.equals("000")) {
-    rtnVal = param;
-   }
-  }
-  return rtnVal;
  }
 
  /**

@@ -9,6 +9,12 @@ import java.util.Base64;
  */
 public class BaseService {
 
+ // 定数
+ /**
+  * セレクトタグラジオボタンデフォルト値
+  */
+ protected static final String DEFAULT_SELECT_OR_RADIO_VAL = "000";
+
  //列挙型
  /**
   * ユーザ種別

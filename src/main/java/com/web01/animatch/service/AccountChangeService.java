@@ -80,10 +80,6 @@ public class AccountChangeService extends BaseService {
   */
  private static final int DEFAULT_ID = 1000000000;
  /**
-  * セレクトタグラジオボタンデフォルト値
-  */
- private static final String DEFAULT_SELECT_OR_RADIO_VAL = "000";
- /**
   * 画像バイト配列サイズ
   */
  private static final int BYTE_ARY_SIZE = 16777215;
@@ -298,9 +294,8 @@ public class AccountChangeService extends BaseService {
   accountChangeForm.setPassword(password);
   registedAccountForm.setPassword(password);
   String sex = ownerInfo.getSex();
-  String tempSex = sex == null?DEFAULT_SELECT_OR_RADIO_VAL:sex;
-  accountChangeForm.setSex(tempSex);
-  registedAccountForm.setSex(tempSex);
+  accountChangeForm.setSex(sex);
+  registedAccountForm.setSex(sex);
   String birthday = dateFormat.format(ownerInfo.getBirthday());
   accountChangeForm.setBirthday(birthday);
   registedAccountForm.setBirthday(birthday);
@@ -337,13 +332,11 @@ public class AccountChangeService extends BaseService {
   accountChangeForm.setPetName(petNickName);
   registedAccountForm.setPetName(petNickName);
   String petSex = ownerInfo.getPetSex();
-  String tempPetSex = petSex == null?DEFAULT_SELECT_OR_RADIO_VAL:petSex;
-  accountChangeForm.setPetSex(tempPetSex);
-  registedAccountForm.setPetSex(tempPetSex);
+  accountChangeForm.setPetSex(petSex);
+  registedAccountForm.setPetSex(petSex);
   String petType = ownerInfo.getPetType();
-  String tempPetType = petType == null?DEFAULT_SELECT_OR_RADIO_VAL:petType;
-  accountChangeForm.setPetType(tempPetType);
-  registedAccountForm.setPetType(tempPetType);
+  accountChangeForm.setPetType(petType);
+  registedAccountForm.setPetType(petType);
   Float tempPetWeight = ownerInfo.getPetWeight();
   String petWeight = tempPetWeight == null?null:String.valueOf(tempPetWeight);
   accountChangeForm.setPetWeight(petWeight);
@@ -384,9 +377,8 @@ public class AccountChangeService extends BaseService {
   accountChangeForm.setPassword(password);
   registedAccountForm.setPassword(password);
   String sex = trimmerInfo.getSex();
-  String tempSex = sex == null?DEFAULT_SELECT_OR_RADIO_VAL:sex;
-  accountChangeForm.setSex(tempSex);
-  registedAccountForm.setSex(tempSex);
+  accountChangeForm.setSex(sex);
+  registedAccountForm.setSex(sex);
   String birthday = dateFormat.format(trimmerInfo.getBirthday());
   accountChangeForm.setBirthday(birthday);
   registedAccountForm.setBirthday(birthday);
@@ -599,7 +591,7 @@ public class AccountChangeService extends BaseService {
   }
 
   //都道府県選択チェック
-  if (accountChangeForm.getPrefectures().equals("000")) {
+  if (accountChangeForm.getPrefectures().equals(DEFAULT_SELECT_OR_RADIO_VAL)) {
    this.msgMap.put("005", this.messageService.getMessage(MessageService.MessageType.ERROR, "004", "都道府県"));
   }
 
@@ -969,7 +961,8 @@ public class AccountChangeService extends BaseService {
 
   String sex = null;
   String tempSex = getParameterData(accountChangeForm.getSex());
-  if(!Objects.equals(tempSex,registedAccountForm.getSex())) {
+  String compSex = tempSex == null?DEFAULT_SELECT_OR_RADIO_VAL:tempSex;
+  if(!compSex.equals(registedAccountForm.getSex())) {
    sex = tempSex;
   }
   user.setSex(sex);
@@ -1058,7 +1051,8 @@ public class AccountChangeService extends BaseService {
 
   String petSex = null;
   String tempPetSex = getParameterData(accountChangeForm.getPetSex());
-  if(!Objects.equals(tempPetSex,registedAccountForm.getPetSex())) {
+  String compPetSex = tempPetSex == null?DEFAULT_SELECT_OR_RADIO_VAL:tempPetSex;
+  if(!compPetSex.equals(registedAccountForm.getPetSex())) {
    petSex = tempPetSex;
   }
   pet.setSex(petSex);
@@ -1187,7 +1181,7 @@ public class AccountChangeService extends BaseService {
  private String getSelectParameterData(String param) {
   String rtnVal = null;
   if (!StringUtils.isEmpty(param)) {
-   if (!param.equals("000")) {
+   if (!param.equals(DEFAULT_SELECT_OR_RADIO_VAL)) {
     rtnVal = param;
    }
   }
