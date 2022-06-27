@@ -1466,11 +1466,11 @@ public class AccountChangeService extends BaseService {
     businessHours.setStartBusinessTime(createBusinessHours.getStartBusinessTime());
     businessHours.setEndBusinessTime(createBusinessHours.getEndBusinessTime());
     businessHours.setComplement(createBusinessHours.getComplement());
+    isUpdateBusinessHoursComplementList.add(isUpdateBusinessHoursComplement);
     businessHoursList.add(businessHours);
     BusinessHours beforeBusinessHours = new BusinessHours();
     beforeBusinessHoursList.add(beforeBusinessHours);
    }else if(createBusinessHours == null && updateBusinessHours != null && deleteBusinessHours == null) {
-    businessDayList.add(this.propertiesService.getValue(PropertiesService.WEEKDAY_KEY_INIT_STR + weekNum));
     List<FormBusinessHours> registedBusinessHoursList = beforeAccoutInfo.getFormBusinessHoursList();
     FormBusinessHours registedBusinessHours = registedBusinessHoursList.stream().filter(e->e.getBusinessHoursWeekdayNum().equals(weekNumStr)).findFirst().orElse(new FormBusinessHours());
     BusinessHours businessHours = new BusinessHours();
@@ -1480,6 +1480,7 @@ public class AccountChangeService extends BaseService {
     businessHours.setEndBusinessTime(updateEndBusinessTime);
     isUpdateBusinessHoursComplement = this.isUpdateBusinessHoursComplementMap.get(weekNum);
     businessHours.setComplement(isUpdateBusinessHoursComplement?updateBusinessHours.getComplement():null);
+    isUpdateBusinessHoursComplementList.add(isUpdateBusinessHoursComplement);
     businessHoursList.add(businessHours);
     BusinessHours beforeBusinessHours = new BusinessHours();
     LocalTime startBusinessTime = null;
@@ -1498,6 +1499,12 @@ public class AccountChangeService extends BaseService {
     beforeBusinessHours.setEndBusinessTime(updateEndBusinessTime==null?null:endBusinessTime);
     beforeBusinessHours.setComplement(isUpdateBusinessHoursComplement?registedBusinessHours.getBusinessHoursRemarks():null);
     beforeBusinessHoursList.add(beforeBusinessHours);
+
+    String weekDay = null;
+    if(businessHours.getStartBusinessTime() != null || businessHours.getEndBusinessTime() != null || beforeBusinessHours.getStartBusinessTime() != null || beforeBusinessHours.getEndBusinessTime() != null || isUpdateBusinessHoursComplement) {
+     weekDay = this.propertiesService.getValue(PropertiesService.WEEKDAY_KEY_INIT_STR + weekNum);
+    }
+    businessDayList.add(weekDay);
    }else if(createBusinessHours == null && updateBusinessHours == null && deleteBusinessHours != null) {
     businessDayList.add(this.propertiesService.getValue(PropertiesService.WEEKDAY_KEY_INIT_STR + weekNum));
     List<FormBusinessHours> registedBusinessHoursList = beforeAccoutInfo.getFormBusinessHoursList();
@@ -1520,9 +1527,9 @@ public class AccountChangeService extends BaseService {
     }
     beforeBusinessHours.setEndBusinessTime(endBusinessTime);
     beforeBusinessHours.setComplement(registedBusinessHours.getBusinessHoursRemarks());
+    isUpdateBusinessHoursComplementList.add(isUpdateBusinessHoursComplement);
     beforeBusinessHoursList.add(beforeBusinessHours);
    }
-   isUpdateBusinessHoursComplementList.add(isUpdateBusinessHoursComplement);
   }
 
 
