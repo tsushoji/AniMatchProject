@@ -1086,7 +1086,7 @@ public class AccountChangeService extends BaseService {
   pet.setSex(petSex);
 
   String petType = null;
-  String tempPetType = getSelectParameterData(accountChangeForm.getPetType());
+  String tempPetType = accountChangeForm.getPetType();
   if(!Objects.equals(tempPetType,registedAccountForm.getPetType())) {
    petType = tempPetType;
   }
@@ -1209,22 +1209,6 @@ public class AccountChangeService extends BaseService {
   }
 
   return buffer.toByteArray();
- }
-
- /**
-  * 選択ボックスパラメータデータ取得
-  * @param param 文字列引数
-  * @return 文字列引数がnullまたは空であるかつ選択されていない場合、null<br>
-  * そうでない場合、文字列引数
-  */
- private String getSelectParameterData(String param) {
-  String rtnVal = null;
-  if (!StringUtils.isEmpty(param)) {
-   if (!param.equals(DEFAULT_SELECT_OR_RADIO_VAL)) {
-    rtnVal = param;
-   }
-  }
-  return rtnVal;
  }
 
  /**
@@ -1382,23 +1366,17 @@ public class AccountChangeService extends BaseService {
   if(tempPetSex != null) {  
    String petSex = this.propertiesService.getValue(PropertiesService.PET_SEX_KEY_INIT_STR + tempPetSex);
    pet.setSex(petSex);
-  }
-  tempPetSex = beforeAccoutInfo.getPetSex();
-  if(tempPetSex != null) {  
-   String petSex = this.propertiesService.getValue(PropertiesService.PET_SEX_KEY_INIT_STR + tempPetSex);
-   beforeAccoutInfo.setPetSex(petSex);
-  }
+  } 
+  String petSex = this.propertiesService.getValue(PropertiesService.PET_SEX_KEY_INIT_STR + beforeAccoutInfo.getPetSex());
+  beforeAccoutInfo.setPetSex(petSex == null?" ":petSex);
 
   String tempPetType = pet.getType();
   if(tempPetType != null) {  
    String petType = this.propertiesService.getValue(PropertiesService.PET_TYPE_KEY_INIT_STR + tempPetType);
-   pet.setType(petType);
+   pet.setType(petType == null?" ":petType);
   }
-  tempPetType = beforeAccoutInfo.getPetType();
-  if(tempPetType != null) {  
-   String petType = this.propertiesService.getValue(PropertiesService.PET_TYPE_KEY_INIT_STR + tempPetType);
-   beforeAccoutInfo.setPetType(petType);
-  }
+  String petType = this.propertiesService.getValue(PropertiesService.PET_TYPE_KEY_INIT_STR + beforeAccoutInfo.getPetType());
+  beforeAccoutInfo.setPetType(petType == null?" ":petType);
 
   request.setAttribute("registTypeName", registTypeName);
   request.setAttribute("registType", registTypeId);
