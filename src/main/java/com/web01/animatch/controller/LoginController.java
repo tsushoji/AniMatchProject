@@ -53,6 +53,9 @@ public class LoginController extends HttpServlet {
    SessionService sessionService = new SessionService((HttpServletRequest)request);
    UserSession userSession = (UserSession)sessionService.getBindingKeySessionValue(AuthService.USER_SESSION_KEY_NAME);
    String loginedURL  = userSession.getLoginedURL();
+   if(loginedURL == null) {
+    loginedURL = "/animatch/index";
+   }
    // ログイン完了後URLリセット
    userSession.setLoginedURL(null);
    response.sendRedirect(loginedURL);
