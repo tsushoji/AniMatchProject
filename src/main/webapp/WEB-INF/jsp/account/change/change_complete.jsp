@@ -120,9 +120,13 @@
     <div>
      <label class="change-complete-item-name">&lt;イメージ画像&gt;</label>
      <p class="regist-complete-item-image">
+     <c:if test="${registType == '001'}">
       <img src="data:image/png;base64,${petImage}" class="resize-img-base64">
+     </c:if>
 
+     <c:if test="${registType == '002'}">
       <img src="data:image/png;base64,${storeImage}" class="resize-img-base64">
+     </c:if>
      </p>
     </div>
    </c:if>
