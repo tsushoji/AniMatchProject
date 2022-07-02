@@ -308,21 +308,27 @@ public class AccountChangeService extends BaseService {
   Pattern preficturePattern = Pattern.compile(PREFECTURE_FORMAT);
   AccountChangeForm accountChangeForm = new AccountChangeForm();
   RegistedAccountForm registedAccountForm = new RegistedAccountForm();
+
   String userName = ownerInfo.getUserName();
   accountChangeForm.setUserName(userName);
   registedAccountForm.setUserName(userName);
+
   String password = ownerInfo.getPassword();
   accountChangeForm.setPassword(password);
   registedAccountForm.setPassword(password);
+
   String sex = ownerInfo.getSex();
   accountChangeForm.setSex(sex);
   registedAccountForm.setSex(sex);
+
   String birthday = dateFormat.format(ownerInfo.getBirthday());
   accountChangeForm.setBirthday(birthday);
   registedAccountForm.setBirthday(birthday);
+
   String postalCode = ownerInfo.getPostalCode();
   accountChangeForm.setPostalCode(postalCode);
   registedAccountForm.setPostalCode(postalCode);
+
   String streetAddres = ownerInfo.getStreetAddress();
   Matcher macher = preficturePattern.matcher(streetAddres);
   boolean isExistPrefecture = macher.find();
@@ -330,6 +336,7 @@ public class AccountChangeService extends BaseService {
    throw new MyException("msg.error.011",
     this.messageService.getMessage(MessageService.MessageType.ERROR, "011", "アカウント情報"));
   }
+
   String prefecture = macher.group();
   String prefectureKey = this.propertiesService.getKey(prefecture);
   if(prefectureKey == null) {
@@ -340,28 +347,36 @@ public class AccountChangeService extends BaseService {
   }
   accountChangeForm.setPrefectures(prefectureKey);
   registedAccountForm.setPrefectures(prefectureKey);
+
   String cities = streetAddres.substring(macher.end());
   accountChangeForm.setCities(cities);
   registedAccountForm.setCities(cities);
+
   String emailAddres = ownerInfo.getEmailAddress();
   accountChangeForm.setEmailAddress(emailAddres);
   registedAccountForm.setEmailAddress(emailAddres);
+
   String telephoneNum = ownerInfo.getTelephoneNumber();
   accountChangeForm.setTelephoneNumber(telephoneNum);
   registedAccountForm.setTelephoneNumber(telephoneNum);
+
   String petNickName = ownerInfo.getPetNickName();
   accountChangeForm.setPetName(petNickName);
   registedAccountForm.setPetName(petNickName);
+
   String petSex = ownerInfo.getPetSex();
   accountChangeForm.setPetSex(petSex);
   registedAccountForm.setPetSex(petSex);
+
   String petType = ownerInfo.getPetType();
   accountChangeForm.setPetType(petType);
   registedAccountForm.setPetType(petType);
+
   Float tempPetWeight = ownerInfo.getPetWeight();
   String petWeight = tempPetWeight == null?null:String.valueOf(tempPetWeight);
   accountChangeForm.setPetWeight(petWeight);
   registedAccountForm.setPetWeight(petWeight);
+
   String petRemarks = ownerInfo.getPetRemarks();
   accountChangeForm.setPetRemarks(petRemarks);
   registedAccountForm.setPetRemarks(petRemarks);
@@ -391,21 +406,27 @@ public class AccountChangeService extends BaseService {
   Pattern preficturePattern = Pattern.compile(PREFECTURE_FORMAT);
   AccountChangeForm accountChangeForm = new AccountChangeForm();
   RegistedAccountForm registedAccountForm = new RegistedAccountForm();
+
   String userName = trimmerInfo.getUserName();
   accountChangeForm.setUserName(userName);
   registedAccountForm.setUserName(userName);
+
   String password = trimmerInfo.getPassword();
   accountChangeForm.setPassword(password);
   registedAccountForm.setPassword(password);
+
   String sex = trimmerInfo.getSex();
   accountChangeForm.setSex(sex);
   registedAccountForm.setSex(sex);
+
   String birthday = dateFormat.format(trimmerInfo.getBirthday());
   accountChangeForm.setBirthday(birthday);
   registedAccountForm.setBirthday(birthday);
+
   String postalCode = trimmerInfo.getPostalCode();
   accountChangeForm.setPostalCode(postalCode);
   registedAccountForm.setPostalCode(postalCode);
+
   String streetAddres = trimmerInfo.getStreetAddress();
   Matcher macher = preficturePattern.matcher(streetAddres);
   boolean isExistPrefecture = macher.find();
@@ -413,6 +434,7 @@ public class AccountChangeService extends BaseService {
    throw new MyException("msg.error.011",
    this.messageService.getMessage(MessageService.MessageType.ERROR, "011", "アカウント情報"));
   }
+
   String prefecture = macher.group();
   String prefectureKey = this.propertiesService.getKey(prefecture);
   if(prefectureKey == null) {
@@ -423,18 +445,23 @@ public class AccountChangeService extends BaseService {
   }
   accountChangeForm.setPrefectures(prefectureKey);
   registedAccountForm.setPrefectures(prefectureKey);
+
   String cities = streetAddres.substring(macher.end());
   accountChangeForm.setCities(cities);
   registedAccountForm.setCities(cities);
+
   String emailAddres = trimmerInfo.getEmailAddress();
   accountChangeForm.setEmailAddress(emailAddres);
   registedAccountForm.setEmailAddress(emailAddres);
+
   String telephoneNum = trimmerInfo.getTelephoneNumber();
   accountChangeForm.setTelephoneNumber(telephoneNum);
   registedAccountForm.setTelephoneNumber(telephoneNum);
+
   String storeName = trimmerInfo.getStoreName();
   accountChangeForm.setStoreName(storeName);
   registedAccountForm.setStoreName(storeName);
+
   List<FormBusinessHours> formBusinessHoursList = new ArrayList<>();
   List<TrimmerInfoBusinessHours> trimmerInfoBusinessHoursList = trimmerInfo.getTrimmerInfoBusinessHoursList();
   String formBusinessHoursInputValue = null;
@@ -454,24 +481,32 @@ public class AccountChangeService extends BaseService {
      formBusinessHoursInputValue += inputValue;
     }
     formBusinessHours.setBusinessHoursWeekdayNum(Integer.toString(tempBusinessDay));
+
     formBusinessHours.setBusinessHoursStartTime(startBusinessTime.format(DateTimeFormatter.ofPattern("HH:mm")));
+
     formBusinessHours.setBusinessHoursEndTime(endBusinessTime.format(DateTimeFormatter.ofPattern("HH:mm")));
+
     String complement = trimmerInfoBusinessHours.getComplement();
     formBusinessHours.setBusinessHoursRemarks(complement);
+
     formBusinessHoursList.add(formBusinessHours);
    }
   }
+
   accountChangeForm.setFormBusinessHoursInputValue(formBusinessHoursInputValue);
   registedAccountForm.setFormBusinessHoursInputValue(formBusinessHoursInputValue);
   accountChangeForm.setFormBusinessHoursList(formBusinessHoursList);
   registedAccountForm.setFormBusinessHoursList(formBusinessHoursList);
+
   Integer tempStoreEmployeesNum = trimmerInfo.getStoreEmployeesNumber();
   String storeEmployeesNum = tempStoreEmployeesNum == null?null:tempStoreEmployeesNum.toString();
   accountChangeForm.setStoreEmployees(storeEmployeesNum);
   registedAccountForm.setStoreEmployees(storeEmployeesNum);
+
   String storeCourseInfo = trimmerInfo.getStoreCourseInfo();
   accountChangeForm.setCourseInfo(storeCourseInfo);
   registedAccountForm.setCourseInfo(storeCourseInfo);
+
   String storeCommitment = trimmerInfo.getStoreCommitment();
   accountChangeForm.setCommitment(storeCommitment);
   registedAccountForm.setCommitment(storeCommitment);
