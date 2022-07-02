@@ -208,14 +208,6 @@ public class AccountChangeService extends BaseService {
  }
 
  /**
-  * 登録成功失敗getter
-  * @return 登録成功失敗
-  */
- public boolean isCanRegistFlg() {
-  return this.canRegist;
- }
-
- /**
   * 初回表示設定
   * @param request リクエストオブジェクト
   */
