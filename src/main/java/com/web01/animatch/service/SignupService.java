@@ -470,14 +470,7 @@ public class SignupService extends BaseService {
         }
        }
       }
-     } else if (formBusinessHoursStartTime.isEmpty() && !formBusinessHoursEndTime.isEmpty()) {
-      formBusinessHours.setIsErrBusinessHoursStartTime("1");
-      if (errorTimeCount == 0) {
-       this.msgMap.put("016",
-         this.messageService.getMessage(MessageService.MessageType.ERROR, "005", "営業時間"));
-       errorTimeCount++;
-      }
-     } else if (!formBusinessHoursStartTime.isEmpty() && formBusinessHoursEndTime.isEmpty()) {
+     } else if (formBusinessHoursStartTime.isEmpty() || formBusinessHoursEndTime.isEmpty()) {
       formBusinessHours.setIsErrBusinessHoursStartTime("1");
       if (errorTimeCount == 0) {
        this.msgMap.put("016",
