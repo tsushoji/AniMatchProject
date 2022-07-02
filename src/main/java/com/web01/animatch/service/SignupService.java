@@ -183,18 +183,12 @@ public class SignupService extends BaseService {
   * @param request リクエストオブジェクト
   */
  public void setInitPropertiesKey(HttpServletRequest request) {
-  Map<String, String> registTypeMap = new HashMap<>();
-  Map<String, String> prefecturesMap = new HashMap<>();
-  Map<String, String> petTypeMap = new HashMap<>();
-  Map<String, String> weekdayMap = new HashMap<>();
-  Map<String, String> humanSexMap = new HashMap<>();
-  Map<String, String> petSexMap = new HashMap<>();
-  registTypeMap = this.propertiesService.getValues(PropertiesService.REGIST_TYPE_KEY_INIT_STR);
-  prefecturesMap = this.propertiesService.getValues(PropertiesService.PREFECTURES_KEY_INIT_STR);
-  petTypeMap = this.propertiesService.getValues(PropertiesService.PET_TYPE_KEY_INIT_STR);
-  weekdayMap = this.propertiesService.getValues(PropertiesService.WEEKDAY_KEY_INIT_STR);
-  humanSexMap = this.propertiesService.getValues(PropertiesService.HUMAN_SEX_KEY_INIT_STR);
-  petSexMap = this.propertiesService.getValues(PropertiesService.PET_SEX_KEY_INIT_STR);
+  Map<String, String> registTypeMap = this.propertiesService.getValues(PropertiesService.REGIST_TYPE_KEY_INIT_STR);
+  Map<String, String> prefecturesMap = this.propertiesService.getValues(PropertiesService.PREFECTURES_KEY_INIT_STR);
+  Map<String, String> petTypeMap = this.propertiesService.getValues(PropertiesService.PET_TYPE_KEY_INIT_STR);
+  Map<String, String> weekdayMap = this.propertiesService.getValues(PropertiesService.WEEKDAY_KEY_INIT_STR);
+  Map<String, String> humanSexMap = this.propertiesService.getValues(PropertiesService.HUMAN_SEX_KEY_INIT_STR);
+  Map<String, String> petSexMap = this.propertiesService.getValues(PropertiesService.PET_SEX_KEY_INIT_STR);
 
   request.setAttribute("registTypeMap", registTypeMap);
   request.setAttribute("prefecturesMap", prefecturesMap);
