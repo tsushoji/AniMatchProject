@@ -2,6 +2,7 @@ package com.web01.animatch.service;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Enumeration;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.TreeMap;
@@ -59,15 +60,31 @@ public class PropertiesService {
  }
 
  /**
-  * プロパティファイルからメッセージ取得
+  * プロパティファイルから値取得
   * @param key キー
-  * @return 失敗した場合、null 成功した場合、取得したプロパティ
+  * @return 失敗した場合、null 成功した場合、値
   */
  public String getValue(String key) {
   if (!Collections.list(this.resBundle.getKeys()).contains(key)) {
    return null;
   }
   return this.resBundle.getString(key);
+ }
+
+ /**
+  * プロパティファイルからキー取得
+  * @param value キー
+  * @return 失敗した場合、null 成功した場合、キー
+  */
+ public String getKey(String value) {
+  Enumeration<String> keys = this.resBundle.getKeys();
+  while (keys.hasMoreElements()) {
+   String key = keys.nextElement();
+   if(this.resBundle.getString(key).equals(value)) {
+    return key;
+   }
+  }
+  return null;
  }
 
  /**

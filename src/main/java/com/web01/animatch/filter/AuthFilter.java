@@ -22,6 +22,12 @@ import com.web01.animatch.service.SessionService;
  */
 public class AuthFilter implements Filter {
 
+ //定数
+ /**
+  * デフォルト値
+  */
+ private static final String URL_PREFIX = "/animatch";
+
  /**
   * デフォルトコンストラクタ
   */
@@ -50,9 +56,9 @@ public class AuthFilter implements Filter {
   boolean isExistUserSessionKeyName = sessionService.isBindingKeySession(AuthService.USER_SESSION_KEY_NAME);
   if(isExistUserSessionKeyName) {
    userSession = (UserSession)sessionService.getBindingKeySessionValue(AuthService.USER_SESSION_KEY_NAME);
-  }  
+  }
   if(judgeSessionPageURL(path)) {
-   String LoginedURL = "/animatch" + path;
+   String LoginedURL = URL_PREFIX + path;
    if(judgeParameterURL(path)) {
     LoginedURL = ((HttpServletRequest) request).getRequestURI();
    }
@@ -75,7 +81,11 @@ public class AuthFilter implements Filter {
     chain.doFilter(request, response);
     return;
    }else {
-    userSession.setLoginedURL("/animatch/member/dmessage/list");
+    String loginedURL = URL_PREFIX + path;
+    if(path.equals("/member/dmessage/detail/")) {
+     loginedURL = URL_PREFIX + "/member/dmessage/list";
+    }
+    userSession.setLoginedURL(loginedURL);
     sessionService.bindSession(AuthService.USER_SESSION_KEY_NAME, userSession);
     //ログイン画面へリダイレクト
     String URL = "/animatch/login/";
@@ -124,7 +134,7 @@ public class AuthFilter implements Filter {
  }
 
  /**
-  * セッション制御ページURLパターン判定
+  * パラメータを含むURLパターン判定
   * @param path パス
   * @return パラメータを含むURLパターンである場合、true
   * そうでない場合、false
@@ -152,6 +162,10 @@ public class AuthFilter implements Filter {
    return true;
   }
 
+  if (path.equals("/account/change/")) {
+   return true;
+  }
+
   if (path.equals("/contact/")) {
    return true;
   }
@@ -171,6 +185,10 @@ public class AuthFilter implements Filter {
   }
 
   if (path.equals("/member/dmessage/detail/")) {
+   return true;
+  }
+
+  if (path.equals("/account/change/")) {
    return true;
   }
 

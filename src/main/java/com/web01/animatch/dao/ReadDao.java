@@ -1,6 +1,7 @@
 package com.web01.animatch.dao;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -102,15 +103,15 @@ public class ReadDao extends BaseDao {
  public User findUserByUserIdAndPassword(int userId, String password) throws SQLException {
   User user = null;
   List<HashMap<String, Object>> userDataList = new ArrayList<>();
-  
+
   String whereStr = createWhereOfUserIdAndPassword(userId, password, userDataList);
   if(whereStr == null) {
    throw new SQLException();
   }
-  
+
   try (PreparedStatement pstmt = createSelectStatement(null, "t_user", whereStr, null, null, userDataList);) {
    ResultSet rs = pstmt.executeQuery();
-   
+
    if (rs.next()) {
     user = new User();
     user.setUserId(rs.getInt("user_id") == 0 ? null : rs.getInt("user_id"));
@@ -132,8 +133,35 @@ public class ReadDao extends BaseDao {
   } catch (SQLException e) {
    throw e;
   }
-  
+
   return user;
+ }
+
+ /**
+  * ユーザーID抽出
+  * @param user ユーザー情報
+  * @return ユーザー情報オブジェクト
+  */
+ public Integer findUserIdByUserInfo(User user) throws SQLException {
+  Integer userId = null;
+  List<HashMap<String, Object>> userDataList = new ArrayList<>();
+
+  String whereStr = createWhereOfUserInfo(user, userDataList);
+  if(whereStr == null) {
+   throw new SQLException();
+  }
+
+  try (PreparedStatement pstmt = createSelectStatement("user_id", "t_user", whereStr, null, null, userDataList);) {
+   ResultSet rs = pstmt.executeQuery();
+
+   if (rs.next()) {
+    userId = rs.getInt("user_id") == 0 ? null : rs.getInt("user_id");
+   }
+  } catch (SQLException e) {
+   throw e;
+  }
+
+  return userId;
  }
 
  /**
@@ -455,6 +483,33 @@ public class ReadDao extends BaseDao {
   }
 
   return whereOfUserIdAndPassword;
+ }
+
+ /**
+  * ユーザ情報Where句作成
+  * @param user ユーザ情報
+  * @param paramDataList SQLパラメータデータリスト
+  * @return ユーザID、パスワードWhere句
+  */
+ private String createWhereOfUserInfo(User user, List<HashMap<String, Object>> paramDataList) {
+  String whereOfUserInfo = null;
+
+  whereOfUserInfo = "user_name = ?";
+  paramDataList.add(createSqlParatemerMap(user.getUserName(),Types.VARCHAR));
+  whereOfUserInfo = createSqlClauseContent("password = ?", whereOfUserInfo, LogicalOperatorType.AND);
+  paramDataList.add(createSqlParatemerMap(user.getPassword(), Types.VARCHAR));
+  whereOfUserInfo = createSqlClauseContent("birthday = ?", whereOfUserInfo, LogicalOperatorType.AND);
+  paramDataList.add(createSqlParatemerMap(new Date(user.getBirthday().getTime()), Types.DATE));
+  whereOfUserInfo = createSqlClauseContent("postal_code = ?", whereOfUserInfo, LogicalOperatorType.AND);
+  paramDataList.add(createSqlParatemerMap(user.getPostalCode(), Types.VARCHAR));
+  whereOfUserInfo = createSqlClauseContent("street_address = ?", whereOfUserInfo, LogicalOperatorType.AND);
+  paramDataList.add(createSqlParatemerMap(user.getStreetAddress(), Types.VARCHAR));
+  whereOfUserInfo = createSqlClauseContent("email_address = ?", whereOfUserInfo, LogicalOperatorType.AND);
+  paramDataList.add(createSqlParatemerMap(user.getEmailAddress(), Types.VARCHAR));
+  whereOfUserInfo = createSqlClauseContent("telephone_number = ?", whereOfUserInfo, LogicalOperatorType.AND);
+  paramDataList.add(createSqlParatemerMap(user.getTelephoneNumber(), Types.VARCHAR));
+
+  return whereOfUserInfo;
  }
 
  /**

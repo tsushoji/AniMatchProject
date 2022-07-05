@@ -36,6 +36,9 @@
    <ul class="navbar-nav">
     <c:choose>
      <c:when test="${not empty userSession and not empty userSession.userId}">
+      <li class="nav-item ml-auto mr-md-3 collapse-item-btn-search">
+       <a class="nav-link btn btn-outline-info" type="submit" href="/animatch/account/change/">アカウント情報</a>
+      </li>
       <li class="nav-item ml-auto mr-md-2 collapse-item-btn-login">
        <!--javascriptでは「-」の命名規則は使用できない-->
        <form name="logoutForm" method="post" action="/animatch/logout/">

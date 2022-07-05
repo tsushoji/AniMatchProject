@@ -12,7 +12,13 @@
 <head>
 <title>login</title>
 
+<!-- plugin show password -->
+<link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
+
 <%@ include file="/WEB-INF/jsp/head.jsp"%>
+
+<!-- plugin show password -->
+<script src="https://unpkg.com/bootstrap-show-password@1.2.1/dist/bootstrap-show-password.min.js"></script>
 
 <link rel="stylesheet" type="text/css" href="/animatch/styles/login.css" />
 
@@ -27,7 +33,7 @@
   <form class="py-3" method="post" action="/animatch/login/">
 
    <input type="text" class="form-control" placeholder="ユーザーID" name="user-id" value="<c:out value="${loginForm.userId}"/>">
-   <input type="password" class="form-control" placeholder="パスワード" name="password" value="<c:out value="${loginForm.password}"/>">
+   <input type="password" class="form-control" placeholder="パスワード" name="password" value="<c:out value="${loginForm.password}"/>" data-toggle="password">
 
    <div class="text-left mt-2">
     <input type="checkbox" id="saved-username-check" name="saved-username-check" value="saved-user-info"

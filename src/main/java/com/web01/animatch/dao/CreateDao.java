@@ -221,6 +221,46 @@ public class CreateDao extends BaseDao {
  }
 
  /**
+  * 営業時間DB登録
+  * @param storeId 店舗ID
+  * @param businessHoursList 営業時間リスト
+  * @return DB登録成功失敗
+  */
+ public boolean registBusinessHours(int storeId, List<BusinessHours> businessHoursList) throws SQLException {
+  Map<Integer, List<HashMap<String, Object>>> businessHoursDataMap = new HashMap<>();
+
+  for (int i = 0; i < businessHoursList.size(); i++) {
+   List<HashMap<String, Object>> businessHoursDataList = new ArrayList<>();
+   businessHoursDataList.add(createSqlParatemerMap(storeId, Types.INTEGER));
+   businessHoursDataList
+     .add(createSqlParatemerMap(businessHoursList.get(i).getBusinessDay(), Types.VARCHAR));
+   businessHoursDataList.add(createSqlParatemerMap(
+     Time.valueOf(businessHoursList.get(i).getStartBusinessTime()), Types.TIME));
+   businessHoursDataList.add(
+     createSqlParatemerMap(Time.valueOf(businessHoursList.get(i).getEndBusinessTime()), Types.TIME));
+   businessHoursDataList
+     .add(createSqlParatemerMap(businessHoursList.get(i).getComplement(), Types.VARCHAR));
+   businessHoursDataList
+     .add(createSqlParatemerMap(businessHoursList.get(i).getIsDeleted(), Types.INTEGER));
+   businessHoursDataList.add(createSqlParatemerMap(
+     Timestamp.valueOf(businessHoursList.get(i).getInsertedTime()), Types.TIMESTAMP));
+   businessHoursDataList.add(createSqlParatemerMap(
+     Timestamp.valueOf(businessHoursList.get(i).getUpdatedTime()), Types.TIMESTAMP));
+   businessHoursDataMap.put(i, businessHoursDataList);
+  }
+
+  for (int i = 0; i < businessHoursDataMap.size(); i++) {
+   try (PreparedStatement pstmt = createInsetStatement("t_business_hours", businessHoursDataMap.get(i), false);){
+    pstmt.executeUpdate();
+   } catch (SQLException e) {
+    throw e;
+   }
+  }
+
+  return true;
+ }
+
+ /**
   * 飼い主DB登録
   * @param autoLoginInfo 自動ログイン情報オブジェクト
   * @return DB登録成功失敗

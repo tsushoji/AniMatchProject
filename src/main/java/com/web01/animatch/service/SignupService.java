@@ -24,12 +24,14 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.web01.animatch.dao.CreateDao;
 import com.web01.animatch.dao.DBConnection;
+import com.web01.animatch.dao.ReadDao;
 import com.web01.animatch.dto.BusinessHours;
 import com.web01.animatch.dto.FormBusinessHours;
 import com.web01.animatch.dto.Pet;
 import com.web01.animatch.dto.RegistForm;
 import com.web01.animatch.dto.Store;
 import com.web01.animatch.dto.User;
+import com.web01.animatch.exception.MyException;
 
 /**
  * サインアップサービスクラス
@@ -181,18 +183,12 @@ public class SignupService extends BaseService {
   * @param request リクエストオブジェクト
   */
  public void setInitPropertiesKey(HttpServletRequest request) {
-  Map<String, String> registTypeMap = new HashMap<>();
-  Map<String, String> prefecturesMap = new HashMap<>();
-  Map<String, String> petTypeMap = new HashMap<>();
-  Map<String, String> weekdayMap = new HashMap<>();
-  Map<String, String> humanSexMap = new HashMap<>();
-  Map<String, String> petSexMap = new HashMap<>();
-  registTypeMap = this.propertiesService.getValues(PropertiesService.REGIST_TYPE_KEY_INIT_STR);
-  prefecturesMap = this.propertiesService.getValues(PropertiesService.PREFECTURES_KEY_INIT_STR);
-  petTypeMap = this.propertiesService.getValues(PropertiesService.PET_TYPE_KEY_INIT_STR);
-  weekdayMap = this.propertiesService.getValues(PropertiesService.WEEKDAY_KEY_INIT_STR);
-  humanSexMap = this.propertiesService.getValues(PropertiesService.HUMAN_SEX_KEY_INIT_STR);
-  petSexMap = this.propertiesService.getValues(PropertiesService.PET_SEX_KEY_INIT_STR);
+  Map<String, String> registTypeMap = this.propertiesService.getValues(PropertiesService.REGIST_TYPE_KEY_INIT_STR);
+  Map<String, String> prefecturesMap = this.propertiesService.getValues(PropertiesService.PREFECTURES_KEY_INIT_STR);
+  Map<String, String> petTypeMap = this.propertiesService.getValues(PropertiesService.PET_TYPE_KEY_INIT_STR);
+  Map<String, String> weekdayMap = this.propertiesService.getValues(PropertiesService.WEEKDAY_KEY_INIT_STR);
+  Map<String, String> humanSexMap = this.propertiesService.getValues(PropertiesService.HUMAN_SEX_KEY_INIT_STR);
+  Map<String, String> petSexMap = this.propertiesService.getValues(PropertiesService.PET_SEX_KEY_INIT_STR);
 
   request.setAttribute("registTypeMap", registTypeMap);
   request.setAttribute("prefecturesMap", prefecturesMap);
@@ -324,7 +320,7 @@ public class SignupService extends BaseService {
   }
 
   //都道府県選択チェック
-  if (registForm.getPrefectures().equals("000")) {
+  if (registForm.getPrefectures().equals(DEFAULT_SELECT_OR_RADIO_VAL)) {
    this.msgMap.put("005", this.messageService.getMessage(MessageService.MessageType.ERROR, "004", "都道府県"));
   }
 
@@ -474,14 +470,7 @@ public class SignupService extends BaseService {
         }
        }
       }
-     } else if (formBusinessHoursStartTime.isEmpty() && !formBusinessHoursEndTime.isEmpty()) {
-      formBusinessHours.setIsErrBusinessHoursStartTime("1");
-      if (errorTimeCount == 0) {
-       this.msgMap.put("016",
-         this.messageService.getMessage(MessageService.MessageType.ERROR, "005", "営業時間"));
-       errorTimeCount++;
-      }
-     } else if (!formBusinessHoursStartTime.isEmpty() && formBusinessHoursEndTime.isEmpty()) {
+     } else if (formBusinessHoursStartTime.isEmpty() || formBusinessHoursEndTime.isEmpty()) {
       formBusinessHours.setIsErrBusinessHoursStartTime("1");
       if (errorTimeCount == 0) {
        this.msgMap.put("016",
@@ -604,7 +593,7 @@ public class SignupService extends BaseService {
      //DB登録処理前に登録成功失敗リセット
      this.canRegist = false;
      this.canRegist = createDao.registOwner(user);
-     setAttributeRegistOwner(request, user);
+     setAttributeRegistOwner(request, user, conSQL);
      conSQL.commit();
     }
     break;
@@ -619,7 +608,7 @@ public class SignupService extends BaseService {
      //DB登録処理前に登録成功失敗リセット
      this.canRegist = false;
      this.canRegist = createDao.registTrimmer(user);
-     setAttributeRegistTrimmer(request, user);
+     setAttributeRegistTrimmer(request, user, conSQL);
      conSQL.commit();
     }
     break;
@@ -627,7 +616,7 @@ public class SignupService extends BaseService {
    default:
     break;
    }
-  } catch (SQLException | ParseException | IOException | ServletException e) {
+  } catch (MyException | SQLException | ParseException | IOException | ServletException e) {
    try {
     conSQL.rollback();
    } catch (SQLException e1) {
@@ -649,7 +638,8 @@ public class SignupService extends BaseService {
 
   user.setUserName(registForm.getUserName());
   user.setPassword(registForm.getPassword());
-  user.setSex(getParameterData(registForm.getSex()));
+  String tempSex = registForm.getSex();
+  user.setSex(tempSex == null?DEFAULT_SELECT_OR_RADIO_VAL:tempSex);
   SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
   user.setBirthday(dateFormat.parse(registForm.getBirthday()));
   user.setPostalCode(registForm.getPostalCode());
@@ -684,8 +674,9 @@ public class SignupService extends BaseService {
    pet.setImage(fileData);
   }
   pet.setNickName(registForm.getPetName());
-  pet.setSex(getParameterData(registForm.getPetSex()));
-  pet.setType(getSelectParameterData(registForm.getPetType()));
+  String tempPetSex = registForm.getPetSex();
+  pet.setSex(tempPetSex == null?DEFAULT_SELECT_OR_RADIO_VAL:tempPetSex);
+  pet.setType(registForm.getPetType());
   String petWeight = registForm.getPetWeight();
   if (!StringUtils.isEmpty(petWeight)) {
    pet.setWeight(Float.parseFloat(petWeight));
@@ -755,22 +746,6 @@ public class SignupService extends BaseService {
  }
 
  /**
-  * 選択ボックスパラメータデータ取得
-  * @param param 文字列引数
-  * @return 文字列引数がnullまたは空であるかつ選択されていない場合、null<br>
-  * そうでない場合、文字列引数
-  */
- private String getSelectParameterData(String param) {
-  String rtnVal = null;
-  if (!StringUtils.isEmpty(param)) {
-   if (!param.equals("000")) {
-    rtnVal = param;
-   }
-  }
-  return rtnVal;
- }
-
- /**
   * パラメータセット営業時間オブジェクト取得
   * @param registForm 登録フォームオブジェクト
   * @return 登録営業時間リスト
@@ -819,8 +794,23 @@ public class SignupService extends BaseService {
   * 飼い主用登録オブジェクト属性設定
   * @param request リクエストオブジェクト
   * @param user ユーザオブジェクト
+  * @param conSQL DB接続
   */
- private void setAttributeRegistOwner(HttpServletRequest request, User user) {
+ private void setAttributeRegistOwner(HttpServletRequest request, User user, Connection conSQL) throws MyException{
+  ReadDao readDao = new ReadDao(conSQL);
+
+  Integer userId = null;
+  try {
+   userId = readDao.findUserIdByUserInfo(user);
+  }catch(SQLException e) {
+   throw new MyException("msg.error.011",this.messageService.getMessage(MessageService.MessageType.ERROR, "011", "アカウント情報"));
+  }
+
+  if(userId == null) {
+   throw new MyException("msg.error.011",this.messageService.getMessage(MessageService.MessageType.ERROR, "011", "アカウント情報"));
+  }
+  user.setUserId(userId);
+
   Pet pet = user.getPet();
 
   //登録完了画面表示文字セット
@@ -845,8 +835,23 @@ public class SignupService extends BaseService {
   * トリマー用登録オブジェクト属性設定
   * @param request リクエストオブジェクト
   * @param user ユーザオブジェクト
+  * @param conSQL DB接続
   */
- private void setAttributeRegistTrimmer(HttpServletRequest request, User user) {
+ private void setAttributeRegistTrimmer(HttpServletRequest request, User user, Connection conSQL) throws MyException{
+  ReadDao readDao = new ReadDao(conSQL);
+
+  Integer userId = null;
+  try {
+   userId = readDao.findUserIdByUserInfo(user);
+  }catch(SQLException e) {
+   throw new MyException("msg.error.011",this.messageService.getMessage(MessageService.MessageType.ERROR, "011", "アカウント情報"));
+  }
+
+  if(userId == null) {
+   throw new MyException("msg.error.011",this.messageService.getMessage(MessageService.MessageType.ERROR, "011", "アカウント情報"));
+  }
+  user.setUserId(userId);
+
   Store store = user.getStore();
 
   //登録完了画面表示文字セット

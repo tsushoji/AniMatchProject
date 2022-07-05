@@ -27,4 +27,8 @@ public class UserSession {
   * ログイン完了リダイレクトURL
   */
  private String loginedURL;
+ /**
+  * 登録されたアカウントフォーム
+  */
+ private RegistedAccountForm registedAccountForm;
 }

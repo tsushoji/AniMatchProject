@@ -9,14 +9,12 @@
 <c:set var="firstTypeKeyInitEnd" value="001" />
 <c:set var="secondTypeKeyInitEnd" value="002" />
 
-<c:set var="newLine" value="${System.lineSeparator()}" />
-
 <!DOCTYPE html>
 
 <html>
 
 <head>
-<title>signup</title>
+<title>change</title>
 
 <!-- plugin dropify -->
 <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
@@ -34,7 +32,7 @@
 <!-- plugin multipicker -->
 <link rel="stylesheet" type="text/css" href="/animatch/styles/plugin/multipicker.min.css">
 
-<link rel="stylesheet" type="text/css" href="/animatch/styles/signup.css" />
+<link rel="stylesheet" type="text/css" href="/animatch/styles/change.css" />
 
 <link rel="stylesheet" type="text/css" href="/animatch/styles/common.css" />
 </head>
@@ -49,32 +47,22 @@
     <img src="/animatch/images/icon_animatch.png" alt="Animatchロゴ">
    </div>
 
-   <h2>&lt;&lt;新規会員登録&gt;&gt;</h2>
+   <h2>&lt;&lt;アカウント情報変更&gt;&gt;</h2>
 
    <p>
-    新規会員にご登録をいただくと、無料でAniMatchでのサービスをご利用いただくことができます。<br>
-    以下登録フォームにお客様情報をご入力ください。
+    アカウント情報を変更することができます。<br>
+    以下登録フォームで変更したい情報をご入力ください。
    </p>
+
+   <h3>登録区分</h3>
+   <p><c:out value="${registTypeName}"/></p>
 
   </div>
 
   <!--入力フォーム-->
-  <form method="post" enctype="multipart/form-data" action="/animatch/signup/">
+  <form method="post" class="account-change-form" enctype="multipart/form-data" action="/animatch/account/change/" autocomplete="off">
 
-   <div class="form-group">
-    <label class="required-item" for="regist-type">登録区分</label>
-    <select name="regist-type" id="regist-type" class="form-control">
-     <option value="000">選んでください</option>
-     <c:forEach items="${registTypeMap}" var="registType">
-      <option value="${registType.key}"
-       <c:if test="${not empty formRegistType and formRegistType == registType.key}">selected</c:if>>
-       ${registType.value}
-      </option>
-     </c:forEach>
-    </select>
-   </div>
-
-   <input type="hidden" id="formRegistType" value="${formRegistType}">
+   <input type="hidden" id="formRegistType" name="formRegistType" value="${formRegistType}">
 
    <div class="form-common">
     <h3 class="mb-3">会員情報</h3>
@@ -84,7 +72,7 @@
 
     <div class="form-group col-md-4 col-sm-5">
      <label class="control-label required-item">ユーザー名</label>
-     <input type="text" name="user-name" class="form-control" value="<c:out value="${registForm.userName}"/>" required>
+     <input type="text" id="user-name" name="user-name" class="form-control check-changed-input" value="<c:out value="${accountChangeForm.userName}"/>" required>
      <c:if test="${not empty msgMap['001']}">
       <p>${msgMap["001"]}</p>
      </c:if>
@@ -93,15 +81,9 @@
     <div class="form-group col-md-4">
 
      <label class="control-label required-item">パスワード</label>
-     <input type="password" name="password" class="form-control col-md col-sm-5" value="<c:out value="${registForm.password}"/>" required data-toggle="password">
+     <input type="password" id="password" name="password" class="form-control col-md col-sm-5" value="<c:out value="${accountChangeForm.password}"/>" required data-toggle="password">
      <c:if test="${not empty msgMap['003']}">
       <p>${msgMap["003"]}</p>
-     </c:if>
-
-     <label class="control-label mt-2 required-item">再入力</label>
-     <input type="password" name="re-password" class="form-control col-md col-sm-5" value="<c:out value="${registForm.rePassword}"/>" required data-toggle="password">
-     <c:if test="${not empty msgMap['002']}">
-      <p>${msgMap["002"]}</p>
      </c:if>
 
     </div>
@@ -112,20 +94,20 @@
 
    <div class="custom-control custom-radio custom-control-inline form-common">
     <input type="radio" id="radio-man" name="radio-user-sex" value="${firstTypeKeyInitEnd}" class="custom-control-input"
-     <c:if test="${not empty registForm.sex and registForm.sex == firstTypeKeyInitEnd}">checked</c:if>>
+     <c:if test="${not empty accountChangeForm.sex and accountChangeForm.sex == firstTypeKeyInitEnd}">checked</c:if>>
     <label class="custom-control-label custom-radio-label" for="radio-man">${humanSexMap["001"]}</label>
    </div>
 
    <div class="custom-control custom-radio custom-control-inline form-common">
     <input type="radio" id="radio-woman" name="radio-user-sex" value="${secondTypeKeyInitEnd}" class="custom-control-input"
-     <c:if test="${not empty registForm.sex and registForm.sex == secondTypeKeyInitEnd}">checked</c:if>>
+     <c:if test="${not empty accountChangeForm.sex and accountChangeForm.sex == secondTypeKeyInitEnd}">checked</c:if>>
     <label class="custom-control-label custom-radio-label" for="radio-woman">${humanSexMap["002"]}</label>
    </div>
 
    <div class="form-row mt-3 form-common">
     <div class="form-group col-md-4 col-sm-5">
      <label class="control-label required-item">生年月日</label>
-     <input type="text" name="birthday" class="form-control plugin-datepicker" value="<c:out value="${registForm.birthday}"/>" required>
+     <input type="text" id="birthday" name="birthday" class="form-control check-changed-input plugin-datepicker" value="<c:out value="${accountChangeForm.birthday}"/>" required>
     </div>
    </div>
 
@@ -141,7 +123,7 @@
 
     <div class="form-group col-md-3">
      <label class="control-label required-item" for="postal-code">郵便番号</label>
-     <input type="text" name="postal-code" class="form-control col-md col-sm-3" placeholder="9991234" id="postal-code" maxlength="7" value="<c:out value="${registForm.postalCode}"/>" required>
+     <input type="text" id="postal-code" name="postal-code" class="form-control col-md col-sm-3 check-changed-input" placeholder="9991234" id="postal-code" maxlength="7" value="<c:out value="${accountChangeForm.postalCode}"/>" required>
      <c:if test="${not empty msgMap['004']}">
       <p>${msgMap["004"]}</p>
      </c:if>
@@ -149,11 +131,11 @@
 
     <div class="form-group col-md-3 col-sm-5">
      <label class="control-label required-item" for="prefectures">住所&ndash;都道府県</label>
-     <select name="prefectures" id="prefectures" class="custom-select form-control">
+     <select name="prefectures" id="prefectures" class="custom-select form-control check-changed-input">
       <option value="000">選んでください</option>
       <c:forEach items="${prefecturesMap}" var="prefectures">
        <option value="${prefectures.key}"
-        <c:if test="${not empty registForm.prefectures and registForm.prefectures == prefectures.key}">selected</c:if>>
+        <c:if test="${not empty accountChangeForm.prefectures and accountChangeForm.prefectures == prefectures.key}">selected</c:if>>
         ${prefectures.value}
        </option>
       </c:forEach>
@@ -165,7 +147,7 @@
 
     <div class="form-group col-md-3">
      <label class="control-label required-item" for="cities">住所&ndash;市区町村</label>
-     <input type="text" name="cities" id="cities" class="form-control col-md col-sm-3" value="<c:out value="${registForm.cities}"/>" required>
+     <input type="text" name="cities" id="cities" class="form-control col-md col-sm-3 check-changed-input" value="<c:out value="${accountChangeForm.cities}"/>" required>
      <c:if test="${not empty msgMap['006']}">
       <p>${msgMap["006"]}</p>
      </c:if>
@@ -179,7 +161,7 @@
    <div class="form-row form-common">
     <div class="form-group col-md-5 col-sm-6">
      <label class="control-label required-item">メールアドレス</label>
-     <input type="text" name="email-address" class="form-control" placeholder="xxxxxxx@xx.xx.xx" value="<c:out value="${registForm.emailAddress}"/>" required>
+     <input type="text" id="email-address" name="email-address" class="form-control check-changed-input" placeholder="xxxxxxx@xx.xx.xx" value="<c:out value="${accountChangeForm.emailAddress}"/>" required>
      <c:if test="${not empty msgMap['008']}">
       <p>${msgMap["008"]}</p>
      </c:if>
@@ -192,7 +174,7 @@
    <div class="form-row form-common">
     <div class="form-group col-md-4 col-sm-5">
      <label class="control-label required-item">電話番号</label>
-     <input type="tel" name="telephone-number" class="form-control" placeholder="09012345678" value="<c:out value="${registForm.telephoneNumber}"/>" required>
+     <input type="tel" id="telephone-number" name="telephone-number" class="form-control check-changed-input" placeholder="09012345678" value="<c:out value="${accountChangeForm.telephoneNumber}"/>" required>
      <c:if test="${not empty msgMap['010']}">
       <p>${msgMap["010"]}</p>
      </c:if>
@@ -214,7 +196,7 @@
    <div class="form-row form-owner">
     <div class="form-group col-md-4 col-sm-5">
      <label class="control-label required-item">ニックネーム</label>
-     <input type="text" id="pet-name" name="pet-name" class="form-control" placeholder="シロ" value="<c:out value="${registForm.petName}"/>">
+     <input type="text" id="pet-name" name="pet-name" class="form-control check-changed-input" placeholder="シロ" value="<c:out value="${accountChangeForm.petName}"/>">
      <c:if test="${not empty msgMap['011']}">
       <p>${msgMap["011"]}</p>
      </c:if>
@@ -225,24 +207,24 @@
 
    <div class="custom-control custom-radio custom-control-inline form-owner">
     <input type="radio" id="radio-male" name="radio-pet-sex" class="custom-control-input" value="${firstTypeKeyInitEnd}"
-     <c:if test="${not empty registForm.petSex and registForm.petSex == firstTypeKeyInitEnd}">checked</c:if>>
+     <c:if test="${not empty accountChangeForm.petSex and accountChangeForm.petSex == firstTypeKeyInitEnd}">checked</c:if>>
     <label class="custom-control-label custom-radio-label" for="radio-male">${petSexMap["001"]}</label>
    </div>
 
    <div class="custom-control custom-radio custom-control-inline form-owner">
     <input type="radio" id="radio-female" name="radio-pet-sex" class="custom-control-input" value="${secondTypeKeyInitEnd}"
-     <c:if test="${not empty registForm.petSex and registForm.petSex == secondTypeKeyInitEnd}">checked</c:if>>
+     <c:if test="${not empty accountChangeForm.petSex and accountChangeForm.petSex == secondTypeKeyInitEnd}">checked</c:if>>
     <label class="custom-control-label custom-radio-label" for="radio-female">${petSexMap["002"]}</label>
    </div>
 
    <div class="form-row mt-3 form-owner">
     <div class="form-group col-md-3 col-sm-5">
      <label class="control-label">種別</label>
-     <select name="pet-type" class="custom-select form-control">
+     <select name="pet-type" id="pet-type" class="custom-select form-control check-changed-input">
       <option value="000">選んでください</option>
       <c:forEach items="${petTypeMap}" var="petType">
        <option value="${petType.key}"
-        <c:if test="${not empty registForm.petType and registForm.petType == petType.key}">selected</c:if>>
+        <c:if test="${not empty accountChangeForm.petType and accountChangeForm.petType == petType.key}">selected</c:if>>
         ${petType.value}</option>
       </c:forEach>
      </select>
@@ -252,7 +234,7 @@
    <div class="form-row form-owner">
     <div class="form-group col-md-2 col-sm-3">
      <label class="control-label">体重&ndash;&#13199;</label>
-     <input type="text" name="pet-weight" class="form-control" placeholder="23" value="<c:out value="${registForm.petWeight}"/>">
+     <input type="text" id="pet-weight" name="pet-weight" class="form-control check-changed-input" placeholder="23" value="<c:out value="${accountChangeForm.petWeight}"/>">
      <c:if test="${not empty msgMap['012']}">
       <p>${msgMap["012"]}</p>
      </c:if>
@@ -265,7 +247,7 @@
    <div class="form-row form-trimmer">
     <div class="form-group col-md-4 col-sm-6">
      <label class="control-label required-item">店名</label>
-     <input type="text" id="store-name" name="store-name" class="form-control" placeholder="ペットサロン ヤマダ" value="<c:out value="${registForm.storeName}"/>">
+     <input type="text" id="store-name" name="store-name" class="form-control check-changed-input" placeholder="ペットサロン ヤマダ" value="<c:out value="${accountChangeForm.storeName}"/>">
      <c:if test="${not empty msgMap['015']}">
       <p>${msgMap["015"]}</p>
      </c:if>
@@ -276,12 +258,12 @@
     <label class="control-label">営業時間</label>
     <div>
      <ul class="plugin-multipicker">
-      <c:forEach items="${weekdayMap}" var="weekday">
-       <li>${fn:substringBefore(weekday.value, '曜日')}</li>
+      <c:forEach items="${weekdayMap}" var="weekday" varStatus="status">
+       <li id="check-changed-weekday-${status.index}">${fn:substringBefore(weekday.value, '曜日')}</li>
       </c:forEach>
      </ul>
      <input type="hidden" id="form-business-hours"
-      value="<c:out value="${registForm.formBusinessHoursInputValue}"/>">
+      value="<c:out value="${accountChangeForm.formBusinessHoursInputValue}"/>">
     </div>
    </div>
 
@@ -289,23 +271,23 @@
 
     <div class="form-row form-trimmer-business-hours day-val-${status.index}">
 
-     <h3 class="pt-3">${weekdayl.value}</h3>
+     <h3 class="pt-3">${weekday.value}</h3>
 
      <div class="form-group col-lg-2">
       <label class="control-label">開始時間</label>
-      <input type="time" id="business-hours-start-time-${status.index}" name="business-hours-start-time-${status.index}" class="form-control col-lg col-md-2 col-sm-3">
+      <input type="time" id="business-hours-start-time-${status.index}" name="business-hours-start-time-${status.index}" class="form-control col-lg col-md-2 col-sm-3 check-changed-input">
       <p id="business-hours-start-time-${status.index}-err-msg" class="is-hidden">${msgMap["016"]}</p>
      </div>
 
      <div class="form-group col-lg-2">
       <label class="control-label">終了時間</label>
-      <input type="time" id="business-hours-end-time-${status.index}" name="business-hours-end-time-${status.index}" class="form-control col-lg col-md-2 col-sm-3">
+      <input type="time" id="business-hours-end-time-${status.index}" name="business-hours-end-time-${status.index}" class="form-control col-lg col-md-2 col-sm-3 check-changed-input">
       <p id="business-hours-end-time-${status.index}-err-msg" class="is-hidden">${msgMap["016"]}</p>
      </div>
 
      <div class="form-group col-lg-5">
       <label class="control-label">補足</label>
-      <textarea id="business-hours-remarks-${status.index}" name="business-hours-remarks-${status.index}" class="form-control col-lg col-md-6 col-sm-7" placeholder="第一${weekdayl.value}は休業。"></textarea>
+      <textarea id="business-hours-remarks-${status.index}" name="business-hours-remarks-${status.index}" class="form-control col-lg col-md-6 col-sm-7 check-changed-input" placeholder="第一${weekdayl.value}は休業。"></textarea>
       <p id="business-hours-remarks-${status.index}-err-length-msg" class="is-hidden">${msgMap["017"]}</p>
       <p id="business-hours-remarks-${status.index}-err-xss-msg" class="is-hidden">${msgMap["024"]}</p>
      </div>
@@ -327,7 +309,7 @@
    <div class="form-row form-trimmer">
     <div class="form-group col-md-2 col-sm-3">
      <label class="control-label">従業員数&ndash;人</label>
-     <input type="text" name="store-employees" class="form-control" placeholder="20" value="<c:out value="${registForm.storeEmployees}"/>">
+     <input type="text" id="store-employees" name="store-employees" class="form-control check-changed-input" placeholder="20" value="<c:out value="${accountChangeForm.storeEmployees}"/>">
      <c:if test="${not empty msgMap['018']}">
       <p>${msgMap["018"]}</p>
      </c:if>
@@ -339,7 +321,7 @@
 
    <div class="form-group form-owner">
     <label class="control-label">備考</label>
-    <textarea name="pet-remarks" class="form-control" rows="10" placeholder="トリマーに伝えておきたいことを書いてください"><c:out value="${registForm.petRemarks}" /></textarea>
+    <textarea id="pet-remarks" name="pet-remarks" class="form-control check-changed-input" rows="10" placeholder="トリマーに伝えておきたいことを書いてください"><c:out value="${accountChangeForm.petRemarks}" /></textarea>
     <c:if test="${not empty msgMap['014']}">
      <p>${msgMap["014"]}</p>
     </c:if>
@@ -350,7 +332,7 @@
 
    <div class="form-group form-trimmer">
     <label class="control-label">コース・値段</label>
-    <textarea name="course-info" class="form-control" rows="10" placeholder="サービスの詳細を書いてください"><c:out value="${registForm.courseInfo}" /></textarea>
+    <textarea id="course-info" name="course-info" class="form-control check-changed-input" rows="10" placeholder="サービスの詳細を書いてください"><c:out value="${accountChangeForm.courseInfo}" /></textarea>
     <c:if test="${not empty msgMap['020']}">
      <p>${msgMap["020"]}</p>
     </c:if>
@@ -361,7 +343,7 @@
 
    <div class="form-group form-trimmer">
     <label class="control-label">こだわりポイント</label>
-    <textarea name="commitment" class="form-control" rows="10" placeholder="セールスポイントを書いてください"><c:out value="${registForm.commitment}" /></textarea>
+    <textarea id="commitment" name="commitment" class="form-control check-changed-input" rows="10" placeholder="セールスポイントを書いてください"><c:out value="${accountChangeForm.commitment}" /></textarea>
     <c:if test="${not empty msgMap['021']}">
      <p>${msgMap["021"]}</p>
     </c:if>
@@ -371,9 +353,36 @@
    </div>
 
    <div class="form-group form-common">
-    <input type="submit" class="btn btn-primary" value="新規登録">
+    <input type="submit" class="btn btn-primary" value="更新">
    </div>
 
+   <input type="hidden" id="registed-user-name" value="${userSession.registedAccountForm.userName}">
+   <input type="hidden" id="registed-password" value="${userSession.registedAccountForm.password}">
+   <input type="hidden" id="registed-radio-user-sex" value="${userSession.registedAccountForm.sex}">
+   <input type="hidden" id="registed-birthday" value="${userSession.registedAccountForm.birthday}">
+   <input type="hidden" id="registed-postal-code" value="${userSession.registedAccountForm.postalCode}">
+   <input type="hidden" id="registed-prefectures" value="${userSession.registedAccountForm.prefectures}">
+   <input type="hidden" id="registed-cities" value="${userSession.registedAccountForm.cities}">
+   <input type="hidden" id="registed-email-address" value="${userSession.registedAccountForm.emailAddress}">
+   <input type="hidden" id="registed-telephone-number" value="${userSession.registedAccountForm.telephoneNumber}">
+
+   <input type="hidden" id="registed-pet-name" value="${userSession.registedAccountForm.petName}">
+   <input type="hidden" id="registed-radio-pet-sex" value="${userSession.registedAccountForm.petSex}">
+   <input type="hidden" id="registed-pet-type" value="${userSession.registedAccountForm.petType}">
+   <input type="hidden" id="registed-pet-weight" value="${userSession.registedAccountForm.petWeight}">
+   <input type="hidden" id="registed-pet-remarks" value="${userSession.registedAccountForm.petRemarks}">
+
+   <input type="hidden" id="registed-store-name" value="${userSession.registedAccountForm.storeName}">
+   <input type="hidden" id="registed-store-employees" value="${userSession.registedAccountForm.storeEmployees}">
+   <input type="hidden" id="registed-form-business-hours" value="${userSession.registedAccountForm.formBusinessHoursInputValue}">
+   <c:forEach items="${userSession.registedAccountForm.formBusinessHoursList}" var="registdFormBusinessHoursList">
+    <c:set var="registedBusinessHoursWeekdayNum" value="${registdFormBusinessHoursList.businessHoursWeekdayNum}" />
+    <input type="hidden" id="registed-business-hours-start-time-${registedBusinessHoursWeekdayNum}" value="<c:out value="${registdFormBusinessHoursList.businessHoursStartTime}"/>">
+    <input type="hidden" id="registed-business-hours-end-time-${registedBusinessHoursWeekdayNum}" value="<c:out value="${registdFormBusinessHoursList.businessHoursEndTime}"/>">
+    <input type="hidden" id="registed-business-hours-remarks-${registedBusinessHoursWeekdayNum}" value="<c:out value="${registdFormBusinessHoursList.businessHoursRemarks}"/>">
+   </c:forEach>
+   <input type="hidden" id="registed-course-info" value="${userSession.registedAccountForm.courseInfo}">
+   <input type="hidden" id="registed-commitment" value="${userSession.registedAccountForm.commitment}">
   </form>
 
  </div>
@@ -382,7 +391,7 @@
  <footer>
   <div class="d-flex justify-content-end pr-3 footer-top">
    <a class="footer-top-content move-page-top cursor-pointer"> <img src="/animatch/images/icon_upmove.png" alt="トップへ戻るアイコン">
-   <strong>新規会員登録の上部へ戻る</strong>
+   <strong>アカウント情報変更の上部へ戻る</strong>
    </a>
   </div>
 
@@ -452,6 +461,6 @@
  </script>
 
  <script src="/animatch/scripts/common.js"></script>
- <script src="/animatch/scripts/signup.js"></script>
+ <script src="/animatch/scripts/change.js"></script>
 </body>
 </html>

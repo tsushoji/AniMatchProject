@@ -45,6 +45,13 @@
    </div>
 
    <div>
+    <label class="regist-complete-item-name"> &lt;ユーザーID&gt;</label>
+    <p>
+     <fmt:formatNumber value="${user.userId}" groupingUsed="false"/>
+    </p>
+   </div>
+
+   <div>
     <label class="regist-complete-item-name"> &lt;ユーザー名&gt;</label>
     <p>
      <c:out value="${user.userName}" />
