@@ -1,17 +1,22 @@
 /* ヘッダー */
 .nav-item-account-img {
- width: 60px;
- height: 60px;
+ width: 70px;
+ height: 70px;
 }
 
 /* メイン */
 main {
- background-color: rgb(255, 255, 200);
  border-top: solid 1px rgb(163, 161, 161);
 }
 
-/* contact-inf.html */
-/* メイン */
+.main-dmessage-list {
+ background-color: rgb(255, 220, 202);
+}
+
+.main-dmessage-detail {
+ background-color: rgb(255, 255, 200);
+}
+
 .main-center-block {
  border-right: solid 1px rgb(163, 161, 161);
  border-left: solid 1px rgb(163, 161, 161);
@@ -204,6 +209,11 @@ main {
  .message-form-send-stamp-area-img:hover {
  cursor: pointer;
  background-color: rgb(255, 255, 0);
+}
+
+.message-form-send-icon-send, .message-form-send-icon-stamp, .message-form-send-icon-file{
+ width: 20px;
+ height: 35px;
 }
 
 .message-form-send-file, .message-form-send-stamp-area,

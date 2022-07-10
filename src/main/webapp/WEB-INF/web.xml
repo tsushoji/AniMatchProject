@@ -78,10 +78,10 @@
   <servlet-class>com.web01.animatch.controller.MemberDetailController</servlet-class>
  </servlet>
  <servlet>
-  <servlet-name>MemberDmessageListController</servlet-name>
-  <display-name>MemberDmessageListController</display-name>
+  <servlet-name>MemberDmessageController</servlet-name>
+  <display-name>MemberDmessageController</display-name>
   <description></description>
-  <servlet-class>com.web01.animatch.controller.MemberDmessageListController</servlet-class>
+  <servlet-class>com.web01.animatch.controller.MemberDmessageController</servlet-class>
  </servlet>
  <servlet>
   <servlet-name>MemberDmessageDetailController</servlet-name>
@@ -132,8 +132,8 @@
   <url-pattern>/member/detail/trimmer/*</url-pattern>
  </servlet-mapping>
  <servlet-mapping>
-  <servlet-name>MemberDmessageListController</servlet-name>
-  <url-pattern>/member/dmessage/list</url-pattern>
+  <servlet-name>MemberDmessageController</servlet-name>
+  <url-pattern>/member/dmessage/</url-pattern>
  </servlet-mapping>
  <servlet-mapping>
   <servlet-name>MemberDmessageDetailController</servlet-name>

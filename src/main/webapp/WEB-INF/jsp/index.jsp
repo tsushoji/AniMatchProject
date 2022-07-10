@@ -91,7 +91,7 @@
        <div class="row">
         <div class="col-md text-center">
          <figure>
-          <a class="btn btn-primary btn-sm" href="/animatch/member/dmessage/list" role="button">
+          <a class="btn btn-primary btn-sm" href="/animatch/member/dmessage/" role="button">
            ダイレクトメッセージ
            <img src="/animatch/images/icon_direct_message.png" alt="ダイレクトメッセージアイコン">
           </a>
@@ -166,7 +166,7 @@
        <div class="row">
         <div class="col-md text-center">
          <figure>
-          <a class="btn btn-primary btn-sm" href="/animatch/member/dmessage/list" role="button">
+          <a class="btn btn-primary btn-sm" href="/animatch/member/dmessage/" role="button">
            ダイレクトメッセージ
            <img src="/animatch/images/icon_direct_message.png" alt="ダイレクトメッセージアイコン">
           </a>

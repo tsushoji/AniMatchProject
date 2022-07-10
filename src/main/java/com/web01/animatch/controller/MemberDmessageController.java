@@ -9,11 +9,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * MemberDmessageListControllerクラス
+ * MemberDmessageControllerクラス
  * @author Tsuji
  * @version 1.0
  */
-public class MemberDmessageListController extends HttpServlet {
+public class MemberDmessageController extends HttpServlet {
 
  //定数
  /**
@@ -24,7 +24,7 @@ public class MemberDmessageListController extends HttpServlet {
  /**
   * デフォルトコンストラクタ
   */
- public MemberDmessageListController() {
+ public MemberDmessageController() {
   super();
  }
 
@@ -34,7 +34,7 @@ public class MemberDmessageListController extends HttpServlet {
   * @param response レスポンスオブジェクト
   */
  protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-  String path = "/WEB-INF/jsp/member/dmessage/dmessage_list.jsp";
+  String path = "/WEB-INF/jsp/member/dmessage/dmessage.jsp";
   RequestDispatcher dispatcher = request.getRequestDispatcher(path);
   dispatcher.forward(request, response);
  }

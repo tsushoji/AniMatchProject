@@ -82,9 +82,6 @@ public class AuthFilter implements Filter {
     return;
    }else {
     String loginedURL = URL_PREFIX + path;
-    if(path.equals("/member/dmessage/detail/")) {
-     loginedURL = URL_PREFIX + "/member/dmessage/list";
-    }
     userSession.setLoginedURL(loginedURL);
     sessionService.bindSession(AuthService.USER_SESSION_KEY_NAME, userSession);
     //ログイン画面へリダイレクト
@@ -166,6 +163,10 @@ public class AuthFilter implements Filter {
    return true;
   }
 
+  if (path.equals("/member/dmessage/")) {
+   return true;
+  }
+
   if (path.equals("/contact/")) {
    return true;
   }
@@ -180,11 +181,7 @@ public class AuthFilter implements Filter {
   * そうでない場合、false
   */
  public boolean judgeAuthURL(String path) throws ServletException {
-  if (path.equals("/member/dmessage/list")) {
-   return true;
-  }
-
-  if (path.equals("/member/dmessage/detail/")) {
+  if (path.equals("/member/dmessage/")) {
    return true;
   }
 
