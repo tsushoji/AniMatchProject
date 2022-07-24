@@ -31,3 +31,6 @@ target/
 
 # Eclipse setting file
 /.settings/
+
+# Mac OS
+.DS_Store
