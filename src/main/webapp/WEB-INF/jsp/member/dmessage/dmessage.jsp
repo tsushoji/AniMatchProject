@@ -69,8 +69,12 @@
        <img src="/animatch/images/sample_20200501.jpg" alt="友達アカウント画像" class="rounded-circle main-center-content-account-img">
       </div>
 
-      <div class="col-8 pl-0 pt-2">
+      <div class="col-6 pl-0 pt-2">
        <span class="main-center-content-account-name">友達アカウント名</span>
+      </div>
+
+      <div class="col-2 pl-0 pt-2">
+       <span class="font-weight-bold main-center-content-account-name-not-read-num">5000</span>
       </div>
 
      </div>
@@ -81,8 +85,12 @@
        <img src="/animatch/images/sample_20200501.jpg" alt="友達アカウント画像" class="rounded-circle main-center-content-account-img">
       </div>
 
-      <div class="col-8 pl-0 pt-2">
+      <div class="col-6 pl-0 pt-2">
        <span class="main-center-content-account-name">友達アカウント名</span>
+      </div>
+
+      <div class="col-2 pl-0 pt-2">
+       <span class="font-weight-bold main-center-content-account-name-not-read-num">4000</span>
       </div>
 
      </div>
@@ -93,8 +101,12 @@
        <img src="/animatch/images/sample_20200501.jpg" alt="友達アカウント画像" class="rounded-circle main-center-content-account-img">
       </div>
 
-      <div class="col-8 pl-0 pt-2">
+      <div class="col-6 pl-0 pt-2">
        <span class="main-center-content-account-name">友達アカウント名</span>
+      </div>
+
+      <div class="col-2 pl-0 pt-2">
+       <span class="font-weight-bold main-center-content-account-name-not-read-num">3000</span>
       </div>
 
      </div>
@@ -105,8 +117,12 @@
        <img src="/animatch/images/sample_20200501.jpg" alt="友達アカウント画像" class="rounded-circle main-center-content-account-img">
       </div>
 
-      <div class="col-8 pl-0 pt-2">
+      <div class="col-6 pl-0 pt-2">
        <span class="main-center-content-account-name">友達アカウント名</span>
+      </div>
+
+      <div class="col-2 pl-0 pt-2">
+       <span class="font-weight-bold main-center-content-account-name-not-read-num">2300</span>
       </div>
 
      </div>
@@ -117,8 +133,12 @@
        <img src="/animatch/images/sample_20200501.jpg" alt="友達アカウント画像" class="rounded-circle main-center-content-account-img">
       </div>
 
-      <div class="col-8 pl-0 pt-2">
+      <div class="col-6 pl-0 pt-2">
        <span class="main-center-content-account-name">友達アカウント名</span>
+      </div>
+
+      <div class="col-2 pl-0 pt-2">
+       <span class="font-weight-bold main-center-content-account-name-not-read-num">2000</span>
       </div>
 
      </div>
@@ -129,8 +149,12 @@
        <img src="/animatch/images/sample_20200501.jpg" alt="友達アカウント画像" class="rounded-circle main-center-content-account-img">
       </div>
 
-      <div class="col-8 pl-0 pt-2">
+      <div class="col-6 pl-0 pt-2">
        <span class="main-center-content-account-name">友達アカウント名</span>
+      </div>
+
+      <div class="col-2 pl-0 pt-2">
+       <span class="font-weight-bold main-center-content-account-name-not-read-num">1800</span>
       </div>
 
      </div>
@@ -141,8 +165,12 @@
        <img src="/animatch/images/sample_20200501.jpg" alt="友達アカウント画像" class="rounded-circle main-center-content-account-img">
       </div>
 
-      <div class="col-8 pl-0 pt-2">
+      <div class="col-6 pl-0 pt-2">
        <span class="main-center-content-account-name">友達アカウント名</span>
+      </div>
+
+      <div class="col-2 pl-0 pt-2">
+       <span class="font-weight-bold main-center-content-account-name-not-read-num">1500</span>
       </div>
 
      </div>
@@ -153,8 +181,12 @@
        <img src="/animatch/images/sample_20200501.jpg" alt="友達アカウント画像" class="rounded-circle main-center-content-account-img">
       </div>
 
-      <div class="col-8 pl-0 pt-2">
+      <div class="col-6 pl-0 pt-2">
        <span class="main-center-content-account-name">友達アカウント名</span>
+      </div>
+
+      <div class="col-2 pl-0 pt-2">
+       <span class="font-weight-bold main-center-content-account-name-not-read-num">1300</span>
       </div>
 
      </div>
@@ -165,8 +197,12 @@
        <img src="/animatch/images/sample_20200501.jpg" alt="友達アカウント画像" class="rounded-circle main-center-content-account-img">
       </div>
 
-      <div class="col-8 pl-0 pt-2">
+      <div class="col-6 pl-0 pt-2">
        <span class="main-center-content-account-name">友達アカウント名</span>
+      </div>
+
+      <div class="col-2 pl-0 pt-2">
+       <span class="font-weight-bold main-center-content-account-name-not-read-num">1200</span>
       </div>
 
      </div>
@@ -177,8 +213,12 @@
        <img src="/animatch/images/sample_20200501.jpg" alt="友達アカウント画像" class="rounded-circle main-center-content-account-img">
       </div>
 
-      <div class="col-8 pl-0 pt-2">
+      <div class="col-6 pl-0 pt-2">
        <span class="main-center-content-account-name">友達アカウント名</span>
+      </div>
+
+      <div class="col-2 pl-0 pt-2">
+       <span class="font-weight-bold main-center-content-account-name-not-read-num">1100</span>
       </div>
 
      </div>
@@ -189,8 +229,12 @@
        <img src="/animatch/images/sample_20200501.jpg" alt="友達アカウント画像" class="rounded-circle main-center-content-account-img">
       </div>
 
-      <div class="col-8 pl-0 pt-2">
+      <div class="col-6 pl-0 pt-2">
        <span class="main-center-content-account-name">友達アカウント名</span>
+      </div>
+
+      <div class="col-2 pl-0 pt-2">
+       <span class="font-weight-bold main-center-content-account-name-not-read-num">1000</span>
       </div>
 
      </div>
@@ -201,8 +245,12 @@
        <img src="/animatch/images/sample_20200501.jpg" alt="友達アカウント画像" class="rounded-circle main-center-content-account-img">
       </div>
 
-      <div class="col-8 pl-0 pt-2">
+      <div class="col-6 pl-0 pt-2">
        <span class="main-center-content-account-name">友達アカウント名</span>
+      </div>
+
+      <div class="col-2 pl-0 pt-2">
+       <span class="font-weight-bold main-center-content-account-name-not-read-num">100</span>
       </div>
 
      </div>
@@ -213,8 +261,12 @@
        <img src="/animatch/images/sample_20200501.jpg" alt="友達アカウント画像" class="rounded-circle main-center-content-account-img">
       </div>
 
-      <div class="col-8 pl-0 pt-2">
+      <div class="col-6 pl-0 pt-2">
        <span class="main-center-content-account-name">友達アカウント名</span>
+      </div>
+
+      <div class="col-2 pl-0 pt-2">
+       <span class="font-weight-bold main-center-content-account-name-not-read-num">50</span>
       </div>
 
      </div>
@@ -225,8 +277,12 @@
        <img src="/animatch/images/sample_20200501.jpg" alt="友達アカウント画像" class="rounded-circle main-center-content-account-img">
       </div>
 
-      <div class="col-8 pl-0 pt-2">
+      <div class="col-6 pl-0 pt-2">
        <span class="main-center-content-account-name">友達アカウント名</span>
+      </div>
+
+      <div class="col-2 pl-0 pt-2">
+       <span class="font-weight-bold main-center-content-account-name-not-read-num">2</span>
       </div>
 
      </div>
@@ -237,8 +293,12 @@
        <img src="/animatch/images/sample_20200501.jpg" alt="友達アカウント画像" class="rounded-circle main-center-content-account-img">
       </div>
 
-      <div class="col-8 pl-0 pt-2">
+      <div class="col-6 pl-0 pt-2">
        <span class="main-center-content-account-name">友達アカウント名</span>
+      </div>
+
+      <div class="col-2 pl-0 pt-2">
+       <span class="font-weight-bold main-center-content-account-name-not-read-num">1</span>
       </div>
 
      </div>
@@ -249,8 +309,12 @@
        <img src="/animatch/images/sample_20200501.jpg" alt="友達アカウント画像" class="rounded-circle main-center-content-account-img">
       </div>
 
-      <div class="col-8 pl-0 pt-2">
+      <div class="col-6 pl-0 pt-2">
        <span class="main-center-content-account-name">友達アカウント名</span>
+      </div>
+
+      <div class="col-2 pl-0 pt-2">
+       <span class="font-weight-bold main-center-content-account-name-not-read-num">1</span>
       </div>
 
      </div>
@@ -261,8 +325,12 @@
        <img src="/animatch/images/sample_20200501.jpg" alt="友達アカウント画像" class="rounded-circle main-center-content-account-img">
       </div>
 
-      <div class="col-8 pl-0 pt-2">
+      <div class="col-6 pl-0 pt-2">
        <span class="main-center-content-account-name">友達アカウント名</span>
+      </div>
+
+      <div class="col-2 pl-0 pt-2">
+       <span class="font-weight-bold main-center-content-account-name-not-read-num"></span>
       </div>
 
      </div>
@@ -273,8 +341,12 @@
        <img src="/animatch/images/sample_20200501.jpg" alt="友達アカウント画像" class="rounded-circle main-center-content-account-img">
       </div>
 
-      <div class="col-8 pl-0 pt-2">
+      <div class="col-6 pl-0 pt-2">
        <span class="main-center-content-account-name">友達アカウント名</span>
+      </div>
+
+      <div class="col-2 pl-0 pt-2">
+       <span class="font-weight-bold main-center-content-account-name-not-read-num"></span>
       </div>
 
      </div>
